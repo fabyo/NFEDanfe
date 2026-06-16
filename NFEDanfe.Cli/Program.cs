@@ -46,7 +46,7 @@ internal static class Program
         try
         {
             string resolvedXmlPath = ResolveInputPath(xmlPath);
-            string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.HasLogo ? "_com_logo" : string.Empty)}.pdf";
+            string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}.pdf";
             string outputPath = Path.Combine(options.OutputDirectory, outputName);
 
             using FileStream output = File.Create(outputPath);
@@ -73,7 +73,7 @@ internal static class Program
         {
             byte[]? logoBytes = ObterLogoBytes(options);
             DanfeModel model = MockDanfeFactory.Create(logoBytes);
-            string outputPath = Path.Combine(options.OutputDirectory, $"danfe_mock{(logoBytes != null ? "_com_logo" : string.Empty)}.pdf");
+            string outputPath = Path.Combine(options.OutputDirectory, $"danfe_mock{(options.Landscape ? "_paisagem" : string.Empty)}{(logoBytes != null ? "_com_logo" : string.Empty)}.pdf");
 
             DanfeGenerator.Generate(model, outputPath, CreateDanfeOptions(options) with { LogoBytes = null });
 
@@ -104,7 +104,8 @@ internal static class Program
         {
             LogoBytes = ObterLogoBytes(options),
             ValidateBeforeGenerate = true,
-            EmitFooter = true
+            EmitFooter = true,
+            TipoImpressaoOverride = options.Landscape ? 2 : null
         };
     }
 
@@ -199,7 +200,8 @@ internal static class Program
         bool IncludeLogo,
         string? LogoPath,
         bool GenerateMock,
-        bool GenerateSnapshot)
+        bool GenerateSnapshot,
+        bool Landscape)
     {
         public bool HasLogo => IncludeLogo || !string.IsNullOrWhiteSpace(LogoPath);
 
@@ -211,6 +213,7 @@ internal static class Program
             string? logoPath = null;
             bool generateMock = false;
             bool generateSnapshot = false;
+            bool landscape = false;
 
             for (int i = 0; i < args.Count; i++)
             {
@@ -219,6 +222,10 @@ internal static class Program
                 if (arg is "--logo" or "-l")
                 {
                     includeLogo = true;
+                }
+                else if (arg is "--landscape" or "-p" or "--paisagem")
+                {
+                    landscape = true;
                 }
                 else if (arg is "--logo-path")
                 {
@@ -252,7 +259,7 @@ internal static class Program
                 }
             }
 
-            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot);
+            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape);
         }
     }
 }
