@@ -218,6 +218,13 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 - `Layout`: documentos QuestPDF.
 - `Layout/Components`: blocos visuais do DANFE.
 
+## 👨‍💻 Autor
+
+Fabyo Guimarães Oliveira
+
+- LinkedIn: https://www.linkedin.com/in/SEU-USUARIO/
+- GitHub: https://github.com/fabyo
+
 ## Licença
 
 MIT.
