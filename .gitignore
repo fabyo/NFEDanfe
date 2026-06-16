@@ -1,0 +1,15 @@
+bin/
+obj/
+out/
+xml_testes/
+artifacts/
+
+*.user
+*.suo
+*.rsuser
+.vs/
+
+*.log
+
+# PDFs gerados localmente pelo console
+danfe_*.pdf
