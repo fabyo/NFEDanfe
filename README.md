@@ -222,7 +222,7 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 
 Fabyo Guimarães Oliveira
 
-- LinkedIn: https://www.linkedin.com/in/SEU-USUARIO/
+- LinkedIn: [https://www.linkedin.com/in/fabyo-guimaraes/](https://www.linkedin.com/in/fabyo-guimaraes/)
 - GitHub: https://github.com/fabyo
 
 ## Licença
