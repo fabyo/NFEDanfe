@@ -67,6 +67,32 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void Generate_from_xml_landscape_produces_pdf_bytes()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        string outputPath = Path.Combine(Path.GetTempPath(), $"danfe-landscape-{Guid.NewGuid():N}.pdf");
+
+        try
+        {
+            using FileStream output = File.Create(outputPath);
+            DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions 
+            { 
+                ValidateBeforeGenerate = true,
+                TipoImpressaoOverride = 2 // Paisagem
+            });
+
+            Assert.True(new FileInfo(outputPath).Length > 0);
+        }
+        finally
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        }
+    }
+
+    [Fact]
     public void Landscape_override_changes_the_loaded_model_orientation()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
