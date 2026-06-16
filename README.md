@@ -2,6 +2,8 @@
 
 Biblioteca .NET para gerar DANFE em PDF a partir de XML de NF-e autorizada.
 
+<img src="logo.png" alt="Gordon Watcher Logo" width="200"/>
+
 O projeto tem dois formatos de uso:
 
 - `NFEDanfe`: biblioteca para integração em sistemas .NET, APIs, workers e ERPs.
