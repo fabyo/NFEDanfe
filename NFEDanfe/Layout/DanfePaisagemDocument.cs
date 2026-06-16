@@ -99,14 +99,12 @@ public class DanfePaisagemDocument : IDocument
 
             if (_model.Produtos is { Count: > 0 })
             {
-                column.Item().PaddingTop(5).Element(x => x.ProdutosBox(_model.Produtos, true));
+                column.Item().ExtendVertical().PaddingTop(5).Element(x => x.ProdutosBox(_model.Produtos, true));
             }
 
             if (_model.DadosAdicionais != null)
             {
                 column.Item()
-                    .ExtendVertical()
-                    .AlignBottom()
                     .PaddingTop(5)
                     .Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
             }

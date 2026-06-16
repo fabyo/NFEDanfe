@@ -35,7 +35,7 @@ public class ProdutosBox : IComponent
                 .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
                 .Bold();
 
-            column.Item()
+            column.Item().ExtendVertical()
                 .Border(DanfeTheme.EspessuraBorda)
                 .BorderColor(DanfeTheme.CorBorda)
                 .Table(table =>
@@ -79,6 +79,8 @@ public class ProdutosBox : IComponent
                             columns.ConstantColumn(21); // Alíq. IPI
                         }
                     });
+
+                    table.ExtendLastCellsToTableBottom();
 
                     table.Header(header =>
                     {

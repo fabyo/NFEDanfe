@@ -99,14 +99,12 @@ public class DanfeRetratoDocument : IDocument
 
             if (_model.Produtos is { Count: > 0 })
             {
-                column.Item().PaddingTop(6).Element(x => x.ProdutosBox(_model.Produtos));
+                column.Item().ExtendVertical().PaddingTop(6).Element(x => x.ProdutosBox(_model.Produtos));
             }
 
             if (_model.DadosAdicionais != null)
             {
                 column.Item()
-                    .ExtendVertical()
-                    .AlignBottom()
                     .PaddingTop(6)
                     .Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
             }
