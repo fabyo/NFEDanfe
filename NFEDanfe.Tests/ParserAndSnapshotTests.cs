@@ -22,6 +22,7 @@ public sealed class ParserAndSnapshotTests
         Assert.Equal("EMPRESA EXEMPLO LTDA", model.Emitente.RazaoSocial);
         Assert.Equal("EXEMPLO INDUSTRIAL", model.Emitente.NomeFantasia);
         Assert.Equal("CLIENTE EXEMPLO LTDA", model.Destinatario.RazaoSocial);
+        Assert.NotNull(model.Produtos);
         Assert.Single(model.Produtos);
         Assert.Equal("PRODUTO EXEMPLO PARA DANFE", model.Produtos[0].Descricao);
         Assert.Equal(200.00m, model.ValorTotal);
@@ -87,6 +88,25 @@ public sealed class ParserAndSnapshotTests
         try
         {
             Assert.ThrowsAny<Exception>(() => DanfeGenerator.LoadFromXml(outputPath));
+        }
+        finally
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        }
+    }
+
+    [Fact]
+    public void Missing_nfe_root_node_is_rejected_by_parser()
+    {
+        string outputPath = Path.Combine(Path.GetTempPath(), $"danfe-missing-root-{Guid.NewGuid():N}.xml");
+        File.WriteAllText(outputPath, "<?xml version=\"1.0\"?><outroNode></outroNode>");
+
+        try
+        {
+            Assert.Throws<InvalidOperationException>(() => DanfeXmlParser.Parse(outputPath));
         }
         finally
         {

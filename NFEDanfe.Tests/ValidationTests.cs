@@ -28,7 +28,7 @@ public sealed class ValidationTests
     {
         DanfeModel model = CreateBaseModel() with
         {
-            Impostos = CreateBaseModel().Impostos with
+            Impostos = CreateBaseModel().Impostos! with
             {
                 ValorProdutos = 999.99m,
                 ValorNota = 999.99m
@@ -45,7 +45,7 @@ public sealed class ValidationTests
     {
         DanfeModel model = CreateBaseModel() with
         {
-            Transportador = CreateBaseModel().Transportador with
+            Transportador = CreateBaseModel().Transportador! with
             {
                 Documento = "abc"
             }
@@ -54,6 +54,63 @@ public sealed class ValidationTests
         var ex = Assert.Throws<DanfeDomainException>(() => DanfeValidator.Validate(model));
 
         Assert.Contains("Documento do transportador", ex.Message);
+    }
+
+    [Fact]
+    public void Valid_model_passes_without_errors()
+    {
+        DanfeModel model = CreateBaseModel();
+
+        // Should not throw
+        DanfeValidator.Validate(model);
+    }
+
+    [Fact]
+    public void Invalid_emitente_cnpj_is_rejected()
+    {
+        DanfeModel model = CreateBaseModel() with
+        {
+            Emitente = CreateBaseModel().Emitente with
+            {
+                Cnpj = "11.111.111/1111-11"
+            }
+        };
+
+        var ex = Assert.Throws<DanfeDomainException>(() => DanfeValidator.Validate(model));
+
+        Assert.Contains("CNPJ do emitente inválido", ex.Message);
+    }
+
+    [Fact]
+    public void Negative_values_are_rejected()
+    {
+        DanfeModel model = CreateBaseModel() with
+        {
+            Impostos = CreateBaseModel().Impostos! with
+            {
+                ValorNota = -10.0m
+            }
+        };
+
+        var ex = Assert.Throws<DanfeDomainException>(() => DanfeValidator.Validate(model));
+
+        Assert.Contains("O valor total da nota não pode ser negativo.", ex.Message);
+    }
+
+    [Fact]
+    public void Missing_required_fields_are_rejected()
+    {
+        DanfeModel model = CreateBaseModel() with
+        {
+            Destinatario = CreateBaseModel().Destinatario with
+            {
+                RazaoSocial = ""
+            }
+        };
+
+        var ex = Assert.Throws<DanfeDomainException>(() => DanfeValidator.Validate(model));
+
+        Assert.Contains("A razão social do destinatário é obrigatória.", ex.Message);
     }
 
     private static DanfeModel CreateBaseModel()
