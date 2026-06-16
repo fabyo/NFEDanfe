@@ -83,16 +83,16 @@ public class ProdutosBox : IComponent
                     table.Header(header =>
                     {
                         Header(header.Cell(), "CÓDIGO PRODUTO", isFirst: true);
-                        Header(header.Cell(), "DESCRIÇÃO DO PRODUTO/SERVIÇO", drawLeftDivider: true);
-                        Header(header.Cell(), "NCM/SH", alignCenter: true, drawLeftDivider: true);
+                        Header(header.Cell(), "DESCRIÇÃO DO PRODUTO/SERVIÇO");
+                        Header(header.Cell(), "NCM/SH", alignCenter: true);
                         Header(header.Cell(), "CST", alignCenter: true);
                         Header(header.Cell(), "CFOP", alignCenter: true);
                         Header(header.Cell(), "UN", alignCenter: true);
                         Header(header.Cell(), "QUANT", alignCenter: true);
                         Header(header.Cell(), "VALOR UNIT", alignRight: true);
-                        Header(header.Cell(), "VALOR TOTAL", alignRight: true, drawLeftDivider: true);
+                        Header(header.Cell(), "VALOR TOTAL", alignRight: true);
                         Header(header.Cell(), "VALOR DESC", alignRight: true);
-                        Header(header.Cell(), "BC ICMS", alignRight: true, drawLeftDivider: true);
+                        Header(header.Cell(), "BC ICMS", alignRight: true);
                         Header(header.Cell(), "VALOR ICMS", alignRight: true);
                         Header(header.Cell(), "VALOR IPI", alignRight: true);
                         Header(header.Cell(), "ALÍQ. ICMS", alignRight: true);
@@ -102,16 +102,16 @@ public class ProdutosBox : IComponent
                     foreach (ProdutoModel prod in _produtos)
                     {
                         Data(table.Cell(), prod.Codigo, isFirst: true);
-                        Data(table.Cell(), prod.Descricao, drawLeftDivider: true);
-                        Data(table.Cell(), prod.Ncm, alignCenter: true, drawLeftDivider: true);
+                        Data(table.Cell(), prod.Descricao);
+                        Data(table.Cell(), prod.Ncm, alignCenter: true);
                         Data(table.Cell(), prod.CstCsosn, alignCenter: true);
                         Data(table.Cell(), prod.Cfop, alignCenter: true);
                         Data(table.Cell(), prod.Unidade, alignCenter: true);
                         Data(table.Cell(), FormatQuantity(prod.Quantidade), alignRight: true);
                         Data(table.Cell(), FormatPrice(prod.ValorUnitario), alignRight: true);
-                        Data(table.Cell(), DocumentFormatter.Money(prod.ValorTotal), alignRight: true, drawLeftDivider: true);
+                        Data(table.Cell(), DocumentFormatter.Money(prod.ValorTotal), alignRight: true);
                         Data(table.Cell(), DocumentFormatter.Money(prod.ValorDesconto), alignRight: true);
-                        Data(table.Cell(), DocumentFormatter.Money(prod.BaseCalculoIcms), alignRight: true, drawLeftDivider: true);
+                        Data(table.Cell(), DocumentFormatter.Money(prod.BaseCalculoIcms), alignRight: true);
                         Data(table.Cell(), DocumentFormatter.Money(prod.ValorIcms), alignRight: true);
                         Data(table.Cell(), DocumentFormatter.Money(prod.ValorIpi), alignRight: true);
                         Data(table.Cell(), FormatPercentage(prod.AliquotaIcms), alignRight: true);
@@ -121,17 +121,17 @@ public class ProdutosBox : IComponent
         });
     }
 
-    private static void Header(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false, bool drawLeftDivider = false)
+    private static void Header(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false)
     {
-        Cell(container, text, isHeader: true, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter, drawLeftDivider: drawLeftDivider);
+        Cell(container, text, isHeader: true, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter);
     }
 
-    private static void Data(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false, bool drawLeftDivider = false)
+    private static void Data(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false)
     {
-        Cell(container, text, isHeader: false, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter, drawLeftDivider: drawLeftDivider);
+        Cell(container, text, isHeader: false, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter);
     }
 
-    private static void Cell(IContainer container, string text, bool isHeader, bool isFirstColumn, bool alignRight = false, bool alignCenter = false, bool drawLeftDivider = false)
+    private static void Cell(IContainer container, string text, bool isHeader, bool isFirstColumn, bool alignRight = false, bool alignCenter = false)
     {
         container.Layers(layers =>
         {
@@ -162,23 +162,11 @@ public class ProdutosBox : IComponent
             {
                 layers.Layer().AlignTop().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
                 layers.Layer().AlignBottom().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
-
-                if (drawLeftDivider)
-                {
-                    layers.Layer().AlignLeft().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
-                }
-
                 layers.Layer().AlignRight().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
             }
             else
             {
                 layers.Layer().AlignBottom().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
-
-                if (drawLeftDivider)
-                {
-                    layers.Layer().AlignLeft().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
-                }
-
                 layers.Layer().AlignRight().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
             }
         });
