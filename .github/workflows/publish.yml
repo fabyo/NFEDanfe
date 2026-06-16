@@ -35,7 +35,7 @@ jobs:
         uses: NuGet/login@v1
         id: login
         with:
-          source: https://api.nuget.org/v3/index.json
+          user: ${{ github.repository_owner }}
 
       - name: Publish
         env:
