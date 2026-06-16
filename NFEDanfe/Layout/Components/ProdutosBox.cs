@@ -160,20 +160,27 @@ public class ProdutosBox : IComponent
 
             if (isHeader)
             {
-                layers.Layer().AlignTop().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+                layers.Layer().AlignTop().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
                 layers.Layer().AlignBottom().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
+
+                if (drawLeftDivider)
+                {
+                    layers.Layer().AlignLeft().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
+                }
+
+                layers.Layer().AlignRight().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1);
             }
             else
             {
                 layers.Layer().AlignBottom().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
-            }
 
-            if (drawLeftDivider)
-            {
-                layers.Layer().AlignLeft().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
-            }
+                if (drawLeftDivider)
+                {
+                    layers.Layer().AlignLeft().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+                }
 
-            layers.Layer().AlignRight().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+                layers.Layer().AlignRight().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+            }
         });
     }
 
