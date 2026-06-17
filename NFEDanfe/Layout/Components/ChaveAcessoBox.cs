@@ -11,10 +11,12 @@ namespace NFEDanfe.Layout.Components;
 public class ChaveAcessoBox : IComponent
 {
     private readonly DadosDanfe _dados;
+    private readonly bool _isLandscape;
 
-    public ChaveAcessoBox(DadosDanfe dados)
+    public ChaveAcessoBox(DadosDanfe dados, bool isLandscape = false)
     {
         _dados = dados;
+        _isLandscape = isLandscape;
     }
 
     public void Compose(IContainer container)
@@ -22,13 +24,13 @@ public class ChaveAcessoBox : IComponent
         container
             .Border(DanfeTheme.EspessuraBorda)
             .BorderColor(DanfeTheme.CorBorda)
-            .PaddingVertical(3)
+            .PaddingVertical(_isLandscape ? 2 : 3)
             .PaddingHorizontal(4)
             .Column(column =>
             {
-                column.Item().Height(28).Element(ComposeBarcode);
+                column.Item().Height(_isLandscape ? 22 : 28).Element(ComposeBarcode);
 
-                column.Item().PaddingTop(6).Column(c =>
+                column.Item().PaddingTop(_isLandscape ? 3 : 6).Column(c =>
                 {
                     c.Item().Text("CHAVE DE ACESSO")
                         .FontFamily(DanfeTheme.FontePadrao)
@@ -36,16 +38,16 @@ public class ChaveAcessoBox : IComponent
 
                     c.Item().Text(FormatarChaveAcesso(_dados.ChaveAcesso))
                         .FontFamily(DanfeTheme.FontePadrao)
-                        .FontSize(DanfeTheme.TamanhoFonteChaveAcesso)
+                        .FontSize(_isLandscape ? DanfeTheme.TamanhoFonteChaveAcesso - 0.5f : DanfeTheme.TamanhoFonteChaveAcesso)
                         .Bold();
                 });
 
-                column.Item().PaddingTop(4).LineHorizontal(0.5f).LineColor(DanfeTheme.CorBorda);
-                column.Item().PaddingTop(2).Text("Consulta de autenticidade no portal nacional da NF-e\nwww.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora")
+                column.Item().PaddingTop(_isLandscape ? 2 : 4).LineHorizontal(0.5f).LineColor(DanfeTheme.CorBorda);
+                column.Item().PaddingTop(_isLandscape ? 1 : 2).Text("Consulta de autenticidade no portal nacional da NF-e\nwww.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora")
                     .FontFamily(DanfeTheme.FontePadrao)
-                    .FontSize(DanfeTheme.TamanhoFonteSubtitulo)
+                    .FontSize(_isLandscape ? DanfeTheme.TamanhoFonteSubtitulo - 0.5f : DanfeTheme.TamanhoFonteSubtitulo)
                     .AlignCenter()
-                    .LineHeight(1.1f);
+                    .LineHeight(1.0f);
             });
     }
 
@@ -98,8 +100,8 @@ public class ChaveAcessoBox : IComponent
 
 public static class ChaveAcessoBoxExtensions
 {
-    public static void ChaveAcessoBox(this IContainer container, DadosDanfe dados)
+    public static void ChaveAcessoBox(this IContainer container, DadosDanfe dados, bool isLandscape = false)
     {
-        container.Component(new ChaveAcessoBox(dados));
+        container.Component(new ChaveAcessoBox(dados, isLandscape));
     }
 }

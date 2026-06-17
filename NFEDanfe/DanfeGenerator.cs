@@ -20,6 +20,12 @@ public static class DanfeGenerator
         return PrepareModel(model, options ?? DanfeOptions.Default);
     }
 
+    public static DanfeModel LoadFromXmlContent(string xmlContent, DanfeOptions? options = null)
+    {
+        DanfeModel model = DanfeXmlParser.ParseXmlContent(xmlContent);
+        return PrepareModel(model, options ?? DanfeOptions.Default);
+    }
+
     public static void GenerateFromXml(string xmlPath, Stream output, DanfeOptions? options = null)
     {
         DanfeOptions effectiveOptions = options ?? DanfeOptions.Default;
@@ -31,6 +37,13 @@ public static class DanfeGenerator
     {
         DanfeOptions effectiveOptions = options ?? DanfeOptions.Default;
         DanfeModel model = LoadFromXml(xmlStream, effectiveOptions);
+        Generate(model, output, effectiveOptions);
+    }
+
+    public static void GenerateFromXmlContent(string xmlContent, Stream output, DanfeOptions? options = null)
+    {
+        DanfeOptions effectiveOptions = options ?? DanfeOptions.Default;
+        DanfeModel model = LoadFromXmlContent(xmlContent, effectiveOptions);
         Generate(model, output, effectiveOptions);
     }
 

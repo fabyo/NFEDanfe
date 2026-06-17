@@ -98,6 +98,20 @@ var model = DanfeGenerator.LoadFromXml("nota-procNFe.xml");
 string snapshot = DanfeSnapshot.CreateText(model);
 ```
 
+Gerar a partir de conteúdo XML em memória (String / Banco de Dados):
+
+Se você possui o conteúdo XML salvo no banco de dados como uma `string`, você pode gerá-lo diretamente em memória sem precisar criar um arquivo físico:
+
+```csharp
+using NFEDanfe;
+
+string xmlContent = ObterXmlDoBancoDeDados(nfeId);
+
+await using FileStream output = File.Create("danfe.pdf");
+DanfeGenerator.GenerateFromXmlContent(xmlContent, output);
+```
+
+
 ## Instalação Como CLI
 
 Durante desenvolvimento:

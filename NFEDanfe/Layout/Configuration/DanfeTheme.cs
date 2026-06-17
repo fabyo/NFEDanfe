@@ -15,7 +15,15 @@ public static class DanfeTheme
 
     public const float EspessuraBorda = 0.8f;
     public const float PaddingInternoHorizontal = 4f;
-    public const float PaddingInternoVertical = 2f;
+
+    [System.ThreadStatic]
+    private static float? _paddingInternoVertical;
+
+    public static float PaddingInternoVertical
+    {
+        get => _paddingInternoVertical ?? 2f;
+        set => _paddingInternoVertical = value;
+    }
 
     public static readonly string CorBorda = Colors.Black;
     public static readonly string CorTexto = Colors.Black;

@@ -29,34 +29,42 @@ public class DanfePaisagemDocument : IDocument
 
     public void Compose(IDocumentContainer container)
     {
-        container.Page(page =>
+        DanfeTheme.PaddingInternoVertical = 1.0f;
+        try
         {
-            page.Size(PageSizes.A4.Landscape());
-            page.Margin(10);
-            page.PageColor(Colors.White);
-            page.DefaultTextStyle(x => x.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor).FontColor(DanfeTheme.CorTexto));
-
-            page.Header().Element(ComposeHeader);
-            page.Content().Element(ComposeContent);
-
-            if (_options.EmitFooter)
+            container.Page(page =>
             {
-                page.Footer().Element(ComposeFooter);
-            }
-        });
+                page.Size(PageSizes.A4.Landscape());
+                page.Margin(10);
+                page.PageColor(Colors.White);
+                page.DefaultTextStyle(x => x.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor).FontColor(DanfeTheme.CorTexto));
+
+                page.Header().Element(ComposeHeader);
+                page.Content().Element(ComposeContent);
+
+                if (_options.EmitFooter || _model.DadosAdicionais != null)
+                {
+                    page.Footer().Element(ComposeFooter);
+                }
+            });
+        }
+        finally
+        {
+            DanfeTheme.PaddingInternoVertical = 2.0f;
+        }
     }
 
     private void ComposeHeader(IContainer container)
     {
         container.Column(column =>
         {
-            column.Item().PaddingBottom(4).CanhotoBox(_model.Emitente, _model.DadosDanfe, _model.Destinatario, _model.ValorTotal);
+            column.Item().ShowOnce().PaddingBottom(4).CanhotoBox(_model.Emitente, _model.DadosDanfe, _model.Destinatario, _model.ValorTotal);
 
             column.Item().Row(row =>
             {
-                row.RelativeItem(4.5f).Element(x => x.EmitenteBox(_model.Emitente));
-                row.RelativeItem(1.5f).Element(x => x.DanfeBox(_model.DadosDanfe));
-                row.RelativeItem(4).Element(x => x.ChaveAcessoBox(_model.DadosDanfe));
+                row.RelativeItem(4.5f).Element(x => x.EmitenteBox(_model.Emitente, true));
+                row.RelativeItem(1.5f).Element(x => x.DanfeBox(_model.DadosDanfe, true));
+                row.RelativeItem(4).Element(x => x.ChaveAcessoBox(_model.DadosDanfe, true));
             });
 
             column.Item().PaddingTop(2).Row(row =>
@@ -73,51 +81,89 @@ public class DanfePaisagemDocument : IDocument
                 row.RelativeItem(4).LabelValueCell("INSCRIÇÃO ESTADUAL DO SUBST. TRIBUT.", _model.Emitente.InscricaoEstadualSt ?? string.Empty, true, top: false, left: false);
                 row.RelativeItem(4).LabelValueCell("CNPJ", DocumentFormatter.CnpjCpf(_model.Emitente.Cnpj), true, top: false, left: false);
             });
+
+            if (_model.LocalEntrega != null)
+            {
+                column.Item().ShowOnce().PaddingTop(5).Row(row =>
+                {
+                    row.RelativeItem(1).Element(x => x.DestinatarioBox(_model.Destinatario, _model.DadosDanfe, true));
+                    row.RelativeItem(1).PaddingLeft(5).Element(x => x.LocalEntregaBox(_model.LocalEntrega, true));
+                });
+            }
+            else
+            {
+                column.Item().ShowOnce().PaddingTop(5).Element(x => x.DestinatarioBox(_model.Destinatario, _model.DadosDanfe, true));
+            }
+
+            if (_model.Cobranca != null)
+            {
+                column.Item().ShowOnce().PaddingTop(5).Element(x => x.CobrancaBox(_model.Cobranca));
+            }
+
+            if (_model.Impostos != null)
+            {
+                column.Item().ShowOnce().PaddingTop(5).Element(x => x.ImpostosBox(_model.Impostos));
+            }
+
+            if (_model.Transportador != null)
+            {
+                column.Item().ShowOnce().PaddingTop(5).Element(x => x.TransportadorBox(_model.Transportador));
+            }
+
+            if (_model.Produtos is { Count: > 0 })
+            {
+                column.Item().PaddingTop(5).Background(Colors.Grey.Lighten3)
+                    .Border(DanfeTheme.EspessuraBorda)
+                    .BorderColor(DanfeTheme.CorBorda)
+                    .PaddingLeft(4)
+                    .PaddingVertical(1)
+                    .Text("DADOS DO PRODUTO / SERVIÇOS")
+                    .FontFamily(DanfeTheme.FontePadrao)
+                    .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
+                    .Bold();
+            }
         });
     }
 
     private void ComposeContent(IContainer container)
     {
-        container.Column(column =>
+        container.ExtendVertical().Column(column =>
         {
-            column.Item().Element(x => x.DestinatarioBox(_model.Destinatario, _model.DadosDanfe, true));
-
-            if (_model.Cobranca != null)
-            {
-                column.Item().PaddingTop(5).Element(x => x.CobrancaBox(_model.Cobranca));
-            }
-
-            if (_model.Impostos != null)
-            {
-                column.Item().PaddingTop(5).Element(x => x.ImpostosBox(_model.Impostos));
-            }
-
-            if (_model.Transportador != null)
-            {
-                column.Item().PaddingTop(5).Element(x => x.TransportadorBox(_model.Transportador));
-            }
-
             if (_model.Produtos is { Count: > 0 })
             {
-                column.Item().ExtendVertical().PaddingTop(5).Element(x => x.ProdutosBox(_model.Produtos, true));
-            }
-
-            if (_model.DadosAdicionais != null)
-            {
-                column.Item()
-                    .PaddingTop(5)
-                    .Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
+                bool temLogo = _model.Emitente.LogoBytes is { Length: > 0 };
+                int target = temLogo ? 7 : 9;
+                if (_model.Transportador != null && !string.IsNullOrWhiteSpace(_model.Transportador.RazaoSocial))
+                {
+                    target -= 3;
+                }
+                if (_model.LocalEntrega != null)
+                {
+                    target -= 2;
+                }
+                column.Item().ExtendVertical().PaddingTop(5).Element(x => x.ProdutosBox(_model.Produtos, true, target));
             }
         });
     }
 
     private void ComposeFooter(IContainer container)
     {
-        container.AlignRight().Text(text =>
+        container.Column(column =>
         {
-            text.Span($"NFEDanfe - impresso em {DateTime.Now:dd/MM/yyyy HH:mm:ss} - layout NF-e {_model.DadosDanfe.VersaoLayout}")
-                .FontSize(6)
-                .Italic();
+            if (_model.DadosAdicionais != null)
+            {
+                column.Item().PaddingBottom(4).Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
+            }
+
+            if (_options.EmitFooter)
+            {
+                column.Item().AlignRight().Text(text =>
+                {
+                    text.Span($"NFEDanfe - impresso em {DateTime.Now:dd/MM/yyyy HH:mm:ss} - layout NF-e {_model.DadosDanfe.VersaoLayout}")
+                        .FontSize(6)
+                        .Italic();
+                });
+            }
         });
     }
 }

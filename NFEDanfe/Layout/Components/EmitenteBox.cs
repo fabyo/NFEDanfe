@@ -33,7 +33,7 @@ public class EmitenteBox : IComponent
                         .Height(55)
                         .Image(_emitente.LogoBytes)
                         .FitArea();
-                    
+
                     row.RelativeItem()
                         .PaddingLeft(5)
                         .Element(ComposeText);
@@ -71,7 +71,7 @@ public class EmitenteBox : IComponent
             }
             enderecoText += $"\n{_emitente.Endereco.Bairro} - CEP: {_emitente.Endereco.Cep}";
             enderecoText += $"\n{_emitente.Endereco.Municipio} - {_emitente.Endereco.Uf}";
-            
+
             if (!string.IsNullOrWhiteSpace(_emitente.Telefone))
             {
                 enderecoText += $" - Fone: {_emitente.Telefone}";

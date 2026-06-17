@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\samples\nota-exemplo-procNFe.xml" Link="samples\nota-exemplo-procNFe.xml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\samples\*.xml" Link="samples\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

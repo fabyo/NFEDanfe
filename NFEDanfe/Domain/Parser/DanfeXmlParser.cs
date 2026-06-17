@@ -1,6 +1,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using NFEDanfe.Domain.Models;
+using NFEDanfe.Domain.Formatting;
 
 namespace NFEDanfe.Domain.Parser;
 
@@ -30,6 +31,27 @@ public static class DanfeXmlParser
         return ParseDocument(LoadSecure(xmlStream));
     }
 
+    public static DanfeModel ParseXmlContent(string xmlContent)
+    {
+        if (string.IsNullOrWhiteSpace(xmlContent))
+        {
+            throw new ArgumentException("O conteúdo XML não pode ser vazio.", nameof(xmlContent));
+        }
+
+        using System.IO.StringReader reader = new(xmlContent);
+        XmlReaderSettings settings = new()
+        {
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
+            MaxCharactersFromEntities = 0,
+            MaxCharactersInDocument = 10_000_000
+        };
+
+        using XmlReader xmlReader = XmlReader.Create(reader, settings);
+        XDocument doc = XDocument.Load(xmlReader, LoadOptions.None);
+        return ParseDocument(doc);
+    }
+
     public static DanfeModel ParseDocument(XDocument doc)
     {
         ArgumentNullException.ThrowIfNull(doc);
@@ -48,6 +70,7 @@ public static class DanfeXmlParser
         TransportadorModel? transportador = ParseTransportador(infNFe.Element(NfeNamespace + "transp"));
         IReadOnlyList<ProdutoModel> produtos = ParseProdutos(infNFe);
         DadosAdicionaisModel dadosAdicionais = ParseDadosAdicionais(infNFe.Element(NfeNamespace + "infAdic"));
+        LocalEntrega? localEntrega = ParseLocalEntrega(infNFe.Element(NfeNamespace + "entrega"), destinatario);
 
         return new DanfeModel(
             emitente,
@@ -58,7 +81,8 @@ public static class DanfeXmlParser
             impostos,
             transportador,
             produtos,
-            dadosAdicionais);
+            dadosAdicionais,
+            localEntrega);
     }
 
     private static XDocument LoadSecure(Stream xmlStream)
@@ -288,6 +312,23 @@ public static class DanfeXmlParser
         return new DadosAdicionaisModel(
             InformacoesComplementares: infAdic?.Element(NfeNamespace + "infCpl")?.Value,
             InformacoesFisco: infAdic?.Element(NfeNamespace + "infAdFisco")?.Value);
+    }
+
+    private static LocalEntrega? ParseLocalEntrega(XElement? entrega, Destinatario dest)
+    {
+        if (entrega == null)
+        {
+            return null;
+        }
+
+        string cnpjCpf = entrega.Element(NfeNamespace + "CNPJ")?.Value ?? entrega.Element(NfeNamespace + "CPF")?.Value ?? string.Empty;
+
+        return new LocalEntrega(
+            RazaoSocial: dest.RazaoSocial,
+            Documento: cnpjCpf,
+            InscricaoEstadual: dest.InscricaoEstadual,
+            Endereco: ParseEndereco(entrega),
+            Telefone: dest.Telefone);
     }
 
     private static Endereco ParseEndereco(XElement el)

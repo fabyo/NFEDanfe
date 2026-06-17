@@ -13,6 +13,17 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void LoadFromXmlContent_parses_raw_xml_string()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        string xmlContent = File.ReadAllText(xmlPath);
+
+        var model = DanfeGenerator.LoadFromXmlContent(xmlContent);
+
+        Assert.Equal("EMPRESA EXEMPLO LTDA", model.Emitente.RazaoSocial);
+    }
+
+    [Fact]
     public void SampleXml_is_parsed_with_real_data()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
@@ -75,8 +86,8 @@ public sealed class ParserAndSnapshotTests
         try
         {
             using FileStream output = File.Create(outputPath);
-            DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions 
-            { 
+            DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions
+            {
                 ValidateBeforeGenerate = true,
                 TipoImpressaoOverride = 2 // Paisagem
             });
@@ -142,4 +153,107 @@ public sealed class ParserAndSnapshotTests
             }
         }
     }
+
+    [Fact]
+    public void AllGeneratedPdfs_are_exactly_one_page()
+    {
+        var xmlFiles = FindAllSampleXmls();
+        Assert.NotEmpty(xmlFiles);
+
+        byte[]? logoBytes = GetRealLogoBytes();
+
+        List<string> errors = new();
+
+        List<string> diagnosticInfo = new();
+        foreach (var xmlPath in xmlFiles)
+        {
+            var optionsList = new[]
+            {
+                new { Name = "Portrait_NoLogo", Orientation = 1, HasLogo = false },
+                new { Name = "Portrait_WithLogo", Orientation = 1, HasLogo = true },
+                new { Name = "Landscape_NoLogo", Orientation = 2, HasLogo = false },
+                new { Name = "Landscape_WithLogo", Orientation = 2, HasLogo = true }
+            };
+
+            foreach (var opt in optionsList)
+            {
+                string pdfPath = Path.Combine(Path.GetTempPath(), $"danfe-{Path.GetFileNameWithoutExtension(xmlPath)}-{opt.Name}.pdf");
+                try
+                {
+                    using (FileStream output = File.Create(pdfPath))
+                    {
+                        DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions
+                        {
+                            ValidateBeforeGenerate = true,
+                            TipoImpressaoOverride = opt.Orientation,
+                            LogoBytes = opt.HasLogo ? logoBytes : null,
+                            EmitFooter = true
+                        });
+                    }
+
+                    int pageCount = GetPdfPageCount(pdfPath);
+                    diagnosticInfo.Add($"{Path.GetFileName(xmlPath)} ({opt.Name}): {pageCount} pages");
+                    if (pageCount != 1)
+                    {
+                        errors.Add($"{Path.GetFileName(xmlPath)} ({opt.Name}): expected 1 page, but got {pageCount} pages");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"{Path.GetFileName(xmlPath)} ({opt.Name}) failed to generate: {ex.Message}");
+                }
+                finally
+                {
+                    if (File.Exists(pdfPath))
+                    {
+                        File.Delete(pdfPath);
+                    }
+                }
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            throw new Exception("PDF page count validation errors:\n" + string.Join("\n", errors) + "\n\nAll results:\n" + string.Join("\n", diagnosticInfo));
+        }
+    }
+
+    private static byte[]? GetRealLogoBytes()
+    {
+        string? current = AppContext.BaseDirectory;
+        for (int i = 0; i < 8 && !string.IsNullOrWhiteSpace(current); i++)
+        {
+            string candidate = Path.Combine(current, "logo.png");
+            if (File.Exists(candidate))
+            {
+                return File.ReadAllBytes(candidate);
+            }
+            current = Directory.GetParent(current)?.FullName;
+        }
+        return null;
+    }
+
+
+    private static List<string> FindAllSampleXmls()
+    {
+        string? current = AppContext.BaseDirectory;
+        for (int i = 0; i < 8 && !string.IsNullOrWhiteSpace(current); i++)
+        {
+            string candidateDir = Path.Combine(current, "samples");
+            if (Directory.Exists(candidateDir))
+            {
+                return Directory.GetFiles(candidateDir, "*.xml").ToList();
+            }
+            current = Directory.GetParent(current)?.FullName;
+        }
+        return new List<string>();
+    }
+
+    private static int GetPdfPageCount(string path)
+    {
+        byte[] bytes = File.ReadAllBytes(path);
+        string text = System.Text.Encoding.Latin1.GetString(bytes);
+        return System.Text.RegularExpressions.Regex.Matches(text, @"/Type\s*/Page\b").Count;
+    }
 }
+

@@ -11,5 +11,6 @@ public record DanfeModel(
     ImpostosModel? Impostos = null,
     TransportadorModel? Transportador = null,
     IReadOnlyList<ProdutoModel>? Produtos = null,
-    DadosAdicionaisModel? DadosAdicionais = null
+    DadosAdicionaisModel? DadosAdicionais = null,
+    LocalEntrega? LocalEntrega = null
 );

@@ -8,10 +8,12 @@ namespace NFEDanfe.Layout.Components;
 public class DanfeBox : IComponent
 {
     private readonly DadosDanfe _dados;
+    private readonly bool _isLandscape;
 
-    public DanfeBox(DadosDanfe dados)
+    public DanfeBox(DadosDanfe dados, bool isLandscape = false)
     {
         _dados = dados;
+        _isLandscape = isLandscape;
     }
 
     public void Compose(IContainer container)
@@ -35,7 +37,7 @@ public class DanfeBox : IComponent
                     .AlignCenter()
                     .LineHeight(1.1f);
 
-                column.Item().PaddingVertical(4).Row(row =>
+                column.Item().PaddingVertical(_isLandscape ? 2 : 4).Row(row =>
                 {
                     row.RelativeItem()
                         .AlignLeft()
@@ -43,7 +45,7 @@ public class DanfeBox : IComponent
                         .Text("0 - Entrada\n1 - Saída")
                         .FontFamily(DanfeTheme.FontePadrao)
                         .FontSize(DanfeTheme.TamanhoFonteLabel)
-                        .LineHeight(1.2f);
+                        .LineHeight(1.1f);
 
                     row.ConstantItem(15)
                         .PaddingLeft(3)
@@ -58,32 +60,47 @@ public class DanfeBox : IComponent
                         .Bold();
                 });
 
-                column.Item().AlignCenter().Text($"Nº {_dados.Numero}")
-                    .FontFamily(DanfeTheme.FontePadrao)
-                    .FontSize(DanfeTheme.TamanhoFonteValor)
-                    .Bold();
-
-                column.Item().AlignCenter().Text($"SÉRIE {_dados.Serie:000}")
-                    .FontFamily(DanfeTheme.FontePadrao)
-                    .FontSize(DanfeTheme.TamanhoFonteValor)
-                    .Bold();
-
-                column.Item().AlignCenter().Text(text =>
+                if (_isLandscape)
                 {
-                    text.DefaultTextStyle(TextStyle.Default.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor));
-                    text.Span("FOLHA: ");
-                    text.CurrentPageNumber();
-                    text.Span("/");
-                    text.TotalPages();
-                });
+                    column.Item().AlignCenter().Text(text =>
+                    {
+                        text.DefaultTextStyle(TextStyle.Default.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor - 1f).Bold());
+                        text.Span($"Nº {_dados.Numero} SÉRIE {_dados.Serie:000} ");
+                        text.Span("FL: ");
+                        text.CurrentPageNumber();
+                        text.Span("/");
+                        text.TotalPages();
+                    });
+                }
+                else
+                {
+                    column.Item().AlignCenter().Text($"Nº {_dados.Numero}")
+                        .FontFamily(DanfeTheme.FontePadrao)
+                        .FontSize(DanfeTheme.TamanhoFonteValor)
+                        .Bold();
+
+                    column.Item().AlignCenter().Text($"SÉRIE {_dados.Serie:000}")
+                        .FontFamily(DanfeTheme.FontePadrao)
+                        .FontSize(DanfeTheme.TamanhoFonteValor)
+                        .Bold();
+
+                    column.Item().AlignCenter().Text(text =>
+                    {
+                        text.DefaultTextStyle(TextStyle.Default.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor));
+                        text.Span("FOLHA: ");
+                        text.CurrentPageNumber();
+                        text.Span("/");
+                        text.TotalPages();
+                    });
+                }
             });
     }
 }
 
 public static class DanfeBoxExtensions
 {
-    public static void DanfeBox(this IContainer container, DadosDanfe dados)
+    public static void DanfeBox(this IContainer container, DadosDanfe dados, bool isLandscape = false)
     {
-        container.Component(new DanfeBox(dados));
+        container.Component(new DanfeBox(dados, isLandscape));
     }
 }
