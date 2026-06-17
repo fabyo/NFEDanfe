@@ -112,6 +112,32 @@ DanfeGenerator.GenerateFromXmlContent(xmlContent, output);
 ```
 
 
+## Referência da API
+
+### Classe `DanfeGenerator` (Estática)
+Responsável por carregar o modelo de dados e gerar o arquivo PDF.
+
+| Método | Descrição |
+| --- | --- |
+| `GenerateFromXml(string xmlPath, Stream output, DanfeOptions? options = null)` | Gera o DANFE em PDF a partir do caminho de um arquivo XML. |
+| `GenerateFromXml(Stream xmlStream, Stream output, DanfeOptions? options = null)` | Gera o DANFE em PDF a partir de um Stream contendo o XML. |
+| `GenerateFromXmlContent(string xmlContent, Stream output, DanfeOptions? options = null)` | Gera o DANFE em PDF a partir de uma string contendo o conteúdo XML cru. |
+| `LoadFromXml(string xmlPath, DanfeOptions? options = null)` | Carrega e valida o modelo `DanfeModel` a partir do caminho de um arquivo XML. |
+| `LoadFromXml(Stream xmlStream, DanfeOptions? options = null)` | Carrega e valida o modelo `DanfeModel` a partir de um Stream contendo o XML. |
+| `LoadFromXmlContent(string xmlContent, DanfeOptions? options = null)` | Carrega e valida o modelo `DanfeModel` a partir de uma string contendo o conteúdo XML cru. |
+| `Generate(DanfeModel model, Stream output, DanfeOptions? options = null)` | Gera o DANFE em PDF a partir de um objeto `DanfeModel` previamente carregado. |
+
+### Classe `DanfeOptions`
+Configurações opcionais para a geração do documento.
+
+| Propriedade | Tipo | Descrição | Valor Padrão |
+| --- | --- | --- | --- |
+| `LogoBytes` | `byte[]?` | Vetor de bytes contendo o logotipo da empresa emitente (PNG ou JPEG). | `null` |
+| `ValidateBeforeGenerate` | `bool` | Se `true`, valida as regras de negócio e integridade da nota antes de gerar. | `true` |
+| `EmitFooter` | `bool` | Se `true`, exibe a informação de rodapé "NFEDanfe - impresso em...". | `true` |
+| `TipoImpressaoOverride` | `int?` | Sobrescreve a orientação definida no XML (`1` = Retrato, `2` = Paisagem). Se `null`, respeita o XML. | `null` |
+
+
 ## Instalação Como CLI
 
 Durante desenvolvimento:
@@ -205,7 +231,12 @@ Este projeto usa QuestPDF. Antes de usar em produção, valide o tipo de licenç
 No exemplo/CLI é usada a configuração:
 
 ```csharp
+// Requer o namespace 'QuestPDF.Infrastructure':
+using QuestPDF.Infrastructure;
 QuestPDF.Settings.License = LicenseType.Community;
+
+// Ou de forma totalmente qualificada (sem necessidade de using):
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 ```
 
 ## Empacotar
