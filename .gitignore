@@ -17,3 +17,6 @@ danfe_*.pdf
 # Backups gerados localmente
 *.7z
 *.zip
+
+# XMLs reais de NF-e (nunca commitar dados fiscais reais)
+samples/*.xml
