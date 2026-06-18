@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -43,8 +45,14 @@ public class DadosAdicionaisBox : IComponent
                             .FontSize(DanfeTheme.TamanhoFonteLabel)
                             .Bold();
 
+                        var infComplRaw = _dados.InformacoesComplementares ?? string.Empty;
+                        var infComplLines = infComplRaw.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .Where(x => !string.IsNullOrEmpty(x));
+                        var infComplFormatted = string.Join(Environment.NewLine, infComplLines);
+
                         c.Item().PaddingTop(2)
-                            .Text(_dados.InformacoesComplementares ?? string.Empty)
+                            .Text(infComplFormatted)
                             .FontFamily(DanfeTheme.FontePadrao)
                             .FontSize(DanfeTheme.TamanhoFonteSubtitulo);
                     });
@@ -62,8 +70,14 @@ public class DadosAdicionaisBox : IComponent
                             .FontSize(DanfeTheme.TamanhoFonteLabel)
                             .Bold();
 
+                        var infFiscoRaw = _dados.InformacoesFisco ?? string.Empty;
+                        var infFiscoLines = infFiscoRaw.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .Where(x => !string.IsNullOrEmpty(x));
+                        var infFiscoFormatted = string.Join(Environment.NewLine, infFiscoLines);
+
                         c.Item().PaddingTop(2)
-                            .Text(_dados.InformacoesFisco ?? string.Empty)
+                            .Text(infFiscoFormatted)
                             .FontFamily(DanfeTheme.FontePadrao)
                             .FontSize(DanfeTheme.TamanhoFonteSubtitulo);
                     });
