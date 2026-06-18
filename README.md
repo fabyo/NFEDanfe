@@ -4,6 +4,12 @@ Biblioteca .NET para gerar DANFE em PDF a partir de XML de NF-e autorizada.
 
 ![Logo](https://raw.githubusercontent.com/fabyo/NFEDanfe/main/logo-200.png)
 
+[![NuGet](https://img.shields.io/nuget/v/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
+
+[![Downloads](https://img.shields.io/nuget/dt/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
+
+[![License](https://img.shields.io/github/license/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
+
 O projeto tem dois formatos de uso:
 
 - `NFEDanfe`: biblioteca para integração em sistemas .NET, APIs, workers e ERPs.
