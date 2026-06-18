@@ -18,7 +18,7 @@ public static class DanfeTheme
     public const float TamanhoFonteValorDestaque = 9f;
     public const float TamanhoFonteTituloDanfe = 11f;
     public const float TamanhoFonteSubtitulo = 6f;
-    public const float TamanhoFonteChaveAcesso = 8f;
+    public const float TamanhoFonteChaveAcesso = 7f;
 
     public const float EspessuraBorda = 0.8f;
     public const float PaddingInternoHorizontal = 4f;

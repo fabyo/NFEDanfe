@@ -1,4 +1,5 @@
 using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using NFEDanfe.Domain.Formatting;
 using NFEDanfe.Domain.Models;
@@ -21,7 +22,12 @@ public class LocalEntregaBox : IComponent
     {
         container.Column(column =>
         {
-            column.Item().PaddingTop(6).PaddingBottom(2).Text("INFORMAÇÕES DO LOCAL DE ENTREGA")
+            column.Item().Background(Colors.Grey.Lighten3)
+                .Border(DanfeTheme.EspessuraBorda)
+                .BorderColor(DanfeTheme.CorBorda)
+                .PaddingLeft(4)
+                .PaddingVertical(1)
+                .Text("INFORMAÇÕES DO LOCAL DE ENTREGA")
                 .FontFamily(DanfeTheme.FontePadrao)
                 .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
                 .Bold();

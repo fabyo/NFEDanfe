@@ -22,7 +22,7 @@ public class EmitenteBox : IComponent
             .BorderTop(DanfeTheme.EspessuraBorda)
             .BorderBottom(DanfeTheme.EspessuraBorda)
             .BorderRight(DanfeTheme.EspessuraBorda)
-            .BorderLeft(_isLandscape ? 0 : DanfeTheme.EspessuraBorda)
+            .BorderLeft(DanfeTheme.EspessuraBorda)
             .BorderColor(DanfeTheme.CorBorda)
             .Padding(5)
             .Row(row =>

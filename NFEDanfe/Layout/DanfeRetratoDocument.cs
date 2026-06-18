@@ -100,7 +100,7 @@ public class DanfeRetratoDocument : IDocument
 
             if (_model.LocalEntrega != null)
             {
-                column.Item().ShowOnce().Element(x => x.LocalEntregaBox(_model.LocalEntrega));
+                column.Item().ShowOnce().PaddingTop(6).Element(x => x.LocalEntregaBox(_model.LocalEntrega));
             }
 
             if (_model.Cobranca != null)
@@ -167,7 +167,7 @@ public class DanfeRetratoDocument : IDocument
         {
             if (_model.DadosAdicionais != null)
             {
-                column.Item().PaddingBottom(4).Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
+                column.Item().PaddingTop(6).PaddingBottom(4).Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
             }
 
             if (_options.EmitFooter)

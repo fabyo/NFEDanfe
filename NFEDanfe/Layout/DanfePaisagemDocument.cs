@@ -83,7 +83,7 @@ public class DanfePaisagemDocument : IDocument
 
             column.Item().PaddingTop(2).Row(row =>
             {
-                row.RelativeItem(7).LabelValueCell("NATUREZA DA OPERAÇÃO", _model.DadosDanfe.NaturezaOperacao, true, top: false, left: false);
+                row.RelativeItem(7).LabelValueCell("NATUREZA DA OPERAÇÃO", _model.DadosDanfe.NaturezaOperacao, true, top: false);
 
                 string protocoloTexto = $"{_model.DadosDanfe.ProtocoloAutorizacao} - {_model.DadosDanfe.DataProtocolo:dd/MM/yyyy HH:mm:ss}";
                 row.RelativeItem(5).LabelValueCell("PROTOCOLO DE AUTORIZAÇÃO DE USO", protocoloTexto, true, top: false, left: false);
@@ -91,7 +91,7 @@ public class DanfePaisagemDocument : IDocument
 
             column.Item().Row(row =>
             {
-                row.RelativeItem(4).LabelValueCell("INSCRIÇÃO ESTADUAL", _model.Emitente.InscricaoEstadual, true, top: false, left: false);
+                row.RelativeItem(4).LabelValueCell("INSCRIÇÃO ESTADUAL", _model.Emitente.InscricaoEstadual, true, top: false);
                 row.RelativeItem(4).LabelValueCell("INSCRIÇÃO ESTADUAL DO SUBST. TRIBUT.", _model.Emitente.InscricaoEstadualSt ?? string.Empty, true, top: false, left: false);
                 row.RelativeItem(4).LabelValueCell("CNPJ", DocumentFormatter.CnpjCpf(_model.Emitente.Cnpj), true, top: false, left: false);
             });
@@ -174,7 +174,7 @@ public class DanfePaisagemDocument : IDocument
         {
             if (_model.DadosAdicionais != null)
             {
-                column.Item().PaddingBottom(4).Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
+                column.Item().PaddingTop(6).PaddingBottom(4).Element(x => x.DadosAdicionaisBox(_model.DadosAdicionais));
             }
 
             if (_options.EmitFooter)

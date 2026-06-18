@@ -36,7 +36,7 @@ public class ChaveAcessoBox : IComponent
                         .FontSize(DanfeTheme.TamanhoFonteLabel)
                         .FontColor(Colors.Grey.Darken2);
 
-                    c.Item().PaddingTop(_isLandscape ? 1 : 2).AlignCenter().Text(FormatarChaveAcesso(_dados.ChaveAcesso))
+                    c.Item().PaddingTop(_isLandscape ? 1 : 2).AlignCenter().ScaleToFit().Text(FormatarChaveAcesso(_dados.ChaveAcesso))
                         .FontFamily(DanfeTheme.FontePadrao)
                         .FontSize(_isLandscape ? DanfeTheme.TamanhoFonteChaveAcesso - 0.5f : DanfeTheme.TamanhoFonteChaveAcesso)
                         .Bold();
@@ -94,7 +94,7 @@ public class ChaveAcessoBox : IComponent
             grupos[i] = limpa.Substring(i * 4, 4);
         }
 
-        return string.Join(" ", grupos);
+        return string.Join("\u00A0", grupos);
     }
 }
 
