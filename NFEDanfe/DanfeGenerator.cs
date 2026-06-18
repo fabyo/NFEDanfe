@@ -10,13 +10,13 @@ public static class DanfeGenerator
 {
     public static DanfeModel LoadFromXml(string xmlPath, DanfeOptions? options = null)
     {
-        DanfeModel model = DanfeXmlParser.Parse(xmlPath);
+        DanfeModel model = DanfeXmlParser.Parse(xmlPath, options);
         return PrepareModel(model, options ?? DanfeOptions.Default);
     }
 
     public static DanfeModel LoadFromXml(Stream xmlStream, DanfeOptions? options = null)
     {
-        DanfeModel model = DanfeXmlParser.Parse(xmlStream);
+        DanfeModel model = DanfeXmlParser.Parse(xmlStream, options);
         return PrepareModel(model, options ?? DanfeOptions.Default);
     }
 

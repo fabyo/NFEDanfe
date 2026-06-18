@@ -9,7 +9,7 @@ public static class DanfeXmlParser
 {
     private static readonly XNamespace NfeNamespace = "http://www.portalfiscal.inf.br/nfe";
 
-    public static DanfeModel Parse(string xmlPath)
+    public static DanfeModel Parse(string xmlPath, DanfeOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(xmlPath))
         {
@@ -22,13 +22,13 @@ public static class DanfeXmlParser
         }
 
         using FileStream stream = File.OpenRead(xmlPath);
-        return Parse(stream);
+        return Parse(stream, options);
     }
 
-    public static DanfeModel Parse(Stream xmlStream)
+    public static DanfeModel Parse(Stream xmlStream, DanfeOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(xmlStream);
-        return ParseDocument(LoadSecure(xmlStream));
+        return ParseDocument(LoadSecure(xmlStream, options));
     }
 
     public static DanfeModel ParseXmlContent(string xmlContent)
@@ -85,7 +85,7 @@ public static class DanfeXmlParser
             localEntrega);
     }
 
-    private static XDocument LoadSecure(Stream xmlStream)
+    private static XDocument LoadSecure(Stream xmlStream, DanfeOptions? options)
     {
         XmlReaderSettings settings = new()
         {
@@ -95,8 +95,17 @@ public static class DanfeXmlParser
             MaxCharactersInDocument = 10_000_000
         };
 
-        using XmlReader reader = XmlReader.Create(xmlStream, settings);
-        return XDocument.Load(reader, LoadOptions.None);
+        if (options?.CustomXmlEncoding != null)
+        {
+            var streamReader = new StreamReader(xmlStream, options.CustomXmlEncoding, detectEncodingFromByteOrderMarks: true);
+            using XmlReader reader = XmlReader.Create(streamReader, settings);
+            return XDocument.Load(reader, LoadOptions.None);
+        }
+        else
+        {
+            using XmlReader reader = XmlReader.Create(xmlStream, settings);
+            return XDocument.Load(reader, LoadOptions.None);
+        }
     }
 
     private static XElement GetInfNFe(XDocument doc)

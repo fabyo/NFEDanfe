@@ -19,6 +19,7 @@ public sealed record DanfeOptions
     public bool EmitFooter { get; init; } = true;
     public DanfeFont Font { get; init; } = DanfeFont.Arial;
     public string? CustomFontName { get; init; }
+    public System.Text.Encoding? CustomXmlEncoding { get; init; }
 
     public string FontName => CustomFontName ?? Font switch
     {
