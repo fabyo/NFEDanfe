@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -48,13 +50,36 @@ public class DadosAdicionaisBox : IComponent
                         var infComplRaw = _dados.InformacoesComplementares ?? string.Empty;
                         var infComplLines = infComplRaw.Split(';', StringSplitOptions.RemoveEmptyEntries)
                             .Select(x => x.Trim())
-                            .Where(x => !string.IsNullOrEmpty(x));
-                        var infComplFormatted = string.Join(Environment.NewLine, infComplLines);
+                            .Where(x => !string.IsNullOrEmpty(x))
+                            .ToList();
+
+                        var emailRegex = new Regex(
+                            @"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+                            RegexOptions.Compiled);
 
                         c.Item().PaddingTop(2)
-                            .Text(infComplFormatted)
-                            .FontFamily(DanfeTheme.FontePadrao)
-                            .FontSize(DanfeTheme.TamanhoFonteSubtitulo);
+                            .Text(t =>
+                            {
+                                t.DefaultTextStyle(s => s
+                                    .FontFamily(DanfeTheme.FontePadrao)
+                                    .FontSize(DanfeTheme.TamanhoFonteSubtitulo));
+
+                                for (int li = 0; li < infComplLines.Count; li++)
+                                {
+                                    if (li > 0) t.Span("\n");
+                                    var linha = infComplLines[li];
+                                    var lastIdx = 0;
+                                    foreach (Match m in emailRegex.Matches(linha))
+                                    {
+                                        if (m.Index > lastIdx)
+                                            t.Span(linha.Substring(lastIdx, m.Index - lastIdx));
+                                        t.Span(m.Value).Bold();
+                                        lastIdx = m.Index + m.Length;
+                                    }
+                                    if (lastIdx < linha.Length)
+                                        t.Span(linha.Substring(lastIdx));
+                                }
+                            });
                     });
 
                 row.RelativeItem(4)
