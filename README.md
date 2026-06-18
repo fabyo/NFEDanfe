@@ -138,6 +138,7 @@ Configurações opcionais para a geração do documento.
 | `TipoImpressaoOverride` | `int?` | Sobrescreve a orientação definida no XML (`1` = Retrato, `2` = Paisagem). Se `null`, respeita o XML. | `null` |
 | `Font` | `DanfeFont` | Enum para escolher uma das fontes pré-configuradas (`Arial`, `Inter`, `Roboto`, `IbmPlexSans`). | `DanfeFont.Arial` |
 | `CustomFontName` | `string?` | Sobrescreve o enum para utilizar o nome de qualquer fonte do sistema ou registrada sob demanda. | `null` |
+| `CustomXmlEncoding` | `System.Text.Encoding?` | Força a leitura do XML com um Encoding específico (ex: `Encoding.UTF8`), ignorando o cabeçalho original. Apenas para métodos que recebem `Stream` ou path. | `null` |
 
 ### Customização de Fonte e Recomendações
 
