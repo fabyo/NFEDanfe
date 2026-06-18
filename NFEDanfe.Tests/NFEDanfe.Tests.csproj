@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <None Include="..\samples\*.xml" Link="samples\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="testdata\*.xml" Link="testdata\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

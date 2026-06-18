@@ -43,8 +43,7 @@ public sealed class ParserAndSnapshotTests
     [Fact]
     public void UserXml_decodes_special_characters_in_descriptions()
     {
-        string samplesDir = Path.GetDirectoryName(IntegrationTestHelpers.FindSampleXml())!;
-        string xmlPath = Path.Combine(samplesDir, "35260632409620000175550010000047611230599040-procNFe.xml");
+        string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-1-product-procNFe.xml");
 
         var model = DanfeXmlParser.Parse(xmlPath);
 
@@ -58,8 +57,7 @@ public sealed class ParserAndSnapshotTests
     [Fact]
     public void UserXml2_decodes_special_characters_in_descriptions()
     {
-        string samplesDir = Path.GetDirectoryName(IntegrationTestHelpers.FindSampleXml())!;
-        string xmlPath = Path.Combine(samplesDir, "35260632409620000175550010000047661421415064-procNFe.xml");
+        string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-2-products-procNFe.xml");
 
         var model = DanfeXmlParser.Parse(xmlPath);
 
