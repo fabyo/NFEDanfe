@@ -28,5 +28,17 @@ jobs:
       run: dotnet build NFEDanfe.slnx --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test NFEDanfe.slnx --configuration Release --no-build --verbosity normal
+      run: |
+        dotnet test NFEDanfe.Tests/NFEDanfe.Tests.csproj \
+          --configuration Release \
+          --no-build \
+          --verbosity detailed \
+          --logger "console;verbosity=detailed" \
+          --logger "trx;LogFileName=test-results.trx"
 
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: NFEDanfe.Tests/TestResults/test-results.trx
