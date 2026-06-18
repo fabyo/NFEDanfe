@@ -182,13 +182,19 @@ public static class DanfeXmlParser
             ValorIcms: total.Decimal(NfeNamespace, "vICMS"),
             BaseCalculoIcmsSt: total.Decimal(NfeNamespace, "vBCST"),
             ValorIcmsSt: total.Decimal(NfeNamespace, "vST"),
-            ValorFcp: total.Decimal(NfeNamespace, "vFCP"),
+            ValorFcp: total.NullableDecimal(NfeNamespace, "vFCP"),
             ValorProdutos: total.Decimal(NfeNamespace, "vProd"),
             ValorFrete: total.Decimal(NfeNamespace, "vFrete"),
             ValorSeguro: total.Decimal(NfeNamespace, "vSeg"),
             ValorDesconto: total.Decimal(NfeNamespace, "vDesc"),
             OutrasDespesas: total.Decimal(NfeNamespace, "vOutro"),
             ValorIpi: total.Decimal(NfeNamespace, "vIPI"),
+            ValorIcmsUfDest: total.Decimal(NfeNamespace, "vICMSUFDest"),
+            ValorTotTrib: total.Decimal(NfeNamespace, "vTotTrib"),
+            ValorIi: total.Decimal(NfeNamespace, "vII"),
+            ValorIcmsUfRemet: total.Decimal(NfeNamespace, "vICMSUFRemet"),
+            ValorPis: total.Decimal(NfeNamespace, "vPIS"),
+            ValorCofins: total.Decimal(NfeNamespace, "vCOFINS"),
             ValorNota: total.Decimal(NfeNamespace, "vNF"));
     }
 

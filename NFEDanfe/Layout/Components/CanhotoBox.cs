@@ -90,8 +90,9 @@ public class CanhotoBox : IComponent
                     .AlignCenter()
                     .Column(rightCol =>
                     {
+                        rightCol.Spacing(3);
                         rightCol.Item().AlignCenter().Text("NF-e").FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteTituloDanfe).Bold();
-                        rightCol.Item().AlignCenter().Text($"Nº {_dados.Numero}").FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor).Bold();
+                        rightCol.Item().AlignCenter().Text($"Nº {_dados.Numero.ToString("N0", DocumentFormatter.Brazil)}").FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor).Bold();
                         rightCol.Item().AlignCenter().Text($"Série {_dados.Serie:000}").FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor).Bold();
                     });
             });

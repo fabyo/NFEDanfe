@@ -1,13 +1,52 @@
 using System.Globalization;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace NFEDanfe.Domain.Parser;
 
 internal static class XmlValue
 {
+    private static readonly Regex NcrRegex = new(@"&?#([0-9]+);", RegexOptions.Compiled);
+    private static readonly Regex HexNcrRegex = new(@"&?#x([0-9a-fA-F]+);", RegexOptions.Compiled);
+
     public static string Text(this XElement? element, XNamespace ns, string name, string fallback = "")
     {
-        return element?.Element(ns + name)?.Value?.Trim() ?? fallback;
+        string val = element?.Element(ns + name)?.Value?.Trim() ?? fallback;
+        return DecodeText(val);
+    }
+
+    private static string DecodeText(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        // Decode standard HTML entities first (handles &amp;, &quot;, &lt;, &gt;, &#216;, etc.)
+        string decoded = WebUtility.HtmlDecode(input);
+
+        // Decode any remaining NCRs that might be missing the leading '&'
+        decoded = NcrRegex.Replace(decoded, match =>
+        {
+            if (int.TryParse(match.Groups[1].Value, out int code))
+            {
+                return ((char)code).ToString();
+            }
+            return match.Value;
+        });
+
+        decoded = HexNcrRegex.Replace(decoded, match =>
+        {
+            try
+            {
+                int code = Convert.ToInt32(match.Groups[1].Value, 16);
+                return ((char)code).ToString();
+            }
+            catch
+            {
+                return match.Value;
+            }
+        });
+
+        return decoded;
     }
 
     public static decimal Decimal(this XElement? element, XNamespace ns, string name, decimal fallback = 0)

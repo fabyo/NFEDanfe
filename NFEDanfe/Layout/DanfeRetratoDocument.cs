@@ -30,6 +30,7 @@ public class DanfeRetratoDocument : IDocument
     public void Compose(IDocumentContainer container)
     {
         DanfeTheme.PaddingInternoVertical = 1.8f;
+        DanfeTheme.FontePadrao = _options.FontName;
         try
         {
             container.Page(page =>
@@ -130,11 +131,19 @@ public class DanfeRetratoDocument : IDocument
                 {
                     target -= 8;
                 }
-                if (_model.Transportador != null && !string.IsNullOrWhiteSpace(_model.Transportador.RazaoSocial))
+                if (_model.Transportador != null)
                 {
                     target -= 6;
                 }
-                column.Item().ExtendVertical().PaddingTop(6).Element(x => x.ProdutosBox(_model.Produtos, false, target));
+                if (_model.Cobranca != null)
+                {
+                    target -= 6;
+                }
+                if (_model.DadosAdicionais != null)
+                {
+                    target -= 10;
+                }
+                column.Item().ExtendVertical().Element(x => x.ProdutosBox(_model.Produtos, false, target));
             }
         });
     }

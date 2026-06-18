@@ -1,5 +1,6 @@
 using NFEDanfe.Domain.Models;
 using QuestPDF.Infrastructure;
+using QuestPDF.Drawing;
 
 namespace NFEDanfe.Cli;
 
@@ -11,6 +12,30 @@ internal static class Program
     private static int Main(string[] args)
     {
         QuestPDF.Settings.License = LicenseType.Community;
+
+        // Registrar fontes customizadas se a pasta existir
+        string fontsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fonts");
+        if (!Directory.Exists(fontsPath))
+        {
+            fontsPath = Path.Combine(Directory.GetCurrentDirectory(), "fonts");
+        }
+
+        if (Directory.Exists(fontsPath))
+        {
+            foreach (string file in Directory.GetFiles(fontsPath, "*.ttf"))
+            {
+                try
+                {
+                    using var stream = File.OpenRead(file);
+                    FontManager.RegisterFont(stream);
+                    Console.WriteLine($"[FONTE] Registrada com sucesso: {Path.GetFileName(file)}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[AVISO] Falha ao registrar fonte {Path.GetFileName(file)}: {ex.Message}");
+                }
+            }
+        }
 
         Console.WriteLine("NFEDanfe - Gerador de DANFE em PDF");
         Console.WriteLine("-----------------------------------");
@@ -46,19 +71,55 @@ internal static class Program
         try
         {
             string resolvedXmlPath = ResolveInputPath(xmlPath);
-            string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}.pdf";
-            string outputPath = Path.Combine(options.OutputDirectory, outputName);
+            int count = 0;
 
-            using FileStream output = File.Create(outputPath);
-            DanfeGenerator.GenerateFromXml(resolvedXmlPath, output, CreateDanfeOptions(options));
-
-            if (options.GenerateSnapshot)
+            // Gerar PDF padrão (sem sufixo)
             {
-                WriteSnapshot(resolvedXmlPath, outputPath, options);
+                string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}.pdf";
+                string outputPath = Path.Combine(options.OutputDirectory, outputName);
+
+                using (FileStream output = File.Create(outputPath))
+                {
+                    DanfeGenerator.GenerateFromXml(resolvedXmlPath, output, CreateDanfeOptions(options));
+                }
+
+                if (options.GenerateSnapshot)
+                {
+                    WriteSnapshot(resolvedXmlPath, outputPath, options);
+                }
+
+                int pageCount = GetPdfPageCount(outputPath);
+                Console.WriteLine($"[OK] {Path.GetFileName(resolvedXmlPath)} -> {outputPath} ({pageCount} página(s))");
+                count++;
             }
 
-            Console.WriteLine($"[OK] {Path.GetFileName(resolvedXmlPath)} -> {outputPath}");
-            return 1;
+            // Gerar PDFs de demonstração para cada fonte disponível
+            var fontesExibicao = new[]
+            {
+                (Font: DanfeFont.Arial, Suffix: "_arial"),
+                (Font: DanfeFont.Inter, Suffix: "_inter"),
+                (Font: DanfeFont.Roboto, Suffix: "_roboto"),
+                (Font: DanfeFont.IbmPlexSans, Suffix: "_ibm_plex_sans")
+            };
+
+            foreach (var (font, suffix) in fontesExibicao)
+            {
+                string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}{suffix}.pdf";
+                string outputPath = Path.Combine(options.OutputDirectory, outputName);
+
+                DanfeOptions danfeOptions = CreateDanfeOptions(options) with { Font = font };
+
+                using (FileStream output = File.Create(outputPath))
+                {
+                    DanfeGenerator.GenerateFromXml(resolvedXmlPath, output, danfeOptions);
+                }
+
+                int pageCount = GetPdfPageCount(outputPath);
+                Console.WriteLine($"[OK] {Path.GetFileName(resolvedXmlPath)} ({font}) -> {outputPath} ({pageCount} página(s))");
+                count++;
+            }
+
+            return count;
         }
         catch (Exception ex)
         {
@@ -189,10 +250,24 @@ internal static class Program
                     yield return xmlTestDir;
                 }
 
+                string samplesDir = Path.Combine(dir.FullName, "samples");
+                if (Directory.Exists(samplesDir) && emitted.Add(samplesDir))
+                {
+                    yield return samplesDir;
+                }
+
                 dir = dir.Parent;
             }
         }
     }
+
+    private static int GetPdfPageCount(string path)
+    {
+        byte[] bytes = File.ReadAllBytes(path);
+        string text = System.Text.Encoding.Latin1.GetString(bytes);
+        return System.Text.RegularExpressions.Regex.Matches(text, @"/Type\s*/Page\b").Count;
+    }
+
 
     private sealed record CliOptions(
         IReadOnlyList<string> XmlPaths,

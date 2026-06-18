@@ -136,6 +136,35 @@ Configurações opcionais para a geração do documento.
 | `ValidateBeforeGenerate` | `bool` | Se `true`, valida as regras de negócio e integridade da nota antes de gerar. | `true` |
 | `EmitFooter` | `bool` | Se `true`, exibe a informação de rodapé "NFEDanfe - impresso em...". | `true` |
 | `TipoImpressaoOverride` | `int?` | Sobrescreve a orientação definida no XML (`1` = Retrato, `2` = Paisagem). Se `null`, respeita o XML. | `null` |
+| `Font` | `DanfeFont` | Enum para escolher uma das fontes pré-configuradas (`Arial`, `Inter`, `Roboto`, `IbmPlexSans`). | `DanfeFont.Arial` |
+| `CustomFontName` | `string?` | Sobrescreve o enum para utilizar o nome de qualquer fonte do sistema ou registrada sob demanda. | `null` |
+
+### Customização de Fonte e Recomendações
+
+Você pode escolher a fonte tipográfica utilizada para a renderização do DANFE passando a configuração via `DanfeOptions`:
+
+```csharp
+var options = new DanfeOptions
+{
+    Font = DanfeFont.Inter // Opções: Arial, Inter, Roboto, IbmPlexSans
+};
+```
+
+Caso queira usar uma fonte específica instalada no sistema operacional ou previamente registrada no QuestPDF, use a propriedade `CustomFontName`:
+
+```csharp
+var options = new DanfeOptions
+{
+    CustomFontName = "Liberation Sans"
+};
+```
+
+> [!WARNING]
+> **Recomendação Legal (MOC/SEFAZ)**:
+> O Manual de Orientação do Contribuinte (MOC) da Nota Fiscal Eletrônica (NF-e) estabelece que a fonte padrão recomendada para a impressão do DANFE é a **Arial** (ou Courier/Times New Roman em caso de impressão de caracteres).
+>
+> Manter a fonte padrão **Arial** (que é o padrão `DanfeFont.Arial` configurado por omissão) garante total conformidade legal e visual com o layout padrão homologado junto à SEFAZ, evitando riscos de descaracterização em auditorias ou quebras de texto indesejadas. Utilize fontes alternativas como `Inter`, `Roboto` ou `IBM Plex Sans` sob sua própria responsabilidade ou para fins não-fiscais.
+
 
 
 ## Instalação Como CLI

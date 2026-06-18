@@ -4,7 +4,14 @@ namespace NFEDanfe.Layout.Configuration;
 
 public static class DanfeTheme
 {
-    public const string FontePadrao = Fonts.Arial;
+    [System.ThreadStatic]
+    private static string? _fontePadrao;
+
+    public static string FontePadrao
+    {
+        get => _fontePadrao ?? Fonts.Arial;
+        set => _fontePadrao = value;
+    }
 
     public const float TamanhoFonteLabel = 5f;
     public const float TamanhoFonteValor = 8f;

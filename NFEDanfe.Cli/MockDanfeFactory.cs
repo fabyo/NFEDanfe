@@ -59,6 +59,12 @@ internal static class MockDanfeFactory
             ValorDesconto: 0,
             OutrasDespesas: 0,
             ValorIpi: 0,
+            ValorIcmsUfDest: 0,
+            ValorTotTrib: 0,
+            ValorIi: 0,
+            ValorIcmsUfRemet: 0,
+            ValorPis: 0,
+            ValorCofins: 0,
             ValorNota: 9408.00m);
 
         TransportadorModel transportador = new(

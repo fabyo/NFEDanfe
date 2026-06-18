@@ -41,6 +41,93 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void UserXml_decodes_special_characters_in_descriptions()
+    {
+        string samplesDir = Path.GetDirectoryName(IntegrationTestHelpers.FindSampleXml())!;
+        string xmlPath = Path.Combine(samplesDir, "35260632409620000175550010000047611230599040-procNFe.xml");
+
+        var model = DanfeXmlParser.Parse(xmlPath);
+
+        Assert.NotNull(model.Produtos);
+        Assert.NotEmpty(model.Produtos);
+        Assert.NotNull(model.Produtos[0].Descricao);
+        Assert.Contains("Ø", model.Produtos[0].Descricao);
+        Assert.Equal("TUBO ACO DIN EN 10305-2 E195+A-Ø12+0,08x1,50+-0,15X44+0,5", model.Produtos[0].Descricao);
+    }
+
+    [Fact]
+    public void UserXml2_decodes_special_characters_in_descriptions()
+    {
+        string samplesDir = Path.GetDirectoryName(IntegrationTestHelpers.FindSampleXml())!;
+        string xmlPath = Path.Combine(samplesDir, "35260632409620000175550010000047661421415064-procNFe.xml");
+
+        var model = DanfeXmlParser.Parse(xmlPath);
+
+        Assert.NotNull(model.Produtos);
+        Assert.Equal(2, model.Produtos.Count);
+        Assert.NotNull(model.Produtos[1].Descricao);
+        Assert.Contains("Ø", model.Produtos[1].Descricao);
+        Assert.Equal("TUBO ACO TREFILADO S/C DIN 2391 SAE 1045 Ø26,60X16,00X 3 A 7M", model.Produtos[1].Descricao);
+    }
+
+    [Fact]
+    public void FcpParsing_HandlesNullEmptyAndValue()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        
+        // 1. Tag present with 0.00
+        var modelOriginal = DanfeXmlParser.Parse(xmlPath);
+        Assert.Equal(0.00m, modelOriginal.Impostos!.ValorFcp);
+
+        // 2. Empty tag
+        System.Xml.Linq.XDocument docEmpty = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        var vFcpEmpty = docEmpty.Descendants(ns + "vFCP").FirstOrDefault();
+        Assert.NotNull(vFcpEmpty);
+        vFcpEmpty.Value = "";
+        
+        var modelEmpty = DanfeXmlParser.ParseDocument(docEmpty);
+        Assert.Null(modelEmpty.Impostos!.ValorFcp);
+
+        // 3. Absent tag
+        System.Xml.Linq.XDocument docAbsent = System.Xml.Linq.XDocument.Load(xmlPath);
+        var vFcpAbsent = docAbsent.Descendants(ns + "vFCP").FirstOrDefault();
+        Assert.NotNull(vFcpAbsent);
+        vFcpAbsent.Remove();
+
+        var modelAbsent = DanfeXmlParser.ParseDocument(docAbsent);
+        Assert.Null(modelAbsent.Impostos!.ValorFcp);
+    }
+
+    [Fact]
+    public void FontName_FromOptions_IsRespectedDuringComposition()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        var model = DanfeXmlParser.Parse(xmlPath);
+        
+        using var stream = new MemoryStream();
+        var options = new DanfeOptions { CustomFontName = "MyCustomFontFamilyName" };
+        
+        DanfeGenerator.Generate(model, stream, options);
+        
+        Assert.True(stream.Length > 0);
+    }
+
+    [Fact]
+    public void FontEnum_FromOptions_IsRespectedDuringComposition()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        var model = DanfeXmlParser.Parse(xmlPath);
+        
+        using var stream = new MemoryStream();
+        var options = new DanfeOptions { Font = DanfeFont.Inter };
+        
+        DanfeGenerator.Generate(model, stream, options);
+        
+        Assert.True(stream.Length > 0);
+    }
+
+    [Fact]
     public void Snapshot_includes_critical_fields()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();

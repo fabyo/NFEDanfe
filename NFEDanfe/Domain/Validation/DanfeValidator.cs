@@ -110,6 +110,9 @@ public static class DanfeValidator
         ValidateNonNegative(impostos.ValorDesconto, "O valor do desconto não pode ser negativo.");
         ValidateNonNegative(impostos.OutrasDespesas, "O valor de outras despesas não pode ser negativo.");
         ValidateNonNegative(impostos.ValorIpi, "O valor do IPI não pode ser negativo.");
+        ValidateNonNegative(impostos.ValorIcmsUfDest, "O valor do ICMS UF Destino não pode ser negativo.");
+        ValidateNonNegative(impostos.ValorTotTrib, "O valor total aproximado dos tributos não pode ser negativo.");
+        ValidateNonNegative(impostos.ValorIcmsUfRemet, "O valor do ICMS UF Remetente não pode ser negativo.");
         ValidateNonNegative(impostos.ValorNota, "O valor total da nota não pode ser negativo.");
     }
 

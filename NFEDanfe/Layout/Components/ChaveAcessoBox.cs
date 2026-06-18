@@ -25,25 +25,25 @@ public class ChaveAcessoBox : IComponent
             .Border(DanfeTheme.EspessuraBorda)
             .BorderColor(DanfeTheme.CorBorda)
             .PaddingVertical(_isLandscape ? 2 : 3)
-            .PaddingHorizontal(4)
             .Column(column =>
             {
                 column.Item().Height(_isLandscape ? 22 : 28).Element(ComposeBarcode);
 
-                column.Item().PaddingTop(_isLandscape ? 3 : 6).Column(c =>
+                column.Item().PaddingTop(_isLandscape ? 3 : 6).PaddingHorizontal(4).Column(c =>
                 {
                     c.Item().Text("CHAVE DE ACESSO")
                         .FontFamily(DanfeTheme.FontePadrao)
-                        .FontSize(DanfeTheme.TamanhoFonteLabel);
+                        .FontSize(DanfeTheme.TamanhoFonteLabel)
+                        .FontColor(Colors.Grey.Darken2);
 
-                    c.Item().Text(FormatarChaveAcesso(_dados.ChaveAcesso))
+                    c.Item().PaddingTop(_isLandscape ? 1 : 2).AlignCenter().Text(FormatarChaveAcesso(_dados.ChaveAcesso))
                         .FontFamily(DanfeTheme.FontePadrao)
                         .FontSize(_isLandscape ? DanfeTheme.TamanhoFonteChaveAcesso - 0.5f : DanfeTheme.TamanhoFonteChaveAcesso)
                         .Bold();
                 });
 
                 column.Item().PaddingTop(_isLandscape ? 2 : 4).LineHorizontal(0.5f).LineColor(DanfeTheme.CorBorda);
-                column.Item().PaddingTop(_isLandscape ? 1 : 2).Text("Consulta de autenticidade no portal nacional da NF-e\nwww.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora")
+                column.Item().PaddingTop(_isLandscape ? 1 : 2).PaddingHorizontal(4).Text("Consulta de autenticidade no portal nacional da NF-e\nwww.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora")
                     .FontFamily(DanfeTheme.FontePadrao)
                     .FontSize(_isLandscape ? DanfeTheme.TamanhoFonteSubtitulo - 0.5f : DanfeTheme.TamanhoFonteSubtitulo)
                     .AlignCenter()
@@ -58,7 +58,7 @@ public class ChaveAcessoBox : IComponent
             string chaveLimpa = Regex.Replace(_dados.ChaveAcesso, @"[^\d]", "");
             IReadOnlyList<BarcodeBar> bars = BarcodeEncoders.Code128.EncodeCode128(chaveLimpa);
 
-            container.PaddingHorizontal(10).Row(row =>
+            container.PaddingHorizontal(14).Row(row =>
             {
                 foreach (BarcodeBar bar in bars)
                 {

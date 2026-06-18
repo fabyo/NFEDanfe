@@ -13,3 +13,7 @@ artifacts/
 
 # PDFs gerados localmente pelo console
 danfe_*.pdf
+
+# Backups gerados localmente
+*.7z
+*.zip

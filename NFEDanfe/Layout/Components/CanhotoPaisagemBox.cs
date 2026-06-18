@@ -36,8 +36,9 @@ public class CanhotoPaisagemBox : IComponent
                 .Padding(2)
                 .Column(c =>
                 {
+                    c.Spacing(1);
                     c.Item().AlignCenter().Text("NF-e").FontFamily(DanfeTheme.FontePadrao).FontSize(6f).Bold();
-                    c.Item().AlignCenter().Text($"Nº {_dados.Numero}").FontFamily(DanfeTheme.FontePadrao).FontSize(4.5f).Bold();
+                    c.Item().AlignCenter().Text($"Nº {_dados.Numero.ToString("N0", DocumentFormatter.Brazil)}").FontFamily(DanfeTheme.FontePadrao).FontSize(4.5f).Bold();
                     c.Item().AlignCenter().Text($"Série {_dados.Serie:000}").FontFamily(DanfeTheme.FontePadrao).FontSize(4f);
                 });
 

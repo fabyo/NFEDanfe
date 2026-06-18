@@ -74,7 +74,6 @@ public class ProdutosBox : IComponent
                     }
                 });
 
-                table.ExtendLastCellsToTableBottom();
 
                 table.Header(header =>
                 {
@@ -114,72 +113,21 @@ public class ProdutosBox : IComponent
                     Data(table.Cell(), FormatPercentage(prod.AliquotaIpi), alignRight: true);
                 }
 
-                int totalLinhas = CalcularTotalLinhas();
-                int extraLines = totalLinhas - _produtos.Count;
-                int adjustedTargetRows = Math.Max(_produtos.Count, _targetRows - extraLines);
-
-                if (_produtos.Count < adjustedTargetRows)
-                {
-                    for (int i = _produtos.Count; i < adjustedTargetRows; i++)
-                    {
-                        Data(table.Cell(), " ", isFirst: true, drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                        Data(table.Cell(), " ", drawHorizontalBorder: false);
-                    }
-                }
             });
     }
 
-    private int CalcularTotalLinhas()
-    {
-        int total = 0;
-        int charsPerLine = _isLandscape ? 83 : 47;
-
-        foreach (var prod in _produtos)
-        {
-            if (string.IsNullOrEmpty(prod.Descricao))
-            {
-                total += 1;
-                continue;
-            }
-
-            string[] partes = prod.Descricao.Split('\n');
-            int linhasDesc = 0;
-            foreach (var parte in partes)
-            {
-                int length = parte.Trim('\r').Length;
-                int wraps = (int)Math.Ceiling((double)length / charsPerLine);
-                linhasDesc += Math.Max(1, wraps);
-            }
-            total += linhasDesc;
-        }
-
-        return total;
-    }
 
     private static void Header(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false)
     {
         Cell(container, text, isHeader: true, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter, drawHorizontalBorder: true);
     }
 
-    private static void Data(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false, bool drawHorizontalBorder = true)
+    private static void Data(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false, bool drawHorizontalBorder = true, bool drawVerticalBorder = true)
     {
-        Cell(container, text, isHeader: false, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter, drawHorizontalBorder: drawHorizontalBorder);
+        Cell(container, text, isHeader: false, isFirstColumn: isFirst, alignRight: alignRight, alignCenter: alignCenter, drawHorizontalBorder: drawHorizontalBorder, drawVerticalBorder: drawVerticalBorder);
     }
 
-    private static void Cell(IContainer container, string text, bool isHeader, bool isFirstColumn, bool alignRight = false, bool alignCenter = false, bool drawHorizontalBorder = true)
+    private static void Cell(IContainer container, string text, bool isHeader, bool isFirstColumn, bool alignRight = false, bool alignCenter = false, bool drawHorizontalBorder = true, bool drawVerticalBorder = true)
     {
         container.Layers(layers =>
         {
@@ -224,7 +172,10 @@ public class ProdutosBox : IComponent
                 {
                     layers.Layer().AlignBottom().ExtendHorizontal().LineHorizontal(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
                 }
-                layers.Layer().AlignRight().ExtendVertical().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+                if (drawVerticalBorder)
+                {
+                    layers.Layer().AlignRight().ExtendVertical().LineVertical(InternalGridThickness).LineColor(Colors.Grey.Lighten1).LineDashPattern(DashedGridPattern);
+                }
             }
         });
     }

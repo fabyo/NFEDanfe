@@ -1,6 +1,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using NFEDanfe.Domain.Models;
+using NFEDanfe.Domain.Formatting;
 using NFEDanfe.Layout.Configuration;
 
 namespace NFEDanfe.Layout.Components;
@@ -65,7 +66,7 @@ public class DanfeBox : IComponent
                     column.Item().AlignCenter().Text(text =>
                     {
                         text.DefaultTextStyle(TextStyle.Default.FontFamily(DanfeTheme.FontePadrao).FontSize(DanfeTheme.TamanhoFonteValor - 1f).Bold());
-                        text.Span($"Nº {_dados.Numero} SÉRIE {_dados.Serie:000} ");
+                        text.Span($"Nº {_dados.Numero.ToString("N0", DocumentFormatter.Brazil)} SÉRIE {_dados.Serie:000} ");
                         text.Span("FL: ");
                         text.CurrentPageNumber();
                         text.Span("/");
@@ -74,7 +75,7 @@ public class DanfeBox : IComponent
                 }
                 else
                 {
-                    column.Item().AlignCenter().Text($"Nº {_dados.Numero}")
+                    column.Item().AlignCenter().Text($"Nº {_dados.Numero.ToString("N0", DocumentFormatter.Brazil)}")
                         .FontFamily(DanfeTheme.FontePadrao)
                         .FontSize(DanfeTheme.TamanhoFonteValor)
                         .Bold();

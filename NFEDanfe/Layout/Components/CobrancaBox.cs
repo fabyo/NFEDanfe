@@ -30,28 +30,35 @@ public class CobrancaBox : IComponent
                 .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
                 .Bold();
 
-            if (_cobranca.NumeroFatura != null || _cobranca.ValorOriginal.HasValue)
-            {
-                column.Item().Row(row =>
-                {
-                    row.RelativeItem(3).LabelValueCell("NÚMERO DA FATURA", _cobranca.NumeroFatura ?? string.Empty, true, top: false);
-                    row.RelativeItem(3).LabelValueCell("VALOR ORIGINAL", FormatMoney(_cobranca.ValorOriginal), true, top: false, left: false, alignRightValue: true);
-                    row.RelativeItem(3).LabelValueCell("VALOR DESCONTO", FormatMoney(_cobranca.ValorDesconto), true, top: false, left: false, alignRightValue: true);
-                    row.RelativeItem(3).LabelValueCell("VALOR LÍQUIDO", FormatMoney(_cobranca.ValorLiquido), true, top: false, left: false, alignRightValue: true);
-                });
-            }
-
             if (_cobranca.Duplicatas.Any())
             {
-                column.Item().PaddingTop(4).Inlined(inlined =>
-                {
-                    inlined.Spacing(4);
+                column.Item()
+                    .BorderLeft(DanfeTheme.EspessuraBorda)
+                    .BorderRight(DanfeTheme.EspessuraBorda)
+                    .BorderBottom(DanfeTheme.EspessuraBorda)
+                    .BorderColor(DanfeTheme.CorBorda)
+                    .Padding(4)
+                    .Inlined(inlined =>
+                    {
+                        inlined.Spacing(4);
 
                     foreach (DuplicataModel dup in _cobranca.Duplicatas)
                     {
                         inlined.Item().Element(x => ComposeDuplicataCard(x, dup));
                     }
-                });
+        });
+            }
+            else
+            {
+                column.Item()
+                    .BorderLeft(DanfeTheme.EspessuraBorda)
+                    .BorderRight(DanfeTheme.EspessuraBorda)
+                    .BorderBottom(DanfeTheme.EspessuraBorda)
+                    .BorderColor(DanfeTheme.CorBorda)
+                    .Padding(4)
+                    .Text("Sem duplicatas informadas")
+                    .FontFamily(DanfeTheme.FontePadrao)
+                    .FontSize(DanfeTheme.TamanhoFonteLabel);
             }
         });
     }
@@ -88,10 +95,6 @@ public class CobrancaBox : IComponent
         });
     }
 
-    private static string FormatMoney(decimal? value)
-    {
-        return value.HasValue ? $"R$ {DocumentFormatter.Money(value.Value)}" : string.Empty;
-    }
 }
 
 public static class CobrancaBoxExtensions
