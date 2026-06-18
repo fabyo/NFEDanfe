@@ -60,7 +60,7 @@ internal static class MockDanfeFactory
             OutrasDespesas: 0,
             ValorIpi: 0,
             ValorIcmsUfDest: 0,
-            ValorTotTrib: 0,
+            ValorTotTrib: 124.50m,
             ValorIi: 0,
             ValorIcmsUfRemet: 0,
             ValorPis: 0,

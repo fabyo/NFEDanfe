@@ -23,12 +23,30 @@ public class ImpostosBox : IComponent
             column.Item().Background(Colors.Grey.Lighten3)
                 .Border(DanfeTheme.EspessuraBorda)
                 .BorderColor(DanfeTheme.CorBorda)
-                .PaddingLeft(4)
+                .PaddingHorizontal(4)
                 .PaddingVertical(1)
-                .Text("CÁLCULO DO IMPOSTO")
-                .FontFamily(DanfeTheme.FontePadrao)
-                .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
-                .Bold();
+                .Row(row =>
+                {
+                    row.RelativeItem().Text("CÁLCULO DO IMPOSTO")
+                        .FontFamily(DanfeTheme.FontePadrao)
+                        .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
+                        .Bold();
+
+                    if (_impostos.ValorTotTrib > 0)
+                    {
+                        row.AutoItem().Text(text =>
+                        {
+                            text.Span("TOTAL DE IMPOSTOS: ")
+                                .FontFamily(DanfeTheme.FontePadrao)
+                                .FontSize(DanfeTheme.TamanhoFonteLabel + 1f);
+
+                            text.Span(DocumentFormatter.Money(_impostos.ValorTotTrib))
+                                .FontFamily(DanfeTheme.FontePadrao)
+                                .FontSize(DanfeTheme.TamanhoFonteLabel + 1f)
+                                .Bold();
+                        });
+                    }
+                });
 
             column.Item().Row(row =>
             {
