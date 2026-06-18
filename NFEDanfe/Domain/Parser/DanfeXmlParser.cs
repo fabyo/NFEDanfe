@@ -190,24 +190,34 @@ public static class DanfeXmlParser
 
     private static ImpostosModel ParseImpostos(XElement total)
     {
+        decimal vICMS = total.Decimal(NfeNamespace, "vICMS");
+        decimal vST = total.Decimal(NfeNamespace, "vST");
+        decimal vIPI = total.Decimal(NfeNamespace, "vIPI");
+        decimal vPIS = total.Decimal(NfeNamespace, "vPIS");
+        decimal vCOFINS = total.Decimal(NfeNamespace, "vCOFINS");
+        decimal vII = total.Decimal(NfeNamespace, "vII");
+        decimal? vFCP = total.NullableDecimal(NfeNamespace, "vFCP");
+
+        decimal valorTotTrib = vICMS + vST + vIPI + vPIS + vCOFINS + vII + (vFCP ?? 0m);
+
         return new ImpostosModel(
             BaseCalculoIcms: total.Decimal(NfeNamespace, "vBC"),
-            ValorIcms: total.Decimal(NfeNamespace, "vICMS"),
+            ValorIcms: vICMS,
             BaseCalculoIcmsSt: total.Decimal(NfeNamespace, "vBCST"),
-            ValorIcmsSt: total.Decimal(NfeNamespace, "vST"),
-            ValorFcp: total.NullableDecimal(NfeNamespace, "vFCP"),
+            ValorIcmsSt: vST,
+            ValorFcp: vFCP,
             ValorProdutos: total.Decimal(NfeNamespace, "vProd"),
             ValorFrete: total.Decimal(NfeNamespace, "vFrete"),
             ValorSeguro: total.Decimal(NfeNamespace, "vSeg"),
             ValorDesconto: total.Decimal(NfeNamespace, "vDesc"),
             OutrasDespesas: total.Decimal(NfeNamespace, "vOutro"),
-            ValorIpi: total.Decimal(NfeNamespace, "vIPI"),
+            ValorIpi: vIPI,
             ValorIcmsUfDest: total.Decimal(NfeNamespace, "vICMSUFDest"),
-            ValorTotTrib: total.Decimal(NfeNamespace, "vTotTrib"),
-            ValorIi: total.Decimal(NfeNamespace, "vII"),
+            ValorTotTrib: valorTotTrib,
+            ValorIi: vII,
             ValorIcmsUfRemet: total.Decimal(NfeNamespace, "vICMSUFRemet"),
-            ValorPis: total.Decimal(NfeNamespace, "vPIS"),
-            ValorCofins: total.Decimal(NfeNamespace, "vCOFINS"),
+            ValorPis: vPIS,
+            ValorCofins: vCOFINS,
             ValorNota: total.Decimal(NfeNamespace, "vNF"));
     }
 
