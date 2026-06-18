@@ -47,6 +47,19 @@ public class DanfeRetratoDocument : IDocument
                 {
                     page.Footer().Element(ComposeFooter);
                 }
+
+                if (_model.DadosDanfe.IsCancelada)
+                {
+                    page.Foreground()
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .OffsetY(100)
+                        .Rotate(-45)
+                        .Text("NOTA FISCAL CANCELADA")
+                        .FontSize(60)
+                        .FontColor("#80FF0000") // Red with 50% opacity
+                        .Bold();
+                }
             });
         }
         finally

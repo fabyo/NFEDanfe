@@ -85,6 +85,14 @@ public static class DanfeGenerator
             };
         }
 
+        if (options.CanceledOverride.HasValue)
+        {
+            prepared = prepared with
+            {
+                DadosDanfe = prepared.DadosDanfe with { IsCancelada = options.CanceledOverride.Value }
+            };
+        }
+
         if (options.ValidateBeforeGenerate)
         {
             DanfeValidator.Validate(prepared);

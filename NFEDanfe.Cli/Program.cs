@@ -166,7 +166,8 @@ internal static class Program
             LogoBytes = ObterLogoBytes(options),
             ValidateBeforeGenerate = true,
             EmitFooter = true,
-            TipoImpressaoOverride = options.Landscape ? 2 : null
+            TipoImpressaoOverride = options.Landscape ? 2 : null,
+            CanceledOverride = options.Cancelado ? true : null
         };
     }
 
@@ -276,7 +277,8 @@ internal static class Program
         string? LogoPath,
         bool GenerateMock,
         bool GenerateSnapshot,
-        bool Landscape)
+        bool Landscape,
+        bool Cancelado)
     {
         public bool HasLogo => IncludeLogo || !string.IsNullOrWhiteSpace(LogoPath);
 
@@ -289,6 +291,7 @@ internal static class Program
             bool generateMock = false;
             bool generateSnapshot = false;
             bool landscape = false;
+            bool cancelado = false;
 
             for (int i = 0; i < args.Count; i++)
             {
@@ -301,6 +304,10 @@ internal static class Program
                 else if (arg is "--landscape" or "-p" or "--paisagem")
                 {
                     landscape = true;
+                }
+                else if (arg is "--cancelado" or "-c")
+                {
+                    cancelado = true;
                 }
                 else if (arg is "--logo-path")
                 {
@@ -334,7 +341,7 @@ internal static class Program
                 }
             }
 
-            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape);
+            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape, cancelado);
         }
     }
 }

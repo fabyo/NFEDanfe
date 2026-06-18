@@ -132,6 +132,9 @@ public static class DanfeXmlParser
             ?.Element(NfeNamespace + "protNFe")
             ?.Element(NfeNamespace + "infProt");
 
+        string cStat = infProt?.Element(NfeNamespace + "cStat")?.Value ?? string.Empty;
+        bool isCancelada = cStat == "101" || cStat == "151";
+
         return new DadosDanfe(
             TipoOperacao: ide.Int(NfeNamespace, "tpNF", 1),
             NaturezaOperacao: ide.Text(NfeNamespace, "natOp"),
@@ -145,7 +148,8 @@ public static class DanfeXmlParser
             DataEmissao: ide.DateTime(NfeNamespace, "dhEmi"),
             DataEntradaSaida: ide.NullableDateTime(NfeNamespace, "dhSaiEnt"),
             VersaoLayout: infNFe.Attribute("versao")?.Value ?? "4.00",
-            TipoImpressao: ide.Int(NfeNamespace, "tpImp", 1));
+            TipoImpressao: ide.Int(NfeNamespace, "tpImp", 1),
+            IsCancelada: isCancelada);
     }
 
     private static Emitente ParseEmitente(XElement emit)

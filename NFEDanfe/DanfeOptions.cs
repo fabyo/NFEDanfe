@@ -15,6 +15,7 @@ public sealed record DanfeOptions
     public byte[]? LogoBytes { get; init; }
     public bool ValidateBeforeGenerate { get; init; } = true;
     public int? TipoImpressaoOverride { get; init; }
+    public bool? CanceledOverride { get; init; }
     public bool EmitFooter { get; init; } = true;
     public DanfeFont Font { get; init; } = DanfeFont.Arial;
     public string? CustomFontName { get; init; }
