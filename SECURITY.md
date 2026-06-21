@@ -1,9 +1,9 @@
-# Security Policy
+# Politica de Seguranca
 
-## Reporting a Vulnerability
+## Relatando uma Vulnerabilidade
 
-If you discover a security vulnerability, please open a GitHub Security Advisory or contact:
+Se voce descobrir uma vulnerabilidade de seguranca, abra um GitHub Security Advisory ou entre em contato:
 
 fabyoguimar@gmail.com
 
-Please do not disclose vulnerabilities publicly until they have been reviewed.
+Nao divulgue vulnerabilidades publicamente ate que elas tenham sido analisadas.
