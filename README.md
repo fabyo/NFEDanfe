@@ -2,10 +2,10 @@
 
 [![NuGet](https://img.shields.io/nuget/v/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![Downloads](https://img.shields.io/nuget/dt/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
-[![GitHub stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 [![Build](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml)
 [![Publish](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml)
 [![Scorecard](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml)
+[![GitHub stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 [![License](https://img.shields.io/github/license/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 
 Biblioteca .NET para gerar DANFE em PDF a partir de XML de NF-e autorizada.
