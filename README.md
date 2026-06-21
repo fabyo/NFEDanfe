@@ -296,6 +296,31 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 - `Layout`: documentos QuestPDF.
 - `Layout/Components`: blocos visuais do DANFE.
 
+## 🔗 Projetos relacionados
+
+| Projeto | Descrição |
+|---|---|
+| [NFEConsulta](https://github.com/fabyo/NFEConsulta) | Consulta NF-e, valida XML e verifica status oficial da SEFAZ |
+
+### Ferramentas CLI
+
+- **NFEConsulta.Cli** → Consulta NF-e pela linha de comando.
+
+### Fluxo recomendado
+
+```text
+NF-e XML
+   │
+   ▼
+NFEConsulta
+   │
+   ▼
+NFEDanfe
+   │
+   ▼
+DANFE PDF
+```
+
 ## 👨‍💻 Autor
 
 Fabyo Guimarães Oliveira
