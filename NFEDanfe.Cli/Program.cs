@@ -93,32 +93,6 @@ internal static class Program
                 count++;
             }
 
-            // Gerar PDFs de demonstração para cada fonte disponível
-            var fontesExibicao = new[]
-            {
-                (Font: DanfeFont.Arial, Suffix: "_arial"),
-                (Font: DanfeFont.Inter, Suffix: "_inter"),
-                (Font: DanfeFont.Roboto, Suffix: "_roboto"),
-                (Font: DanfeFont.IbmPlexSans, Suffix: "_ibm_plex_sans")
-            };
-
-            foreach (var (font, suffix) in fontesExibicao)
-            {
-                string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}{suffix}.pdf";
-                string outputPath = Path.Combine(options.OutputDirectory, outputName);
-
-                DanfeOptions danfeOptions = CreateDanfeOptions(options) with { Font = font };
-
-                using (FileStream output = File.Create(outputPath))
-                {
-                    DanfeGenerator.GenerateFromXml(resolvedXmlPath, output, danfeOptions);
-                }
-
-                int pageCount = GetPdfPageCount(outputPath);
-                Console.WriteLine($"[OK] {Path.GetFileName(resolvedXmlPath)} ({font}) -> {outputPath} ({pageCount} página(s))");
-                count++;
-            }
-
             return count;
         }
         catch (Exception ex)
@@ -161,13 +135,30 @@ internal static class Program
 
     private static DanfeOptions CreateDanfeOptions(CliOptions options)
     {
+        DanfeFont font = DanfeFont.Arial;
+        string? customFont = null;
+
+        if (!string.IsNullOrWhiteSpace(options.Font))
+        {
+            if (Enum.TryParse(options.Font, true, out DanfeFont parsedFont))
+            {
+                font = parsedFont;
+            }
+            else
+            {
+                customFont = options.Font;
+            }
+        }
+
         return new DanfeOptions
         {
             LogoBytes = ObterLogoBytes(options),
             ValidateBeforeGenerate = true,
             EmitFooter = true,
             TipoImpressaoOverride = options.Landscape ? 2 : null,
-            CanceledOverride = options.Cancelado ? true : null
+            CanceledOverride = options.Cancelado ? true : null,
+            Font = font,
+            CustomFontName = customFont
         };
     }
 
@@ -278,7 +269,8 @@ internal static class Program
         bool GenerateMock,
         bool GenerateSnapshot,
         bool Landscape,
-        bool Cancelado)
+        bool Cancelado,
+        string? Font)
     {
         public bool HasLogo => IncludeLogo || !string.IsNullOrWhiteSpace(LogoPath);
 
@@ -292,6 +284,7 @@ internal static class Program
             bool generateSnapshot = false;
             bool landscape = false;
             bool cancelado = false;
+            string? font = null;
 
             for (int i = 0; i < args.Count; i++)
             {
@@ -335,13 +328,22 @@ internal static class Program
 
                     outputDirectory = args[++i];
                 }
+                else if (arg is "--font" or "-f")
+                {
+                    if (i + 1 >= args.Count)
+                    {
+                        throw new ArgumentException("Informe o nome da fonte após --font ou -f.");
+                    }
+
+                    font = args[++i];
+                }
                 else if (arg.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
                 {
                     xmlPaths.Add(arg);
                 }
             }
 
-            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape, cancelado);
+            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape, cancelado, font);
         }
     }
 }
