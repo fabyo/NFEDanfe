@@ -195,6 +195,12 @@ Depois de instalada:
 nfedanfe .\samples\nota-exemplo-procNFe.xml --output .\out
 ```
 
+Gerar com fonte específica (Arial, Inter, Roboto, IbmPlexSans ou fonte do sistema):
+
+```powershell
+nfedanfe .\samples\nota-exemplo-procNFe.xml --font inter --output .\out
+```
+
 Gerar com logo por caminho explícito:
 
 ```powershell
@@ -298,6 +304,8 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 - `Domain/Validation`: validações fiscais e de domínio.
 - `Layout`: documentos QuestPDF.
 - `Layout/Components`: blocos visuais do DANFE.
+
+- [Histórico de alterações](CHANGELOG.md)
 
 ## 🔗 Projetos relacionados
 
