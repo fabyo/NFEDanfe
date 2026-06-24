@@ -72,7 +72,7 @@ public sealed class ParserAndSnapshotTests
     public void FcpParsing_HandlesNullEmptyAndValue()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
-        
+
         // 1. Tag present with 0.00
         var modelOriginal = DanfeXmlParser.Parse(xmlPath);
         Assert.Equal(0.00m, modelOriginal.Impostos!.ValorFcp);
@@ -83,7 +83,7 @@ public sealed class ParserAndSnapshotTests
         var vFcpEmpty = docEmpty.Descendants(ns + "vFCP").FirstOrDefault();
         Assert.NotNull(vFcpEmpty);
         vFcpEmpty.Value = "";
-        
+
         var modelEmpty = DanfeXmlParser.ParseDocument(docEmpty);
         Assert.Null(modelEmpty.Impostos!.ValorFcp);
 
@@ -102,12 +102,12 @@ public sealed class ParserAndSnapshotTests
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
         var model = DanfeXmlParser.Parse(xmlPath);
-        
+
         using var stream = new MemoryStream();
         var options = new DanfeOptions { CustomFontName = "MyCustomFontFamilyName" };
-        
+
         DanfeGenerator.Generate(model, stream, options);
-        
+
         Assert.True(stream.Length > 0);
     }
 
@@ -116,12 +116,12 @@ public sealed class ParserAndSnapshotTests
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
         var model = DanfeXmlParser.Parse(xmlPath);
-        
+
         using var stream = new MemoryStream();
         var options = new DanfeOptions { Font = DanfeFont.Inter };
-        
+
         DanfeGenerator.Generate(model, stream, options);
-        
+
         Assert.True(stream.Length > 0);
     }
 

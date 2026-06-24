@@ -42,11 +42,11 @@ public class CobrancaBox : IComponent
                     {
                         inlined.Spacing(4);
 
-                    foreach (DuplicataModel dup in _cobranca.Duplicatas)
-                    {
-                        inlined.Item().Element(x => ComposeDuplicataCard(x, dup));
-                    }
-        });
+                        foreach (DuplicataModel dup in _cobranca.Duplicatas)
+                        {
+                            inlined.Item().Element(x => ComposeDuplicataCard(x, dup));
+                        }
+                    });
             }
             else
             {
