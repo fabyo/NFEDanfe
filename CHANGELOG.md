@@ -1,5 +1,8 @@
 # Histórico de alterações
 
+## 0.1.21
+- Adicionada marca d'água `NOTA FISCAL EM HOMOLOGAÇÃO` no DANFE quando o XML NF-e possuir `tpAmb = 2`, nos layouts retrato e paisagem.
+
 ## 0.1.20
 - Adicionado parâmetro `--font` (`-f`) para seleção de fonte na CLI.
 - Limitada a CLI para gerar apenas 1 PDF por nota por padrão (evitando a geração automática de 5 PDFs com todas as fontes).

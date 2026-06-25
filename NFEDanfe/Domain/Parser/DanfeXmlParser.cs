@@ -158,6 +158,7 @@ public static class DanfeXmlParser
             DataEntradaSaida: ide.NullableDateTime(NfeNamespace, "dhSaiEnt"),
             VersaoLayout: infNFe.Attribute("versao")?.Value ?? "4.00",
             TipoImpressao: ide.Int(NfeNamespace, "tpImp", 1),
+            TipoAmbiente: ide.Int(NfeNamespace, "tpAmb", 1),
             IsCancelada: isCancelada);
     }
 

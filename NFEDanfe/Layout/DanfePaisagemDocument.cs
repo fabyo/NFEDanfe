@@ -50,15 +50,11 @@ public class DanfePaisagemDocument : IDocument
 
                 if (_model.DadosDanfe.IsCancelada)
                 {
-                    page.Foreground()
-                        .AlignCenter()
-                        .AlignMiddle()
-                        .OffsetY(150)
-                        .Rotate(-45)
-                        .Text("NOTA FISCAL CANCELADA")
-                        .FontSize(70)
-                        .FontColor("#80FF0000") // Red with 50% opacity
-                        .Bold();
+                    ComposeWatermark(page, "NOTA FISCAL CANCELADA");
+                }
+                else if (_model.DadosDanfe.TipoAmbiente == 2)
+                {
+                    ComposeWatermark(page, "NOTA FISCAL EM HOMOLOGAÇÃO", offsetX: 80, fontSize: 54);
                 }
             });
         }
@@ -66,6 +62,20 @@ public class DanfePaisagemDocument : IDocument
         {
             DanfeTheme.PaddingInternoVertical = 2.0f;
         }
+    }
+
+    private static void ComposeWatermark(PageDescriptor page, string text, float offsetX = 0, float fontSize = 70)
+    {
+        page.Foreground()
+            .AlignCenter()
+            .AlignMiddle()
+            .OffsetX(offsetX)
+            .OffsetY(150)
+            .Rotate(-45)
+            .Text(text)
+            .FontSize(fontSize)
+            .FontColor("#80FF0000") // Red with 50% opacity
+            .Bold();
     }
 
     private void ComposeHeader(IContainer container)

@@ -14,5 +14,6 @@ public record DadosDanfe(
     DateTime? DataEntradaSaida = null,
     string VersaoLayout = "4.00",
     int TipoImpressao = 1,
+    int TipoAmbiente = 1,
     bool IsCancelada = false
 );

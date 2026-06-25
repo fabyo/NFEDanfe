@@ -69,6 +69,16 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void Homologation_environment_is_parsed_from_tpAmb()
+    {
+        string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-1-product-procNFe.xml");
+
+        var model = DanfeXmlParser.Parse(xmlPath);
+
+        Assert.Equal(2, model.DadosDanfe.TipoAmbiente);
+    }
+
+    [Fact]
     public void FcpParsing_HandlesNullEmptyAndValue()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
@@ -341,4 +351,3 @@ public sealed class ParserAndSnapshotTests
         return System.Text.RegularExpressions.Regex.Matches(text, @"/Type\s*/Page\b").Count;
     }
 }
-
