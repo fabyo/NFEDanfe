@@ -1,5 +1,10 @@
 # Histórico de alterações
 
+## 0.1.22
+- Melhorada a estabilidade do layout de produtos para XMLs grandes, preenchendo a grade até a altura-alvo quando necessário.
+- Adicionados testes de paginação para cenários grandes em retrato e paisagem.
+- Incluída configuração de encoding (`.editorconfig` e `.gitattributes`) para evitar regressões de texto UTF-8.
+
 ## 0.1.21
 - Adicionada marca d'água `NOTA FISCAL EM HOMOLOGAÇÃO` no DANFE quando o XML NF-e possuir `tpAmb = 2`, nos layouts retrato e paisagem.
 

@@ -20,7 +20,7 @@ public class ProdutosBox : IComponent
     {
         _produtos = produtos ?? [];
         _isLandscape = isLandscape;
-        _targetRows = targetRows;
+        _targetRows = Math.Max(0, targetRows);
     }
 
     public ProdutosBox(IReadOnlyList<ProdutoModel>? produtos, bool isLandscape = false)
@@ -96,26 +96,43 @@ public class ProdutosBox : IComponent
 
                 foreach (ProdutoModel prod in _produtos)
                 {
-                    Data(table.Cell(), prod.Codigo, isFirst: true);
-                    Data(table.Cell(), prod.Descricao);
-                    Data(table.Cell(), prod.Ncm, alignCenter: true);
-                    Data(table.Cell(), prod.CstCsosn, alignCenter: true);
-                    Data(table.Cell(), prod.Cfop, alignCenter: true);
-                    Data(table.Cell(), prod.Unidade, alignCenter: true);
-                    Data(table.Cell(), FormatQuantity(prod.Quantidade), alignRight: true);
-                    Data(table.Cell(), FormatPrice(prod.ValorUnitario), alignRight: true);
-                    Data(table.Cell(), DocumentFormatter.Money(prod.ValorTotal), alignRight: true);
-                    Data(table.Cell(), DocumentFormatter.Money(prod.ValorDesconto), alignRight: true);
-                    Data(table.Cell(), DocumentFormatter.Money(prod.BaseCalculoIcms), alignRight: true);
-                    Data(table.Cell(), DocumentFormatter.Money(prod.ValorIcms), alignRight: true);
-                    Data(table.Cell(), DocumentFormatter.Money(prod.ValorIpi), alignRight: true);
-                    Data(table.Cell(), FormatPercentage(prod.AliquotaIcms), alignRight: true);
-                    Data(table.Cell(), FormatPercentage(prod.AliquotaIpi), alignRight: true);
+                    ProductRow(table, prod);
                 }
 
+                for (int i = _produtos.Count; i < _targetRows; i++)
+                {
+                    EmptyRow(table);
+                }
             });
     }
 
+    private static void ProductRow(TableDescriptor table, ProdutoModel prod)
+    {
+        Data(table.Cell(), prod.Codigo, isFirst: true);
+        Data(table.Cell(), prod.Descricao);
+        Data(table.Cell(), prod.Ncm, alignCenter: true);
+        Data(table.Cell(), prod.CstCsosn, alignCenter: true);
+        Data(table.Cell(), prod.Cfop, alignCenter: true);
+        Data(table.Cell(), prod.Unidade, alignCenter: true);
+        Data(table.Cell(), FormatQuantity(prod.Quantidade), alignRight: true);
+        Data(table.Cell(), FormatPrice(prod.ValorUnitario), alignRight: true);
+        Data(table.Cell(), DocumentFormatter.Money(prod.ValorTotal), alignRight: true);
+        Data(table.Cell(), DocumentFormatter.Money(prod.ValorDesconto), alignRight: true);
+        Data(table.Cell(), DocumentFormatter.Money(prod.BaseCalculoIcms), alignRight: true);
+        Data(table.Cell(), DocumentFormatter.Money(prod.ValorIcms), alignRight: true);
+        Data(table.Cell(), DocumentFormatter.Money(prod.ValorIpi), alignRight: true);
+        Data(table.Cell(), FormatPercentage(prod.AliquotaIcms), alignRight: true);
+        Data(table.Cell(), FormatPercentage(prod.AliquotaIpi), alignRight: true);
+    }
+
+    private static void EmptyRow(TableDescriptor table)
+    {
+        Data(table.Cell(), string.Empty, isFirst: true);
+        for (int i = 1; i < 15; i++)
+        {
+            Data(table.Cell(), string.Empty);
+        }
+    }
 
     private static void Header(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false)
     {

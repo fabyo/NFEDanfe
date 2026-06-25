@@ -1,0 +1,17 @@
+* text=auto
+
+*.cs text working-tree-encoding=UTF-8
+*.csproj text working-tree-encoding=UTF-8
+*.slnx text working-tree-encoding=UTF-8
+*.md text working-tree-encoding=UTF-8
+*.xml text working-tree-encoding=UTF-8
+*.ps1 text working-tree-encoding=UTF-8
+*.yml text working-tree-encoding=UTF-8
+*.yaml text working-tree-encoding=UTF-8
+
+*.png binary
+*.ttf binary
+*.7z binary
+*.pdf binary
+*.nupkg binary
+*.snupkg binary

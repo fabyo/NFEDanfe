@@ -7,7 +7,7 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>NFEDanfe</PackageId>
-    <Version>0.1.21</Version>
+    <Version>0.1.22</Version>
     <Authors>NFEDanfe Contributors</Authors>
     <Company>NFEDanfe</Company>
     <Description>Biblioteca .NET para gerar DANFE em PDF a partir de XML NF-e autorizado.</Description>

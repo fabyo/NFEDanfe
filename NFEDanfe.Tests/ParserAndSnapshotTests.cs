@@ -199,6 +199,84 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void Generate_with_many_products_paginates_without_layout_errors()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        var model = DanfeGenerator.LoadFromXml(xmlPath);
+        var produtos = Enumerable.Range(1, 80)
+            .Select(i => model.Produtos![0] with
+            {
+                Codigo = $"PROD-{i:000}",
+                Descricao = $"PRODUTO EXEMPLO PARA TESTE DE PAGINACAO {i:000}"
+            })
+            .ToList();
+
+        var largeModel = model with { Produtos = produtos };
+        string outputPath = Path.Combine(Path.GetTempPath(), $"danfe-many-products-{Guid.NewGuid():N}.pdf");
+
+        try
+        {
+            using (FileStream output = File.Create(outputPath))
+            {
+                DanfeGenerator.Generate(largeModel, output, new DanfeOptions { ValidateBeforeGenerate = false });
+            }
+
+            Assert.True(new FileInfo(outputPath).Length > 0);
+            Assert.True(GetPdfPageCount(outputPath) > 1);
+        }
+        finally
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        }
+    }
+
+    [Fact]
+    public void Generate_landscape_with_many_products_and_long_descriptions_paginates_without_layout_errors()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        var model = DanfeGenerator.LoadFromXml(xmlPath, new DanfeOptions
+        {
+            TipoImpressaoOverride = 2
+        });
+
+        var produtos = Enumerable.Range(1, 60)
+            .Select(i => model.Produtos![0] with
+            {
+                Codigo = $"LAND-{i:000}",
+                Descricao = $"PRODUTO EXEMPLO PARA TESTE DE PAGINACAO EM PAISAGEM COM DESCRICAO LONGA {i:000} - ITEM AUXILIAR DE VALIDACAO"
+            })
+            .ToList();
+
+        var largeModel = model with { Produtos = produtos };
+        string outputPath = Path.Combine(Path.GetTempPath(), $"danfe-landscape-many-products-{Guid.NewGuid():N}.pdf");
+
+        try
+        {
+            using (FileStream output = File.Create(outputPath))
+            {
+                DanfeGenerator.Generate(largeModel, output, new DanfeOptions
+                {
+                    ValidateBeforeGenerate = false,
+                    TipoImpressaoOverride = 2
+                });
+            }
+
+            Assert.True(new FileInfo(outputPath).Length > 0);
+            Assert.True(GetPdfPageCount(outputPath) > 1);
+        }
+        finally
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        }
+    }
+
+    [Fact]
     public void Landscape_override_changes_the_loaded_model_orientation()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
