@@ -2,5 +2,6 @@ namespace NFEDanfe.Domain.Models;
 
 public record DadosAdicionaisModel(
     string? InformacoesComplementares,
-    string? InformacoesFisco
+    string? InformacoesFisco,
+    IReadOnlyList<string>? PedidosCompra = null
 );

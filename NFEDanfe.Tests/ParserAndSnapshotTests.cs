@@ -41,6 +41,22 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void Product_purchase_order_is_parsed_into_additional_data()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        var prod = doc.Descendants(ns + "prod").First();
+
+        prod.Add(new System.Xml.Linq.XElement(ns + "xPed", "PED-12345"));
+
+        var model = DanfeXmlParser.ParseDocument(doc);
+
+        Assert.NotNull(model.DadosAdicionais);
+        Assert.Contains("PED-12345", model.DadosAdicionais.PedidosCompra!);
+    }
+
+    [Fact]
     public void UserXml_decodes_special_characters_in_descriptions()
     {
         string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-1-product-procNFe.xml");

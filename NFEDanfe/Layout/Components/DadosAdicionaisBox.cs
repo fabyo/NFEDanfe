@@ -79,6 +79,18 @@ public class DadosAdicionaisBox : IComponent
                                     if (lastIdx < linha.Length)
                                         t.Span(linha.Substring(lastIdx));
                                 }
+
+                                string pedido = string.Join(", ", _dados.PedidosCompra ?? Array.Empty<string>());
+                                if (!string.IsNullOrWhiteSpace(pedido))
+                                {
+                                    if (infComplLines.Count > 0)
+                                    {
+                                        t.Span("\n\n");
+                                    }
+
+                                    t.Span("Pedido: ");
+                                    t.Span(pedido).Bold();
+                                }
                             });
                     });
 

@@ -38,17 +38,17 @@ public class ProdutosBox : IComponent
                 {
                     if (_isLandscape)
                     {
-                        columns.ConstantColumn(62); // Código
+                        columns.ConstantColumn(70); // Código
                         columns.RelativeColumn();   // Descrição
                         columns.ConstantColumn(45); // NCM
-                        columns.ConstantColumn(30); // CST
-                        columns.ConstantColumn(30); // CFOP
+                        columns.ConstantColumn(24); // CST
+                        columns.ConstantColumn(26); // CFOP
                         columns.ConstantColumn(28); // UN
                         columns.ConstantColumn(45); // Quant
                         columns.ConstantColumn(52); // Valor unit
                         columns.ConstantColumn(52); // Valor total
-                        columns.ConstantColumn(48); // Valor desc
-                        columns.ConstantColumn(52); // BC ICMS
+                        columns.ConstantColumn(44); // Valor desc
+                        columns.ConstantColumn(44); // BC ICMS
                         columns.ConstantColumn(48); // Valor ICMS
                         columns.ConstantColumn(42); // Valor IPI
                         columns.ConstantColumn(30); // Alíq. ICMS
@@ -56,17 +56,17 @@ public class ProdutosBox : IComponent
                     }
                     else
                     {
-                        columns.ConstantColumn(52); // Código
+                        columns.ConstantColumn(58); // Código
                         columns.RelativeColumn();   // Descrição
                         columns.ConstantColumn(34); // NCM
-                        columns.ConstantColumn(22); // CST
-                        columns.ConstantColumn(22); // CFOP
+                        columns.ConstantColumn(18); // CST
+                        columns.ConstantColumn(20); // CFOP
                         columns.ConstantColumn(19); // UN
                         columns.ConstantColumn(34); // Quant
                         columns.ConstantColumn(38); // Valor unit
                         columns.ConstantColumn(40); // Valor total
-                        columns.ConstantColumn(36); // Valor desc
-                        columns.ConstantColumn(38); // BC ICMS
+                        columns.ConstantColumn(33); // Valor desc
+                        columns.ConstantColumn(32); // BC ICMS
                         columns.ConstantColumn(36); // Valor ICMS
                         columns.ConstantColumn(30); // Valor IPI
                         columns.ConstantColumn(21); // Alíq. ICMS

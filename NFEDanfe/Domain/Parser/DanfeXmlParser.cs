@@ -69,7 +69,7 @@ public static class DanfeXmlParser
         CobrancaModel? cobranca = ParseCobranca(infNFe.Element(NfeNamespace + "cobr"));
         TransportadorModel? transportador = ParseTransportador(infNFe.Element(NfeNamespace + "transp"));
         IReadOnlyList<ProdutoModel> produtos = ParseProdutos(infNFe);
-        DadosAdicionaisModel dadosAdicionais = ParseDadosAdicionais(infNFe.Element(NfeNamespace + "infAdic"));
+        DadosAdicionaisModel dadosAdicionais = ParseDadosAdicionais(infNFe);
         LocalEntrega? localEntrega = ParseLocalEntrega(infNFe.Element(NfeNamespace + "entrega"), destinatario);
 
         return new DanfeModel(
@@ -337,11 +337,20 @@ public static class DanfeXmlParser
             : (ipiTrib.Decimal(NfeNamespace, "vIPI"), ipiTrib.Decimal(NfeNamespace, "pIPI"));
     }
 
-    private static DadosAdicionaisModel ParseDadosAdicionais(XElement? infAdic)
+    private static DadosAdicionaisModel ParseDadosAdicionais(XElement infNFe)
     {
+        XElement? infAdic = infNFe.Element(NfeNamespace + "infAdic");
+        IReadOnlyList<string> pedidosCompra = infNFe.Elements(NfeNamespace + "det")
+            .Select(det => det.Element(NfeNamespace + "prod")?.Text(NfeNamespace, "xPed"))
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x!.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
         return new DadosAdicionaisModel(
             InformacoesComplementares: infAdic?.Element(NfeNamespace + "infCpl")?.Value,
-            InformacoesFisco: infAdic?.Element(NfeNamespace + "infAdFisco")?.Value);
+            InformacoesFisco: infAdic?.Element(NfeNamespace + "infAdFisco")?.Value,
+            PedidosCompra: pedidosCompra);
     }
 
     private static LocalEntrega? ParseLocalEntrega(XElement? entrega, Destinatario dest)
