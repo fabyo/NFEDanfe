@@ -16,7 +16,7 @@
         <tpImp>1</tpImp>
         <tpEmis>1</tpEmis>
         <cDV>6</cDV>
-        <tpAmb>2</tpAmb>
+        <tpAmb>1</tpAmb>
         <finNFe>1</finNFe>
         <indFinal>0</indFinal>
         <indPres>9</indPres>
@@ -269,7 +269,7 @@
   </NFe>
   <protNFe versao="4.00">
     <infProt>
-      <tpAmb>2</tpAmb>
+      <tpAmb>1</tpAmb>
       <verAplic>SP_NFE_SAMPLE</verAplic>
       <chNFe>35260806990590000123550010000105001234567896</chNFe>
       <dhRecbto>2026-06-15T10:31:00-03:00</dhRecbto>

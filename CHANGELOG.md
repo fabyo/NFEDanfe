@@ -1,5 +1,10 @@
 # Histórico de alterações
 
+## 0.1.26
+- Alinhados ao fundo os valores monetários da seção `CÁLCULO DO IMPOSTO`, mantendo o tamanho original das células.
+- Removidas as linhas tracejadas vazias em `DADOS DO PRODUTO / SERVIÇOS`, desenhando a grade apenas para produtos existentes.
+- Atualizado o XML de exemplo de 5 produtos para ambiente de produção (`tpAmb = 1`), evitando marca d'água de homologação na amostra.
+
 ## 0.1.25
 - Removida a linha em branco antes de `Pedido: <xPed>` em `DADOS ADICIONAIS`, mantendo apenas a quebra simples quando houver informações complementares anteriores.
 

@@ -70,13 +70,41 @@ public class ImpostosBox : IComponent
 
     private static void AddMoneyCell(RowDescriptor row, string label, decimal value, bool left = false)
     {
-        row.RelativeItem(2).LabelValueCell(
-            label: label,
-            value: DocumentFormatter.Money(value),
-            boldValue: true,
-            top: false,
-            left: left,
-            alignRightValue: true);
+        string formattedValue = DocumentFormatter.Money(value);
+
+        row.RelativeItem(2)
+            .BorderTop(0)
+            .BorderLeft(left ? DanfeTheme.EspessuraBorda : 0)
+            .BorderBottom(DanfeTheme.EspessuraBorda)
+            .BorderRight(DanfeTheme.EspessuraBorda)
+            .BorderColor(DanfeTheme.CorBorda)
+            .PaddingHorizontal(DanfeTheme.PaddingInternoHorizontal)
+            .PaddingVertical(DanfeTheme.PaddingInternoVertical)
+            .Layers(layers =>
+            {
+                layers.PrimaryLayer().Column(column =>
+                {
+                    column.Item().Text(label.ToUpper())
+                        .FontFamily(DanfeTheme.FontePadrao)
+                        .FontSize(DanfeTheme.TamanhoFonteLabel)
+                        .FontColor(Colors.Transparent);
+
+                    column.Item().PaddingTop(1).AlignRight().Text(formattedValue)
+                        .FontFamily(DanfeTheme.FontePadrao)
+                        .FontSize(DanfeTheme.TamanhoFonteValor)
+                        .FontColor(Colors.Transparent)
+                        .Bold();
+                });
+
+                layers.Layer().AlignTop().Text(label.ToUpper())
+                    .FontFamily(DanfeTheme.FontePadrao)
+                    .FontSize(DanfeTheme.TamanhoFonteLabel);
+
+                layers.Layer().AlignBottom().AlignRight().Text(formattedValue)
+                    .FontFamily(DanfeTheme.FontePadrao)
+                    .FontSize(DanfeTheme.TamanhoFonteValor)
+                    .Bold();
+            });
     }
 }
 

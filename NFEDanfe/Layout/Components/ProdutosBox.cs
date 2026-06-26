@@ -98,11 +98,6 @@ public class ProdutosBox : IComponent
                 {
                     ProductRow(table, prod);
                 }
-
-                for (int i = _produtos.Count; i < _targetRows; i++)
-                {
-                    EmptyRow(table);
-                }
             });
     }
 
@@ -123,15 +118,6 @@ public class ProdutosBox : IComponent
         Data(table.Cell(), DocumentFormatter.Money(prod.ValorIpi), alignRight: true);
         Data(table.Cell(), FormatPercentage(prod.AliquotaIcms), alignRight: true);
         Data(table.Cell(), FormatPercentage(prod.AliquotaIpi), alignRight: true);
-    }
-
-    private static void EmptyRow(TableDescriptor table)
-    {
-        Data(table.Cell(), string.Empty, isFirst: true);
-        for (int i = 1; i < 15; i++)
-        {
-            Data(table.Cell(), string.Empty);
-        }
     }
 
     private static void Header(IContainer container, string text, bool isFirst = false, bool alignRight = false, bool alignCenter = false)
