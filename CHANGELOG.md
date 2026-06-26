@@ -1,5 +1,8 @@
 # Histórico de alterações
 
+## 0.1.24
+- Corrigida a leitura do pedido de compra para usar a tag `<compra><xPed>...</xPed></compra>` da NF-e, mantendo fallback para `xPed` informado nos produtos.
+
 ## 0.1.23
 - Ajustadas as larguras da tabela `DADOS DO PRODUTO / SERVIÇOS`, ampliando `CÓDIGO PRODUTO` e dando mais espaço para `DESCRIÇÃO DO PRODUTO/SERVIÇO`.
 - Reduzidas as colunas `BC ICMS`, `VALOR DESC`, `CST` e `CFOP` para melhorar o aproveitamento horizontal da grade de produtos.

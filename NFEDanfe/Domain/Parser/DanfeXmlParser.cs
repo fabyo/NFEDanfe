@@ -340,8 +340,12 @@ public static class DanfeXmlParser
     private static DadosAdicionaisModel ParseDadosAdicionais(XElement infNFe)
     {
         XElement? infAdic = infNFe.Element(NfeNamespace + "infAdic");
-        IReadOnlyList<string> pedidosCompra = infNFe.Elements(NfeNamespace + "det")
-            .Select(det => det.Element(NfeNamespace + "prod")?.Text(NfeNamespace, "xPed"))
+        IReadOnlyList<string> pedidosCompra = new[]
+            {
+                infNFe.Element(NfeNamespace + "compra")?.Text(NfeNamespace, "xPed")
+            }
+            .Concat(infNFe.Elements(NfeNamespace + "det")
+                .Select(det => det.Element(NfeNamespace + "prod")?.Text(NfeNamespace, "xPed")))
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .Select(x => x!.Trim())
             .Distinct(StringComparer.OrdinalIgnoreCase)

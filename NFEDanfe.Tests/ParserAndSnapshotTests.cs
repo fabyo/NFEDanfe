@@ -41,19 +41,21 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
-    public void Product_purchase_order_is_parsed_into_additional_data()
+    public void Purchase_order_is_parsed_into_additional_data()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
         System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
         System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
-        var prod = doc.Descendants(ns + "prod").First();
+        var infNFe = doc.Descendants(ns + "infNFe").First();
 
-        prod.Add(new System.Xml.Linq.XElement(ns + "xPed", "PED-12345"));
+        infNFe.Add(new System.Xml.Linq.XElement(
+            ns + "compra",
+            new System.Xml.Linq.XElement(ns + "xPed", "181712")));
 
         var model = DanfeXmlParser.ParseDocument(doc);
 
         Assert.NotNull(model.DadosAdicionais);
-        Assert.Contains("PED-12345", model.DadosAdicionais.PedidosCompra!);
+        Assert.Contains("181712", model.DadosAdicionais.PedidosCompra!);
     }
 
     [Fact]
