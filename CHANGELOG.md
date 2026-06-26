@@ -1,5 +1,8 @@
 # Histórico de alterações
 
+## 0.1.25
+- Removida a linha em branco antes de `Pedido: <xPed>` em `DADOS ADICIONAIS`, mantendo apenas a quebra simples quando houver informações complementares anteriores.
+
 ## 0.1.24
 - Corrigida a leitura do pedido de compra para usar a tag `<compra><xPed>...</xPed></compra>` da NF-e, mantendo fallback para `xPed` informado nos produtos.
 

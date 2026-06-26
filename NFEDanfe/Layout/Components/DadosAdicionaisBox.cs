@@ -85,7 +85,7 @@ public class DadosAdicionaisBox : IComponent
                                 {
                                     if (infComplLines.Count > 0)
                                     {
-                                        t.Span("\n\n");
+                                        t.Span("\n");
                                     }
 
                                     t.Span("Pedido: ");
