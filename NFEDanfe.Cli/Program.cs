@@ -1,349 +1,192 @@
-using NFEDanfe.Domain.Models;
-using QuestPDF.Infrastructure;
-using QuestPDF.Drawing;
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using NFEDanfe;
+using NFEDanfe.Options;
 
 namespace NFEDanfe.Cli;
 
 internal static class Program
 {
-    private const string LogoFileName = "logo.png";
-    private const string XmlTestDirectoryName = "xml_testes";
-
     private static int Main(string[] args)
     {
-        QuestPDF.Settings.License = LicenseType.Community;
+        Console.WriteLine("NFEDanfe CLI - Gerador de DANFE");
+        Console.WriteLine("--------------------------------");
 
-        // Registrar fontes customizadas se a pasta existir
-        string fontsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fonts");
-        if (!Directory.Exists(fontsPath))
+        if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
         {
-            fontsPath = Path.Combine(Directory.GetCurrentDirectory(), "fonts");
+            ShowHelp();
+            return 0;
         }
 
-        if (Directory.Exists(fontsPath))
-        {
-            foreach (string file in Directory.GetFiles(fontsPath, "*.ttf"))
-            {
-                try
-                {
-                    using var stream = File.OpenRead(file);
-                    FontManager.RegisterFont(stream);
-                    Console.WriteLine($"[FONTE] Registrada com sucesso: {Path.GetFileName(file)}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[AVISO] Falha ao registrar fonte {Path.GetFileName(file)}: {ex.Message}");
-                }
-            }
-        }
-
-        Console.WriteLine("NFEDanfe - Gerador de DANFE em PDF");
-        Console.WriteLine("-----------------------------------");
-
-        CliOptions options = CliOptions.Parse(args);
-        Directory.CreateDirectory(options.OutputDirectory);
-
-        IReadOnlyList<string> xmlPaths = options.XmlPaths.Count > 0
-            ? options.XmlPaths
-            : LocalizarXmls();
-
-        int generated = 0;
-
-        foreach (string xmlPath in xmlPaths)
-        {
-            generated += GerarDanfeDoXml(xmlPath, options);
-        }
-
-        if (options.GenerateMock || generated == 0)
-        {
-            generated += GerarDanfeMock(options);
-        }
-
-        Console.WriteLine();
-        Console.WriteLine($"PDFs gerados: {generated}");
-        Console.WriteLine($"Diretório de saída: {Path.GetFullPath(options.OutputDirectory)}");
-
-        return generated > 0 ? 0 : 1;
-    }
-
-    private static int GerarDanfeDoXml(string xmlPath, CliOptions options)
-    {
         try
         {
-            string resolvedXmlPath = ResolveInputPath(xmlPath);
-            int count = 0;
+            var options = CliOptions.Parse(args);
 
-            // Gerar PDF padrão (sem sufixo)
+            // Configure fonts
+            string regFont = options.FontRegPath ?? GetFallbackFont(bold: false);
+            string boldFont = options.FontBoldPath ?? GetFallbackFont(bold: true);
+
+            if (!File.Exists(regFont))
             {
-                string outputName = $"danfe_{Path.GetFileNameWithoutExtension(resolvedXmlPath)}{(options.Landscape ? "_paisagem" : string.Empty)}{(options.HasLogo ? "_com_logo" : string.Empty)}.pdf";
+                Console.WriteLine($"[ERRO] Fonte regular não encontrada em '{regFont}'.");
+                Console.WriteLine("Por favor, especifique o caminho usando --font-reg <caminho>.");
+                return 1;
+            }
+
+            if (!File.Exists(boldFont))
+            {
+                Console.WriteLine($"[ERRO] Fonte negrito não encontrada em '{boldFont}'.");
+                Console.WriteLine("Por favor, especifique o caminho usando --font-bold <caminho>.");
+                return 1;
+            }
+
+            // Prepare DanfeOptions
+            var danfeOpts = new DanfeOptions
+            {
+                LogoPath = options.LogoPath,
+                LogoBytes = string.IsNullOrEmpty(options.LogoPath) ? null : File.ReadAllBytes(options.LogoPath),
+                TipoImpressaoOverride = options.Landscape ? 2 : null,
+                CanceledOverride = options.Cancelado ? true : null,
+                EmitFooter = true,
+                FontConfig = new DanfeFontConfig
+                {
+                    BaseFontPath = regFont,
+                    BaseFontBoldPath = boldFont
+                }
+            };
+
+            Directory.CreateDirectory(options.OutputDirectory);
+
+            int generated = 0;
+            foreach (string xmlPath in options.XmlPaths)
+            {
+                if (!File.Exists(xmlPath))
+                {
+                    Console.WriteLine($"[AVISO] Arquivo XML não encontrado: {xmlPath}");
+                    continue;
+                }
+
+                string outputName = $"danfe_{Path.GetFileNameWithoutExtension(xmlPath)}{(options.Landscape ? "_paisagem" : "")}.pdf";
                 string outputPath = Path.Combine(options.OutputDirectory, outputName);
 
-                using (FileStream output = File.Create(outputPath))
+                Console.WriteLine($"[PROCESSANDO] {Path.GetFileName(xmlPath)}...");
+
+                using (var outputStream = File.Create(outputPath))
                 {
-                    DanfeGenerator.GenerateFromXml(resolvedXmlPath, output, CreateDanfeOptions(options));
+                    DanfeGenerator.GenerateFromXml(xmlPath, outputStream, danfeOpts);
                 }
 
-                if (options.GenerateSnapshot)
-                {
-                    WriteSnapshot(resolvedXmlPath, outputPath, options);
-                }
-
-                int pageCount = GetPdfPageCount(outputPath);
-                Console.WriteLine($"[OK] {Path.GetFileName(resolvedXmlPath)} -> {outputPath} ({pageCount} página(s))");
-                count++;
+                Console.WriteLine($"[OK] PDF gerado: {outputPath}");
+                generated++;
             }
 
-            return count;
+            Console.WriteLine();
+            Console.WriteLine($"Concluído! PDFs gerados: {generated}");
+            return 0;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERRO] {xmlPath}: {ex.Message}");
-            return 0;
-        }
-    }
-
-    private static int GerarDanfeMock(CliOptions options)
-    {
-        try
-        {
-            byte[]? logoBytes = ObterLogoBytes(options);
-            DanfeModel model = MockDanfeFactory.Create(logoBytes);
-            string outputPath = Path.Combine(options.OutputDirectory, $"danfe_mock{(options.Landscape ? "_paisagem" : string.Empty)}{(logoBytes != null ? "_com_logo" : string.Empty)}.pdf");
-
-            DanfeGenerator.Generate(model, outputPath, CreateDanfeOptions(options) with { LogoBytes = null });
-
-            if (options.GenerateSnapshot)
-            {
-                File.WriteAllText(Path.ChangeExtension(outputPath, ".snapshot.txt"), DanfeSnapshot.CreateText(model));
-            }
-
-            Console.WriteLine($"[OK] mock -> {outputPath}");
+            Console.WriteLine($"[ERRO] Ocorreu uma falha: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
             return 1;
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[ERRO] mock: {ex.Message}");
-            return 0;
-        }
     }
 
-    private static void WriteSnapshot(string xmlPath, string outputPath, CliOptions options)
+    private static void ShowHelp()
     {
-        DanfeModel model = DanfeGenerator.LoadFromXml(xmlPath, CreateDanfeOptions(options));
-        File.WriteAllText(Path.ChangeExtension(outputPath, ".snapshot.txt"), DanfeSnapshot.CreateText(model));
+        Console.WriteLine("Uso:");
+        Console.WriteLine("  nfedanfe [arquivos.xml...] [opções]");
+        Console.WriteLine();
+        Console.WriteLine("Opções:");
+        Console.WriteLine("  --logo-path <caminho>   Caminho para o arquivo de logotipo (PNG/JPG).");
+        Console.WriteLine("  --landscape, -p         Gera o PDF no modo Paisagem.");
+        Console.WriteLine("  --cancelado, -c         Gera com marca d'água de cancelado.");
+        Console.WriteLine("  --output, -o <pasta>    Diretório de saída para os PDFs gerados (padrão: ./out).");
+        Console.WriteLine("  --font-reg <caminho>    Caminho para o arquivo .ttf de fonte regular.");
+        Console.WriteLine("  --font-bold <caminho>   Caminho para o arquivo .ttf de fonte negrito.");
+        Console.WriteLine();
+        Console.WriteLine("Exemplo:");
+        Console.WriteLine("  nfedanfe nfe.xml --logo-path logo.png --output ./pdfs");
     }
 
-    private static DanfeOptions CreateDanfeOptions(CliOptions options)
+    private static string GetFallbackFont(bool bold)
     {
-        DanfeFont font = DanfeFont.Arial;
-        string? customFont = null;
+        // Try local IBM Plex Sans first
+        string localPath = bold ? "fonts/IBMPlexSans-Bold.ttf" : "fonts/IBMPlexSans-Regular.ttf";
+        if (File.Exists(localPath)) return localPath;
 
-        if (!string.IsNullOrWhiteSpace(options.Font))
+        // Try standard OS paths (Windows)
+        if (OperatingSystem.IsWindows())
         {
-            if (Enum.TryParse(options.Font, true, out DanfeFont parsedFont))
-            {
-                font = parsedFont;
-            }
-            else
-            {
-                customFont = options.Font;
-            }
+            string winPath = bold ? @"C:\Windows\Fonts\arialbd.ttf" : @"C:\Windows\Fonts\arial.ttf";
+            if (File.Exists(winPath)) return winPath;
         }
 
-        return new DanfeOptions
-        {
-            LogoBytes = ObterLogoBytes(options),
-            ValidateBeforeGenerate = true,
-            EmitFooter = true,
-            TipoImpressaoOverride = options.Landscape ? 2 : null,
-            CanceledOverride = options.Cancelado ? true : null,
-            Font = font,
-            CustomFontName = customFont
-        };
+        return localPath; // fallback to local relative path even if not exists, validation will report
     }
 
-    private static IReadOnlyList<string> LocalizarXmls()
+    private sealed class CliOptions
     {
-        return CandidateDirectories()
-            .Where(Directory.Exists)
-            .SelectMany(dir => Directory.EnumerateFiles(dir, "*.xml", SearchOption.TopDirectoryOnly))
-            .Where(path => Path.GetFileName(path).Contains("-proc", StringComparison.OrdinalIgnoreCase))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(path => path)
-            .ToList();
-    }
+        public List<string> XmlPaths { get; } = new();
+        public string OutputDirectory { get; set; } = "./out";
+        public string? LogoPath { get; set; }
+        public bool Landscape { get; set; }
+        public bool Cancelado { get; set; }
+        public string? FontRegPath { get; set; }
+        public string? FontBoldPath { get; set; }
 
-    private static string ResolveInputPath(string xmlPath)
-    {
-        if (Path.IsPathFullyQualified(xmlPath) && File.Exists(xmlPath))
+        public static CliOptions Parse(string[] args)
         {
-            return xmlPath;
-        }
+            var options = new CliOptions();
 
-        foreach (string dir in CandidateDirectories())
-        {
-            string candidate = Path.Combine(dir, xmlPath);
-            if (File.Exists(candidate))
-            {
-                return Path.GetFullPath(candidate);
-            }
-        }
-
-        return xmlPath;
-    }
-
-    private static byte[]? ObterLogoBytes(CliOptions options)
-    {
-        if (!options.HasLogo)
-        {
-            return null;
-        }
-
-        if (!string.IsNullOrWhiteSpace(options.LogoPath))
-        {
-            string logoPath = ResolveInputPath(options.LogoPath);
-            if (!File.Exists(logoPath))
-            {
-                throw new FileNotFoundException($"Logo não encontrado: {options.LogoPath}", options.LogoPath);
-            }
-
-            return File.ReadAllBytes(logoPath);
-        }
-
-        foreach (string dir in CandidateDirectories())
-        {
-            string logoPath = Path.Combine(dir, LogoFileName);
-            if (File.Exists(logoPath))
-            {
-                return File.ReadAllBytes(logoPath);
-            }
-        }
-
-        return null;
-    }
-
-    private static IEnumerable<string> CandidateDirectories()
-    {
-        HashSet<string> emitted = new(StringComparer.OrdinalIgnoreCase);
-
-        foreach (string start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
-        {
-            DirectoryInfo? dir = new(start);
-            for (int i = 0; i < 8 && dir != null; i++)
-            {
-                if (emitted.Add(dir.FullName))
-                {
-                    yield return dir.FullName;
-                }
-
-                string xmlTestDir = Path.Combine(dir.FullName, XmlTestDirectoryName);
-                if (Directory.Exists(xmlTestDir) && emitted.Add(xmlTestDir))
-                {
-                    yield return xmlTestDir;
-                }
-
-                string samplesDir = Path.Combine(dir.FullName, "samples");
-                if (Directory.Exists(samplesDir) && emitted.Add(samplesDir))
-                {
-                    yield return samplesDir;
-                }
-
-                dir = dir.Parent;
-            }
-        }
-    }
-
-    private static int GetPdfPageCount(string path)
-    {
-        byte[] bytes = File.ReadAllBytes(path);
-        string text = System.Text.Encoding.Latin1.GetString(bytes);
-        return System.Text.RegularExpressions.Regex.Matches(text, @"/Type\s*/Page\b").Count;
-    }
-
-
-    private sealed record CliOptions(
-        IReadOnlyList<string> XmlPaths,
-        string OutputDirectory,
-        bool IncludeLogo,
-        string? LogoPath,
-        bool GenerateMock,
-        bool GenerateSnapshot,
-        bool Landscape,
-        bool Cancelado,
-        string? Font)
-    {
-        public bool HasLogo => IncludeLogo || !string.IsNullOrWhiteSpace(LogoPath);
-
-        public static CliOptions Parse(IReadOnlyList<string> args)
-        {
-            List<string> xmlPaths = [];
-            string outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "out");
-            bool includeLogo = false;
-            string? logoPath = null;
-            bool generateMock = false;
-            bool generateSnapshot = false;
-            bool landscape = false;
-            bool cancelado = false;
-            string? font = null;
-
-            for (int i = 0; i < args.Count; i++)
+            for (int i = 0; i < args.Length; i++)
             {
                 string arg = args[i];
 
-                if (arg is "--logo" or "-l")
+                if (arg == "--logo-path")
                 {
-                    includeLogo = true;
+                    if (i + 1 >= args.Length) throw new ArgumentException("Caminho do logotipo ausente após --logo-path.");
+                    options.LogoPath = args[++i];
                 }
-                else if (arg is "--landscape" or "-p" or "--paisagem")
+                else if (arg is "--landscape" or "-p")
                 {
-                    landscape = true;
+                    options.Landscape = true;
                 }
                 else if (arg is "--cancelado" or "-c")
                 {
-                    cancelado = true;
-                }
-                else if (arg is "--logo-path")
-                {
-                    if (i + 1 >= args.Count)
-                    {
-                        throw new ArgumentException("Informe o caminho do logo após --logo-path.");
-                    }
-
-                    logoPath = args[++i];
-                }
-                else if (arg is "--mock" or "-m")
-                {
-                    generateMock = true;
-                }
-                else if (arg is "--snapshot")
-                {
-                    generateSnapshot = true;
+                    options.Cancelado = true;
                 }
                 else if (arg is "--output" or "-o")
                 {
-                    if (i + 1 >= args.Count)
-                    {
-                        throw new ArgumentException("Informe o diretório após --output.");
-                    }
-
-                    outputDirectory = args[++i];
+                    if (i + 1 >= args.Length) throw new ArgumentException("Diretório de saída ausente após --output.");
+                    options.OutputDirectory = args[++i];
                 }
-                else if (arg is "--font" or "-f")
+                else if (arg == "--font-reg")
                 {
-                    if (i + 1 >= args.Count)
-                    {
-                        throw new ArgumentException("Informe o nome da fonte após --font ou -f.");
-                    }
-
-                    font = args[++i];
+                    if (i + 1 >= args.Length) throw new ArgumentException("Caminho da fonte regular ausente após --font-reg.");
+                    options.FontRegPath = args[++i];
+                }
+                else if (arg == "--font-bold")
+                {
+                    if (i + 1 >= args.Length) throw new ArgumentException("Caminho da fonte negrito ausente após --font-bold.");
+                    options.FontBoldPath = args[++i];
                 }
                 else if (arg.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
                 {
-                    xmlPaths.Add(arg);
+                    options.XmlPaths.Add(arg);
                 }
             }
 
-            return new CliOptions(xmlPaths, outputDirectory, includeLogo, logoPath, generateMock, generateSnapshot, landscape, cancelado, font);
+            if (options.XmlPaths.Count == 0)
+            {
+                // Look for XML files in current folder
+                var localXmls = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml");
+                options.XmlPaths.AddRange(localXmls);
+            }
+
+            return options;
         }
     }
 }

@@ -1,37 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <RootNamespace>NFEDanfe</RootNamespace>
     <PackageId>NFEDanfe</PackageId>
-    <Version>0.1.27</Version>
-    <Authors>NFEDanfe Contributors</Authors>
-    <Company>NFEDanfe</Company>
-    <Description>Biblioteca .NET para gerar DANFE em PDF a partir de XML NF-e autorizado.</Description>
-    <PackageTags>danfe;nfe;nf-e;pdf;questpdf;fiscal</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/fabyo/NFEDanfe.git</RepositoryUrl>
+    <AssemblyName>NFEDanfe</AssemblyName>
+    <Nullable>enable</Nullable>
+    <Version>2.0.0</Version>
+    <LangVersion>12</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Biblioteca focada na geração de DANFE (Documento Auxiliar da Nota Fiscal Eletrônica) modelo 55 em PDF vetorial.</Description>
     <PackageIcon>logo.png</PackageIcon>
-    <!-- SourceLink configuration -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
-
   <ItemGroup>
+    <PackageReference Include="PDFsharp" Version="6.1.0" />
     <PackageReference Include="Barcoder" Version="3.0.0" />
-    <PackageReference Include="QuestPDF" Version="2026.6.0" />
   </ItemGroup>
-
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\logo.png" Pack="true" PackagePath="\" />
+    <Compile Remove="NFEDanfe.Cli\**" />
+    <None Include="NFEDanfe.Cli\**" />
   </ItemGroup>
-
+  <ItemGroup>
+    <None Include="logo.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
