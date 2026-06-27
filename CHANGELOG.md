@@ -1,6 +1,6 @@
 # Histórico de alterações
 
-## 2.0.0
+## 2.1.0
 - Transição completa da engine de layout: deixamos de usar o QuestPDF e passamos a usar um motor de renderização vetorial próprio, leve e nativo construído sobre o PDFsharp.
 - Eliminação total de dependências com licenças comerciais restritivas no motor de PDF, tornando a biblioteca ideal para qualquer tipo de uso corporativo ou pessoal.
 - Implementação de algoritmo inteligente de paginação real de itens do DANFE com cabeçalhos de continuação.
