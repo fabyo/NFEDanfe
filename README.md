@@ -312,6 +312,7 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 | Projeto | Descrição |
 |---|---|
 | [NFeSchemaDownloader](https://github.com/fabyo/NFeSchemaDownloader) | Mantém os Schemas XML (XSD) da SEFAZ sempre atualizados automaticamente |
+| [NFEEmissor](https://github.com/fabyo/NFEEmissor) | Gera, assina e autoriza NF-e em homologação ou produção, com API stateless, CLI e pacotes NuGet |
 | [NFEConsulta](https://github.com/fabyo/NFEConsulta) | Consulta NF-e, valida XML e verifica status oficial da SEFAZ |
 
 ### Ferramentas CLI
@@ -325,7 +326,10 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 NFeSchemaDownloader (Mantém XSDs atualizados)
    │
    ▼
-NF-e XML
+NFEEmissor (Gera, assina e autoriza a NF-e)
+   │
+   ▼
+NF-e XML autorizado
    │
    ▼
 NFEConsulta (Valida XML via XSD e consulta SEFAZ)
