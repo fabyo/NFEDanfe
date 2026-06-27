@@ -1,9 +1,11 @@
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using NFEDanfe.Domain.Models;
 
 namespace NFEDanfe.Domain.Formatting;
 
+/// <summary>Formatadores de dados para exibição no DANFE.</summary>
 public static class DocumentFormatter
 {
     public static readonly CultureInfo Brazil = CultureInfo.GetCultureInfo("pt-BR");

@@ -1,14 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using NFEDanfe.Domain.Models;
 using NFEDanfe.Domain.Formatting;
+using NFEDanfe.Options;
 
 namespace NFEDanfe.Domain.Parser;
 
+/// <summary>Parser de XML de NF-e autorizado para DanfeModel.</summary>
 public static class DanfeXmlParser
 {
     private static readonly XNamespace NfeNamespace = "http://www.portalfiscal.inf.br/nfe";
 
+    /// <summary>Parseia XML a partir de um arquivo no disco.</summary>
     public static DanfeModel Parse(string xmlPath, DanfeOptions? options = null)
     {
         if (string.IsNullOrWhiteSpace(xmlPath))
@@ -25,12 +32,14 @@ public static class DanfeXmlParser
         return Parse(stream, options);
     }
 
+    /// <summary>Parseia XML a partir de um Stream.</summary>
     public static DanfeModel Parse(Stream xmlStream, DanfeOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(xmlStream);
         return ParseDocument(LoadSecure(xmlStream, options));
     }
 
+    /// <summary>Parseia XML a partir de uma string com o conteúdo XML.</summary>
     public static DanfeModel ParseXmlContent(string xmlContent)
     {
         if (string.IsNullOrWhiteSpace(xmlContent))
@@ -52,6 +61,7 @@ public static class DanfeXmlParser
         return ParseDocument(doc);
     }
 
+    /// <summary>Parseia o XDocument da NF-e para o DanfeModel.</summary>
     public static DanfeModel ParseDocument(XDocument doc)
     {
         ArgumentNullException.ThrowIfNull(doc);
@@ -65,6 +75,10 @@ public static class DanfeXmlParser
         DadosDanfe dadosDanfe = ParseDadosDanfe(doc, infNFe, ide);
         Emitente emitente = ParseEmitente(emit);
         Destinatario destinatario = ParseDestinatario(dest);
+        if (dadosDanfe.TipoAmbiente == 2)
+        {
+            destinatario = destinatario with { RazaoSocial = "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL" };
+        }
         ImpostosModel impostos = ParseImpostos(total);
         CobrancaModel? cobranca = ParseCobranca(infNFe.Element(NfeNamespace + "cobr"));
         TransportadorModel? transportador = ParseTransportador(infNFe.Element(NfeNamespace + "transp"));
@@ -144,6 +158,10 @@ public static class DanfeXmlParser
         string cStat = infProt?.Element(NfeNamespace + "cStat")?.Value ?? string.Empty;
         bool isCancelada = cStat == "101" || cStat == "151";
 
+        XElement? nfe = infNFe.Parent;
+        XElement? infNFeSupl = nfe?.Element(NfeNamespace + "infNFeSupl");
+        string? qrCode = infNFeSupl?.Element(NfeNamespace + "qrCode")?.Value;
+
         return new DadosDanfe(
             TipoOperacao: ide.Int(NfeNamespace, "tpNF", 1),
             NaturezaOperacao: ide.Text(NfeNamespace, "natOp"),
@@ -159,7 +177,8 @@ public static class DanfeXmlParser
             VersaoLayout: infNFe.Attribute("versao")?.Value ?? "4.00",
             TipoImpressao: ide.Int(NfeNamespace, "tpImp", 1),
             TipoAmbiente: ide.Int(NfeNamespace, "tpAmb", 1),
-            IsCancelada: isCancelada);
+            IsCancelada: isCancelada,
+            UrlQrCode: qrCode);
     }
 
     private static Emitente ParseEmitente(XElement emit)

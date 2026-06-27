@@ -17,18 +17,16 @@ O projeto tem dois formatos de uso:
 
 ## Recursos
 
-- Compatível com .NET 8 e .NET 10.
-- Geração de DANFE em PDF com QuestPDF.
+- Compatível com .NET 8 e .NET 10 (multi-targeting).
+- Geração de DANFE em PDF 100% nativa, rápida e vetorial baseada em PDFsharp (livre de licenças comerciais restritivas).
 - DANFE em modo retrato e paisagem.
 - Seleção automática pelo campo `tpImp` do XML NF-e.
 - Override manual de orientação via `DanfeOptions.TipoImpressaoOverride`.
 - Parser seguro de XML NF-e com DTD proibido.
-- Validação fail-fast de domínio.
-- Validação de CPF, CNPJ numérico e CNPJ alfanumérico.
-- Validação de chave de acesso NF-e, incluindo modelo `55` e dígito verificador.
 - Validação de consistência de totais de produtos, descontos e valor da nota.
-- Paginação real no DANFE via QuestPDF.
-- API pública simples com `DanfeGenerator` e `DanfeOptions`.
+- Paginação real de itens do DANFE com cabeçalhos de continuação automáticos.
+- Simulação de negrito inteligente (overstrike) que garante formatação perfeita mesmo em ambientes restritos a fontes regulares.
+- API pública simples com `DanfeGenerator` e `DanfeOptions` compatível com a API de referência.
 - Snapshot textual para regressão funcional.
 
 ## Instalação Como Biblioteca
@@ -43,9 +41,6 @@ Uso básico:
 
 ```csharp
 using NFEDanfe;
-using QuestPDF.Infrastructure;
-
-QuestPDF.Settings.License = LicenseType.Community;
 
 await using FileStream output = File.Create("danfe.pdf");
 DanfeGenerator.GenerateFromXml("nota-procNFe.xml", output);
@@ -157,7 +152,7 @@ var options = new DanfeOptions
 };
 ```
 
-Caso queira usar uma fonte específica instalada no sistema operacional ou previamente registrada no QuestPDF, use a propriedade `CustomFontName`:
+Caso queira usar uma fonte específica instalada no sistema operacional, use a propriedade `CustomFontName`:
 
 ```csharp
 var options = new DanfeOptions
@@ -266,21 +261,6 @@ A pasta `samples/` contém XML público sanitizado para demonstração.
 
 A pasta `xml_testes/` é ignorada pelo Git e deve ser usada apenas para XMLs fiscais reais locais.
 
-## QuestPDF License
-
-Este projeto usa QuestPDF. Antes de usar em produção, valide o tipo de licença exigido pelo QuestPDF para o seu cenário de uso.
-
-No exemplo/CLI é usada a configuração:
-
-```csharp
-// Requer o namespace 'QuestPDF.Infrastructure':
-using QuestPDF.Infrastructure;
-QuestPDF.Settings.License = LicenseType.Community;
-
-// Ou de forma totalmente qualificada (sem necessidade de using):
-QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
-```
-
 ## Empacotar
 
 Gerar pacote NuGet da biblioteca:
@@ -300,10 +280,13 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 - `NFEDanfe`: biblioteca reutilizável.
 - `NFEDanfe.Cli`: CLI e exemplo real de consumo.
 - `samples`: exemplos públicos sanitizados.
+- `Barcode`: gerador de códigos de barras (Code 128 / QR Code).
+- `Blocks`: blocos visuais de desenho em baixo nível (canhoto, emitente, destinatário, etc.).
+- `Builder`: construtor fluente do layout do DANFE.
 - `Domain/Parser`: parser XML seguro.
-- `Domain/Validation`: validações fiscais e de domínio.
-- `Layout`: documentos QuestPDF.
-- `Layout/Components`: blocos visuais do DANFE.
+- `Layout`: orquestração gráfica do documento.
+- `Options`: opções de configuração do documento.
+- `Pagination`: paginação de grade de itens e divisão em múltiplas folhas.
 
 - [Histórico de alterações](CHANGELOG.md)
 
@@ -312,6 +295,7 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 | Projeto | Descrição |
 |---|---|
 | [NFeSchemaDownloader](https://github.com/fabyo/NFeSchemaDownloader) | Mantém os Schemas XML (XSD) da SEFAZ sempre atualizados automaticamente |
+| [NFEEmissor](https://github.com/fabyo/NFEEmissor) | Gera, assina e autoriza NF-e em homologação ou produção, com API stateless, CLI e pacotes NuGet |
 | [NFEConsulta](https://github.com/fabyo/NFEConsulta) | Consulta NF-e, valida XML e verifica status oficial da SEFAZ |
 
 ### Ferramentas CLI
@@ -325,7 +309,10 @@ dotnet pack .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -c Release
 NFeSchemaDownloader (Mantém XSDs atualizados)
    │
    ▼
-NF-e XML
+NFEEmissor (Gera, assina e autoriza a NF-e)
+   │
+   ▼
+NF-e XML autorizado
    │
    ▼
 NFEConsulta (Valida XML via XSD e consulta SEFAZ)
