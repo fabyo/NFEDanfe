@@ -1,33 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\NFEDanfe\NFEDanfe.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AnalysisLevel>latest</AnalysisLevel>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>nfedanfe</ToolCommandName>
     <PackageId>NFEDanfe.Cli</PackageId>
-    <Version>0.1.27</Version>
-    <Authors>NFEDanfe Contributors</Authors>
-    <Company>NFEDanfe</Company>
-    <Description>Ferramenta de linha de comando para gerar DANFE em PDF a partir de XML NF-e autorizado.</Description>
-    <PackageTags>danfe;nfe;nf-e;pdf;cli;dotnet-tool</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>logo-200.png</PackageIcon>
+    <Version>2.0.0</Version>
+    <Description>Ferramenta de linha de comando para gerar DANFE em PDF usando NFEDanfe.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\logo-200.png" Pack="true" PackagePath="\" />
+    <ProjectReference Include="..\NFEDanfe\NFEDanfe.csproj" />
   </ItemGroup>
 
 </Project>

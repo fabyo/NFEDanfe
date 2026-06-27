@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -5,6 +6,7 @@ using System.Xml.Linq;
 
 namespace NFEDanfe.Domain.Parser;
 
+/// <summary>Métodos auxiliares para extração e decodificação de valores XML.</summary>
 internal static class XmlValue
 {
     private static readonly Regex NcrRegex = new(@"&?#([0-9]+);", RegexOptions.Compiled);
@@ -20,10 +22,8 @@ internal static class XmlValue
     {
         if (string.IsNullOrEmpty(input)) return input;
 
-        // Decode standard HTML entities first (handles &amp;, &quot;, &lt;, &gt;, &#216;, etc.)
         string decoded = WebUtility.HtmlDecode(input);
 
-        // Decode any remaining NCRs that might be missing the leading '&'
         decoded = NcrRegex.Replace(decoded, match =>
         {
             if (int.TryParse(match.Groups[1].Value, out int code))
@@ -52,7 +52,6 @@ internal static class XmlValue
     public static decimal Decimal(this XElement? element, XNamespace ns, string name, decimal fallback = 0)
     {
         string? value = element?.Element(ns + name)?.Value;
-
         return decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal result)
             ? result
             : fallback;
@@ -61,7 +60,6 @@ internal static class XmlValue
     public static decimal? NullableDecimal(this XElement? element, XNamespace ns, string name)
     {
         string? value = element?.Element(ns + name)?.Value;
-
         return decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal result)
             ? result
             : null;
@@ -76,7 +74,6 @@ internal static class XmlValue
     public static DateTime DateTime(this XElement? element, XNamespace ns, string name)
     {
         string? value = element?.Element(ns + name)?.Value;
-
         return System.DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out System.DateTime result)
             ? result
             : System.DateTime.MinValue;
@@ -85,7 +82,6 @@ internal static class XmlValue
     public static DateTime? NullableDateTime(this XElement? element, XNamespace ns, string name)
     {
         string? value = element?.Element(ns + name)?.Value;
-
         return System.DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out System.DateTime result)
             ? result
             : null;

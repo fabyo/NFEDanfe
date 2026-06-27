@@ -1,5 +1,6 @@
 namespace NFEDanfe.Domain.Models;
 
+/// <summary>Representa um produto/serviço no DANFE.</summary>
 public record ProdutoModel(
     string Codigo,
     string Descricao,

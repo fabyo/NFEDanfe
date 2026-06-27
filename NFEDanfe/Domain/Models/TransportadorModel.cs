@@ -1,5 +1,6 @@
 namespace NFEDanfe.Domain.Models;
 
+/// <summary>Representa o transportador e volumes do DANFE.</summary>
 public record TransportadorModel(
     string RazaoSocial,
     string FretePorConta,
