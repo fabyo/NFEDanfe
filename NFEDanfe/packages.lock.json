@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "Barcoder": {
+        "type": "Direct",
+        "requested": "[3.0.0, )",
+        "resolved": "3.0.0",
+        "contentHash": "8b2S76glXm2rBkKszG0V4lJeowInKSGSf9rDZVWabtS36ekQPpMCPLLHrC+LSVIqPjR54SUX7RlRjLjKvoPI4g=="
+      },
+      "QuestPDF": {
+        "type": "Direct",
+        "requested": "[2026.6.0, )",
+        "resolved": "2026.6.0",
+        "contentHash": "0DQY6bGXcFLdj10vXmdMMZqgShQGuy0XvPtkkfntlOmSrtIZTBmlLFQilg3OK/V9c6hlyqus+g6PKm5YexEZ0A=="
+      }
+    },
+    "net8.0": {
+      "Barcoder": {
+        "type": "Direct",
+        "requested": "[3.0.0, )",
+        "resolved": "3.0.0",
+        "contentHash": "8b2S76glXm2rBkKszG0V4lJeowInKSGSf9rDZVWabtS36ekQPpMCPLLHrC+LSVIqPjR54SUX7RlRjLjKvoPI4g=="
+      },
+      "QuestPDF": {
+        "type": "Direct",
+        "requested": "[2026.6.0, )",
+        "resolved": "2026.6.0",
+        "contentHash": "0DQY6bGXcFLdj10vXmdMMZqgShQGuy0XvPtkkfntlOmSrtIZTBmlLFQilg3OK/V9c6hlyqus+g6PKm5YexEZ0A=="
+      }
+    }
+  }
+}

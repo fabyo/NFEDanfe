@@ -6,23 +6,25 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions: read-all
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
       with:
         dotnet-version: |
           8.0.x
           10.0.x
 
     - name: Restore dependencies
-      run: dotnet restore NFEDanfe.slnx
+      run: dotnet restore NFEDanfe.slnx --locked-mode
 
     - name: Build
       run: dotnet build NFEDanfe.slnx --configuration Release --no-restore
@@ -38,7 +40,7 @@ jobs:
 
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: test-results
         path: NFEDanfe.Tests/TestResults/test-results.trx

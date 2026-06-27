@@ -5,6 +5,8 @@ on:
     tags:
       - 'v*'
 
+permissions: read-all
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,17 +17,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           dotnet-version: |
             8.0.x
             10.0.x
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       - name: Build
         run: dotnet build -c Release --no-restore
@@ -34,7 +36,7 @@ jobs:
         run: dotnet pack -c Release --no-build -o ./artifacts
 
       - name: NuGet Login
-        uses: NuGet/login@v1
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
         id: login
         with:
           user: fabyoguima
