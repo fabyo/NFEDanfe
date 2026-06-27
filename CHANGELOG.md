@@ -1,5 +1,10 @@
 # Histórico de alterações
 
+## 0.1.27
+- Reforçadas as permissões mínimas dos workflows do GitHub Actions.
+- Fixadas as Actions por hash imutável e adicionados lockfiles do NuGet para builds reproduzíveis.
+- Adicionada análise estática de segurança com CodeQL.
+
 ## 0.1.26
 - Alinhados ao fundo os valores monetários da seção `CÁLCULO DO IMPOSTO`, mantendo o tamanho original das células.
 - Removidas as linhas tracejadas vazias em `DADOS DO PRODUTO / SERVIÇOS`, desenhando a grade apenas para produtos existentes.

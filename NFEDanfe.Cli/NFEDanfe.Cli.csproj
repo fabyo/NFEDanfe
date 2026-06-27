@@ -14,7 +14,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>nfedanfe</ToolCommandName>
     <PackageId>NFEDanfe.Cli</PackageId>
-    <Version>0.1.26</Version>
+    <Version>0.1.27</Version>
     <Authors>NFEDanfe Contributors</Authors>
     <Company>NFEDanfe</Company>
     <Description>Ferramenta de linha de comando para gerar DANFE em PDF a partir de XML NF-e autorizado.</Description>
