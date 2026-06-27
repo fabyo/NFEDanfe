@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace NFEDanfe.Domain.Models;
 
+/// <summary>Modelo de dados unificado do DANFE.</summary>
 public record DanfeModel(
     Emitente Emitente,
     DadosDanfe DadosDanfe,

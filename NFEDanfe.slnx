@@ -1,5 +1,4 @@
 <Solution>
-  <Project Path="NFEDanfe.Tests/NFEDanfe.Tests.csproj" />
   <Project Path="NFEDanfe.Cli/NFEDanfe.Cli.csproj" />
   <Project Path="NFEDanfe/NFEDanfe.csproj" />
 </Solution>

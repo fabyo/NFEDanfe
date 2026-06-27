@@ -1,5 +1,8 @@
+using System;
+
 namespace NFEDanfe.Domain.Models;
 
+/// <summary>Representa os dados específicos do DANFE/NF-e.</summary>
 public record DadosDanfe(
     int TipoOperacao, // 0 = Entrada, 1 = Saída
     string NaturezaOperacao,
@@ -15,5 +18,6 @@ public record DadosDanfe(
     string VersaoLayout = "4.00",
     int TipoImpressao = 1,
     int TipoAmbiente = 1,
-    bool IsCancelada = false
+    bool IsCancelada = false,
+    string? UrlQrCode = null
 );

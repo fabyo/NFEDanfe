@@ -1,5 +1,6 @@
 namespace NFEDanfe.Domain.Models;
 
+/// <summary>Representa os totais de impostos do DANFE.</summary>
 public record ImpostosModel(
     decimal BaseCalculoIcms,
     decimal ValorIcms,
@@ -20,4 +21,3 @@ public record ImpostosModel(
     decimal ValorCofins,
     decimal ValorNota
 );
-
