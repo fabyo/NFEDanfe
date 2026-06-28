@@ -1,6 +1,7 @@
 # Histórico de alterações
 
-## 2.1.5
+## 2.1.6
+- Empacotamento automático da pasta de fontes (`fonts/`) dentro do pacote NuGet, com cópia automática para a pasta de build dos projetos que referenciam a biblioteca.
 - Correção e aplicação de negrito (faux bold via overstrike) na label e no valor do número do Pedido em Informações Complementares.
 - Correção do nome no rodapé da DANFE de PDFHK para NFEDanfe.
 - Remoção do `justfile` e do diretório `scripts/` do repositório.
