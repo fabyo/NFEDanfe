@@ -118,10 +118,10 @@ internal sealed class AdditionalDataBlock
                     else if (boldNext)
                     {
                         isBold = true;
-                        boldNext = false;
                     }
                     else if (string.Equals(word, "Pedido:", StringComparison.OrdinalIgnoreCase))
                     {
+                        isBold = true;
                         boldNext = true;
                     }
                     
@@ -228,7 +228,15 @@ internal sealed class AdditionalDataBlock
                     currentY += lineSpacing;
                 }
 
-                gfx.DrawString(item.text, item.font, styles.TextBrush, currentX, currentY);
+                if (item.font.Style == XFontStyleEx.Bold)
+                {
+                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX, currentY);
+                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX + 0.35, currentY);
+                }
+                else
+                {
+                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX, currentY);
+                }
                 currentX += wordWidth;
             }
         }
