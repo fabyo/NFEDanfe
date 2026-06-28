@@ -28,6 +28,7 @@ jobs:
         if: ${{ steps.release.outputs.prs_created == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
           release_branch="$(gh pr list --state open --label 'autorelease: pending' --json headRefName --jq '.[0].headRefName')"
