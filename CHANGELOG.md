@@ -1,6 +1,7 @@
 # Histórico de alterações
 
-## 2.1.4
+## 2.1.5
+- Correção e aplicação de negrito (faux bold via overstrike) na label e no valor do número do Pedido em Informações Complementares.
 - Correção do nome no rodapé da DANFE de PDFHK para NFEDanfe.
 - Remoção do `justfile` e do diretório `scripts/` do repositório.
 - Criação e integração da política de segurança (`SECURITY.md`).

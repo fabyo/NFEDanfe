@@ -8,7 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>nfedanfe</ToolCommandName>
     <PackageId>NFEDanfe.Cli</PackageId>
-    <Version>2.1.4</Version>
+    <Version>2.1.5</Version>
     <Description>Ferramenta de linha de comando para gerar DANFE em PDF usando NFEDanfe.</Description>
     <PackageIcon>logo-200.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
