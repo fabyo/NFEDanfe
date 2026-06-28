@@ -1,5 +1,16 @@
 # Histórico de alterações
 
+## 2.1.7
+- Removidos workflows de segurança incompatíveis com o projeto, destinados a imagens Docker e aplicativos móveis.
+- Mantidos apenas os workflows aplicáveis ao projeto .NET, com GitHub Actions fixadas por hashes imutáveis.
+
+## 2.1.6
+- Empacotamento automático da pasta de fontes (`fonts/`) dentro do pacote NuGet, com cópia automática para a pasta de build dos projetos que referenciam a biblioteca.
+- Correção e aplicação de negrito (faux bold via overstrike) na label e no valor do número do Pedido em Informações Complementares.
+- Correção do nome no rodapé da DANFE de PDFHK para NFEDanfe.
+- Remoção do `justfile` e do diretório `scripts/` do repositório.
+- Criação e integração da política de segurança (`SECURITY.md`).
+
 ## 2.1.3
 - Configuração do pacote NuGet para incluir e renderizar o `README.md` e o logotipo oficial (`logo.png` / `logo-200.png`) diretamente na página do pacote.
 - Adicionado guia de contribuição detalhado em português (`CONTRIBUTING.md`).

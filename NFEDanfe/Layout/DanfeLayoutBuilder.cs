@@ -276,7 +276,7 @@ public sealed class DanfeLayoutBuilder
             {
                 var footerTextFont = new XFont(DanfeFontResolver.FamilyName, 5.0, XFontStyleEx.Italic);
                 var formatRight = new XStringFormat { Alignment = XStringAlignment.Far, LineAlignment = XLineAlignment.Far };
-                string footerText = $"PDFHK  impresso em {DateTime.Now:dd/MM/yyyy HH:mm:ss} - layout NF-e {model.DadosDanfe.VersaoLayout}";
+                string footerText = $"NFEDanfe  impresso em {DateTime.Now:dd/MM/yyyy HH:mm:ss} - layout NF-e {model.DadosDanfe.VersaoLayout}";
                 gfx.DrawString(footerText, footerTextFont, engine.Styles.TextBrush,
                     new XRect(contentX, engine.MarginTopPt + engine.UsableHeight + 2.0, contentW, 10), formatRight);
             }
