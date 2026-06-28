@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![Downloads](https://img.shields.io/nuget/dt/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![Build](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml)
-[![Release](https://github.com/fabyo/NFEDanfe/actions/workflows/release.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/release.yml)
+[![Publish](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml)
 [![Scorecard](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13399/badge)](https://www.bestpractices.dev/projects/13399)
 [![GitHub stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
