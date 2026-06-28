@@ -1,5 +1,10 @@
 # Histórico de alterações
 
+## 2.1.4
+- Correção do nome no rodapé da DANFE de PDFHK para NFEDanfe.
+- Remoção do `justfile` e do diretório `scripts/` do repositório.
+- Criação e integração da política de segurança (`SECURITY.md`).
+
 ## 2.1.3
 - Configuração do pacote NuGet para incluir e renderizar o `README.md` e o logotipo oficial (`logo.png` / `logo-200.png`) diretamente na página do pacote.
 - Adicionado guia de contribuição detalhado em português (`CONTRIBUTING.md`).
