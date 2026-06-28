@@ -11,6 +11,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Biblioteca focada na geração de DANFE (Documento Auxiliar da Nota Fiscal Eletrônica) modelo 55 em PDF vetorial.</Description>
     <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="PDFsharp" Version="6.1.0" />
@@ -22,5 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="logo.png" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
