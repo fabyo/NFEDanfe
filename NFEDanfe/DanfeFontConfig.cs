@@ -3,6 +3,17 @@ namespace NFEDanfe;
 /// <summary>Configuração de fontes para renderização do DANFE.</summary>
 public sealed class DanfeFontConfig
 {
+    /// <summary>Cria a configuração usando a fonte Roboto distribuída com o pacote, quando disponível.</summary>
+    public DanfeFontConfig()
+    {
+        string? defaultFontPath = FindDefaultFontPath();
+        if (defaultFontPath is not null)
+        {
+            BaseFontPath = defaultFontPath;
+            BaseFontBoldPath = defaultFontPath;
+        }
+    }
+
     /// <summary>Caminho do arquivo .ttf/.otf da fonte regular.</summary>
     public string BaseFontPath { get; set; } = string.Empty;
 
@@ -33,5 +44,22 @@ public sealed class DanfeFontConfig
                 "Verifique se o caminho está correto. Em ambiente Docker, certifique-se de montar " +
                 "o volume com as fontes (ex: -v /caminho/local/fonts:/fonts) e apontar para o caminho dentro do container.");
         }
+    }
+
+    private static string? FindDefaultFontPath()
+    {
+        string? current = AppContext.BaseDirectory;
+        for (int level = 0; level < 8 && !string.IsNullOrWhiteSpace(current); level++)
+        {
+            string candidate = Path.Combine(current, "fonts", "Roboto-Regular.ttf");
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            current = Directory.GetParent(current)?.FullName;
+        }
+
+        return null;
     }
 }

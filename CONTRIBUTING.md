@@ -70,6 +70,23 @@ Utilizamos padrões semânticos simples para mensagens de commit baseados em [Co
 * `docs:` para atualizações na documentação ou README.
 * `chore:` para manutenção de dependências e automações.
 
+Use `!` ou um rodapé `BREAKING CHANGE:` quando houver incompatibilidade de API. O tipo do commit define a próxima versão:
+
+* `fix:` gera uma versão patch (`2.1.7` → `2.1.8`).
+* `feat:` gera uma versão minor (`2.1.7` → `2.2.0`).
+* `feat!:`/`fix!:` gera uma versão major (`2.1.7` → `3.0.0`).
+
+## Processo de release
+
+O Release Please mantém automaticamente um PR de release com a nova versão e o `CHANGELOG.md`. Ao mesclar esse PR no `main`, o workflow:
+
+1. cria a tag `vX.Y.Z` e o GitHub Release;
+2. restaura dependências com lockfiles, compila e executa os testes;
+3. gera e valida os pacotes `NFEDanfe` e `NFEDanfe.Cli`;
+4. publica os pacotes no NuGet e os anexa ao GitHub Release.
+
+Não crie tags de release manualmente. A versão é centralizada em `Directory.Build.props` e atualizada pelo Release Please.
+
 ---
 
 ## 📜 Licença
