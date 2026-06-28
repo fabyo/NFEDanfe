@@ -17,7 +17,9 @@ public static class NFeXmlParser
     public static DanfeData Parse(Stream xmlStream)
     {
         ArgumentNullException.ThrowIfNull(xmlStream);
-        var doc = XDocument.Load(xmlStream);
+        var settings = new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit, XmlResolver = null };
+        using var reader = System.Xml.XmlReader.Create(xmlStream, settings);
+        var doc = XDocument.Load(reader);
         return ParseDocument(doc);
     }
 
@@ -25,7 +27,10 @@ public static class NFeXmlParser
     public static DanfeData Parse(string xmlContent)
     {
         ArgumentNullException.ThrowIfNull(xmlContent);
-        var doc = XDocument.Parse(xmlContent);
+        var settings = new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit, XmlResolver = null };
+        using var stringReader = new StringReader(xmlContent);
+        using var reader = System.Xml.XmlReader.Create(stringReader, settings);
+        var doc = XDocument.Load(reader);
         return ParseDocument(doc);
     }
 
