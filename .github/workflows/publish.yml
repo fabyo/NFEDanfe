@@ -4,11 +4,23 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      publish_only:
+        description: Publish an existing release without creating a new GitHub release
+        required: false
+        type: boolean
+        default: false
+      ref:
+        description: Git ref to publish from when publish_only is enabled
+        required: false
+        type: string
+        default: main
 
 permissions: read-all
 
 jobs:
   release:
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.publish_only }}
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -100,3 +112,61 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload '${{ steps.release.outputs.tag_name }}' artifacts/*.nupkg --clobber
+
+  publish-existing:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_only }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout requested ref
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Validate release version
+        shell: pwsh
+        run: |
+          $declaredVersion = (Get-Content version.txt -Raw).Trim()
+          $buildVersion = (dotnet msbuild NFEDanfe/NFEDanfe.csproj -getProperty:Version).Trim()
+          if ($declaredVersion -ne $buildVersion) {
+            throw "version.txt ($declaredVersion) and MSBuild ($buildVersion) must match."
+          }
+
+      - name: Restore
+        run: dotnet restore NFEDanfe.slnx --locked-mode
+
+      - name: Build
+        run: dotnet build NFEDanfe.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test NFEDanfe.Tests/NFEDanfe.Tests.csproj --configuration Release --no-build --no-restore
+
+      - name: Pack
+        run: dotnet pack NFEDanfe.slnx --configuration Release --no-build --output artifacts
+
+      - name: Validate NuGet packages
+        shell: pwsh
+        run: |
+          $version = (Get-Content version.txt -Raw).Trim()
+          ./eng/Validate-Packages.ps1 -ArtifactsPath artifacts -Version $version
+
+      - name: NuGet Login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        id: login
+        with:
+          user: fabyoguima
+
+      - name: Publish NuGet packages
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
