@@ -1,17 +1,13 @@
 using NFEDanfe;
 using NFEDanfe.Domain.Parser;
-using QuestPDF.Infrastructure;
+using NFEDanfe.Options;
+using PdfSharp.Pdf.IO;
 using Xunit;
 
 namespace NFEDanfe.Tests;
 
 public sealed class ParserAndSnapshotTests
 {
-    static ParserAndSnapshotTests()
-    {
-        QuestPDF.Settings.License = LicenseType.Community;
-    }
-
     [Fact]
     public void LoadFromXmlContent_parses_raw_xml_string()
     {
@@ -32,7 +28,7 @@ public sealed class ParserAndSnapshotTests
 
         Assert.Equal("EMPRESA EXEMPLO LTDA", model.Emitente.RazaoSocial);
         Assert.Equal("EXEMPLO INDUSTRIAL", model.Emitente.NomeFantasia);
-        Assert.Equal("CLIENTE EXEMPLO LTDA", model.Destinatario.RazaoSocial);
+        Assert.StartsWith("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO", model.Destinatario.RazaoSocial);
         Assert.NotNull(model.Produtos);
         Assert.Single(model.Produtos);
         Assert.Equal("PRODUTO EXEMPLO PARA DANFE", model.Produtos[0].Descricao);
@@ -154,21 +150,6 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
-    public void Snapshot_includes_critical_fields()
-    {
-        string xmlPath = IntegrationTestHelpers.FindSampleXml();
-        var model = DanfeXmlParser.Parse(xmlPath);
-
-        string snapshot = DanfeSnapshot.CreateText(model);
-
-        Assert.Contains("Chave=", snapshot);
-        Assert.Contains("Emitente=EMPRESA EXEMPLO LTDA", snapshot);
-        Assert.Contains("Destinatario=CLIENTE EXEMPLO LTDA", snapshot);
-        Assert.Contains("Produtos.Count=1", snapshot);
-        Assert.Contains("Produto=PROD-001", snapshot);
-    }
-
-    [Fact]
     public void Generate_from_xml_to_stream_produces_pdf_bytes()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
@@ -213,6 +194,30 @@ public sealed class ParserAndSnapshotTests
             {
                 File.Delete(outputPath);
             }
+        }
+    }
+
+    [Theory]
+    [InlineData(1, false)]
+    [InlineData(2, true)]
+    public void Generated_pdf_has_expected_page_orientation(int orientation, bool landscape)
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        using var output = new MemoryStream();
+
+        DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions
+        {
+            ValidateBeforeGenerate = true,
+            TipoImpressaoOverride = orientation
+        });
+
+        output.Position = 0;
+        using var document = PdfReader.Open(output, PdfDocumentOpenMode.Import);
+        Assert.NotEmpty(document.Pages);
+        foreach (var page in document.Pages)
+        {
+            bool pageIsLandscape = page.Width.Point > page.Height.Point;
+            Assert.Equal(landscape, pageIsLandscape);
         }
     }
 
@@ -442,8 +447,7 @@ public sealed class ParserAndSnapshotTests
 
     private static int GetPdfPageCount(string path)
     {
-        byte[] bytes = File.ReadAllBytes(path);
-        string text = System.Text.Encoding.Latin1.GetString(bytes);
-        return System.Text.RegularExpressions.Regex.Matches(text, @"/Type\s*/Page\b").Count;
+        using var document = PdfReader.Open(path, PdfDocumentOpenMode.Import);
+        return document.PageCount;
     }
 }

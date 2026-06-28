@@ -26,6 +26,15 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore NFEDanfe.slnx --locked-mode
 
+    - name: Validate centralized version
+      shell: pwsh
+      run: |
+        $declaredVersion = (Get-Content version.txt -Raw).Trim()
+        $buildVersion = (dotnet msbuild NFEDanfe/NFEDanfe.csproj -getProperty:Version).Trim()
+        if ($declaredVersion -ne $buildVersion) {
+          throw "version.txt ($declaredVersion) differs from MSBuild Version ($buildVersion)."
+        }
+
     - name: Build
       run: dotnet build NFEDanfe.slnx --configuration Release --no-restore
 
@@ -37,6 +46,20 @@ jobs:
           --verbosity detailed \
           --logger "console;verbosity=detailed" \
           --logger "trx;LogFileName=test-results.trx"
+
+    - name: Pack
+      run: dotnet pack NFEDanfe.slnx --configuration Release --no-build --output artifacts
+
+    - name: Validate NuGet packages
+      shell: pwsh
+      run: ./eng/Validate-Packages.ps1 -ArtifactsPath artifacts -Version (Get-Content version.txt -Raw).Trim()
+
+    - name: Upload NuGet packages
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: nuget-packages
+        path: artifacts/*.nupkg
+        if-no-files-found: error
 
     - name: Upload test results
       if: always()

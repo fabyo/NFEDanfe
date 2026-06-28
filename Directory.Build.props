@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <Version>2.1.7</Version> <!-- x-release-please-version -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+</Project>
