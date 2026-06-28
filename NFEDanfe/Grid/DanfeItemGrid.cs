@@ -111,7 +111,16 @@ internal sealed class DanfeItemGrid
             gfx.DrawRectangle(solidPen, rect);
             
             double padding = 1.0;
-            var textRect = new XRect(currentX + padding, y + 1.0, colWidth - (padding * 2), rowHeight - 2.0);
+            double measuredWidth = gfx.MeasureString(columns[i].Header, headerFont).Width;
+            double textMaxWidth = colWidth - (padding * 2);
+            double targetY = y + 1.0;
+
+            if (measuredWidth <= textMaxWidth)
+            {
+                targetY = y + (rowHeight - headerFont.Size) / 2.0 - 0.2;
+            }
+
+            var textRect = new XRect(currentX + padding, targetY, textMaxWidth, rowHeight);
             tf.DrawString(columns[i].Header, headerFont, styles.TextBrush, textRect);
             
             currentX += colWidth;
