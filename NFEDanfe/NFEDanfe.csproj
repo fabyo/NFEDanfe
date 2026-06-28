@@ -5,7 +5,7 @@
     <PackageId>NFEDanfe</PackageId>
     <AssemblyName>NFEDanfe</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
