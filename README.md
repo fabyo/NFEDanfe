@@ -5,6 +5,7 @@
 [![Build](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml)
 [![Publish](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml)
 [![Scorecard](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13399/badge)](https://www.bestpractices.dev/projects/13399)
 [![GitHub stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 [![License](https://img.shields.io/github/license/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 
