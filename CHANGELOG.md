@@ -1,6 +1,14 @@
 # Histórico de alterações
 
-## 2.1.2
+## 2.1.3
+- Configuração do pacote NuGet para incluir e renderizar o `README.md` e o logotipo oficial (`logo.png` / `logo-200.png`) diretamente na página do pacote.
+- Adicionado guia de contribuição detalhado em português (`CONTRIBUTING.md`).
+
+## 2.1.1
+- Ajuste na quebra de linha da Razão Social do Emitente no cabeçalho para evitar estouro horizontal.
+- Correção na leitura de imagem do logotipo a partir de stream de bytes no PDFsharp (evitando exceções com buffers ocultos de `MemoryStream`).
+
+## 2.1.0
 - Transição completa da engine de layout: deixamos de usar o QuestPDF e passamos a usar um motor de renderização vetorial próprio, leve e nativo construído sobre o PDFsharp.
 - Eliminação total de dependências com licenças comerciais restritivas no motor de PDF, tornando a biblioteca ideal para qualquer tipo de uso corporativo ou pessoal.
 - Implementação de algoritmo inteligente de paginação real de itens do DANFE com cabeçalhos de continuação.
