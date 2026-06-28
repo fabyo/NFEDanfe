@@ -15,6 +15,10 @@ O projeto tem dois formatos de uso:
 - `NFEDanfe`: biblioteca para integração em sistemas .NET, APIs, workers e ERPs.
 - `NFEDanfe.Cli`: ferramenta de linha de comando para uso operacional e scripts.
 
+## Motivos da Troca do QuestPDF
+
+Para entender as motivações de arquitetura e licenciamento que levaram à substituição do QuestPDF pelo PDFsharp nesta nova versão, acesse a página detalhada dos [Motivos da Troca do QuestPDF para o PDFsharp](MOTIVOS_TROCA_QUESTPDF.md).
+
 ## Recursos
 
 - Compatível com .NET 8 e .NET 10 (multi-targeting).
