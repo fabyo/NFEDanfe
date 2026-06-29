@@ -24,7 +24,7 @@ public sealed class DanfeLayoutBuilder
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(options);
 
-        var mode = options.TipoImpressaoOverride == 2 ? DanfePageMode.Landscape : options.PageMode;
+        var mode = ResolvePageMode(model, options);
         using var engine = new DanfeEngine(options.FontConfig, options.Margins, mode);
         RenderAll(engine, model, options);
         return engine.Build();
@@ -37,7 +37,7 @@ public sealed class DanfeLayoutBuilder
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(outputStream);
 
-        var mode = options.TipoImpressaoOverride == 2 ? DanfePageMode.Landscape : options.PageMode;
+        var mode = ResolvePageMode(model, options);
         using var engine = new DanfeEngine(options.FontConfig, options.Margins, mode);
         RenderAll(engine, model, options);
         engine.Build(outputStream);
@@ -67,7 +67,7 @@ public sealed class DanfeLayoutBuilder
         var taxBlock = new TaxBlock(model);
         var additionalBlock = new AdditionalDataBlock(model);
 
-        var isLandscape = options.TipoImpressaoOverride == 2 || options.PageMode == DanfePageMode.Landscape;
+        var isLandscape = ResolvePageMode(model, options) == DanfePageMode.Landscape;
 
         // Medidas e dimensões
         double titleBarH = 10.0; // "DADOS DO PRODUTO / SERVIÇOS"
@@ -292,6 +292,14 @@ public sealed class DanfeLayoutBuilder
                 DrawWatermark(gfx, engine, "SEM VALOR FISCAL");
             }
         }
+    }
+
+    private static DanfePageMode ResolvePageMode(DanfeModel model, DanfeOptions options)
+    {
+        int tipoImpressao = options.TipoImpressaoOverride ?? model.DadosDanfe.TipoImpressao;
+        return tipoImpressao == 2 || options.PageMode == DanfePageMode.Landscape
+            ? DanfePageMode.Landscape
+            : DanfePageMode.Portrait;
     }
 
     private static double DrawLocalEntrega(XGraphics gfx, DanfeStyleCatalog styles, double x, double y, double width, LocalEntrega entrega)

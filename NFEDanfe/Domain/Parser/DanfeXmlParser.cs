@@ -156,7 +156,7 @@ public static class DanfeXmlParser
             ?.Element(NfeNamespace + "infProt");
 
         string cStat = infProt?.Element(NfeNamespace + "cStat")?.Value ?? string.Empty;
-        bool isCancelada = cStat == "101" || cStat == "151";
+        bool isCancelada = cStat == "101" || cStat == "151" || HasAuthorizedCancellationEvent(doc);
 
         XElement? nfe = infNFe.Parent;
         XElement? infNFeSupl = nfe?.Element(NfeNamespace + "infNFeSupl");
@@ -179,6 +179,17 @@ public static class DanfeXmlParser
             TipoAmbiente: ide.Int(NfeNamespace, "tpAmb", 1),
             IsCancelada: isCancelada,
             UrlQrCode: qrCode);
+    }
+
+    private static bool HasAuthorizedCancellationEvent(XDocument doc)
+    {
+        string[] authorizedStatuses = ["101", "135", "136", "155"];
+
+        return doc.Descendants(NfeNamespace + "procEventoNFe").Any(procEvento =>
+            procEvento.Descendants(NfeNamespace + "tpEvento").Any(element => element.Value.Trim() == "110111") &&
+            procEvento.Descendants(NfeNamespace + "retEvento")
+                .Descendants(NfeNamespace + "cStat")
+                .Any(element => authorizedStatuses.Contains(element.Value.Trim(), StringComparer.Ordinal)));
     }
 
     private static Emitente ParseEmitente(XElement emit)
