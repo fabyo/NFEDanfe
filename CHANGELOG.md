@@ -1,5 +1,17 @@
 # Histórico de alterações
 
+## 2.2.1 (2026-06-29)
+
+### Correções
+
+- Corrigida a orientação do DANFE para respeitar automaticamente `<tpImp>2</tpImp>` como paisagem, sem exigir configuração externa.
+- Corrigida a detecção de cancelamento por evento autorizado `110111`, garantindo a marca d'água de nota cancelada.
+- Adicionado teste de regressão para garantir que a orientação informada no XML seja aplicada ao PDF.
+
+### Exemplos
+
+- Adicionados PDFs de exemplo para notas normal, cancelada, em homologação e em paisagem.
+
 ## [2.2.0](https://github.com/fabyo/NFEDanfe/compare/v2.1.7...v2.2.0) (2026-06-28)
 
 

@@ -222,6 +222,41 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void TpImp_2_in_xml_generates_landscape_without_override()
+    {
+        string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-1-product-procNFe.xml");
+        string xmlContent = File.ReadAllText(xmlPath).Replace("<tpImp>1</tpImp>", "<tpImp>2</tpImp>");
+        using var output = new MemoryStream();
+
+        DanfeGenerator.GenerateFromXmlContent(xmlContent, output);
+
+        output.Position = 0;
+        using var document = PdfReader.Open(output, PdfDocumentOpenMode.Import);
+        Assert.NotEmpty(document.Pages);
+        Assert.All(document.Pages.Cast<PdfSharp.Pdf.PdfPage>(), page =>
+            Assert.True(page.Width.Point > page.Height.Point));
+    }
+
+    [Fact]
+    public void Authorized_cancellation_event_marks_invoice_as_canceled()
+    {
+        string xmlPath = IntegrationTestHelpers.FindTestDataXml("special-chars-1-product-procNFe.xml");
+        System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        doc.Root!.Add(new System.Xml.Linq.XElement(ns + "procEventoNFe",
+            new System.Xml.Linq.XElement(ns + "evento",
+                new System.Xml.Linq.XElement(ns + "infEvento",
+                    new System.Xml.Linq.XElement(ns + "tpEvento", "110111"))),
+            new System.Xml.Linq.XElement(ns + "retEvento",
+                new System.Xml.Linq.XElement(ns + "infEvento",
+                    new System.Xml.Linq.XElement(ns + "cStat", "101")))));
+
+        var model = DanfeXmlParser.ParseDocument(doc);
+
+        Assert.True(model.DadosDanfe.IsCancelada);
+    }
+
+    [Fact]
     public void Generate_with_many_products_paginates_without_layout_errors()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
