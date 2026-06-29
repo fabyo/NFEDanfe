@@ -41,10 +41,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          RELEASE_PR: ${{ steps.release.outputs.pr }}
         shell: bash
         run: |
-          release_branch="$(gh pr list --state open --label 'autorelease: pending' --json headRefName --jq '.[0].headRefName')"
-          test -n "$release_branch"
+          release_branch="$(jq -er '.headBranchName' <<< "$RELEASE_PR")"
           gh workflow run ci.yml --ref "$release_branch"
           gh workflow run codeql.yml --ref "$release_branch"
 
