@@ -1,6 +1,6 @@
 # Histórico de alterações
 
-## 2.2.3 (2026-06-30)
+## 2.2.4 (2026-06-30)
 
 ### Fontes e layout
 
