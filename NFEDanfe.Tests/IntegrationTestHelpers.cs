@@ -8,7 +8,7 @@ internal static class IntegrationTestHelpers
 
         for (int i = 0; i < 8 && !string.IsNullOrWhiteSpace(current); i++)
         {
-            string candidate = Path.Combine(current, "samples", "nota-exemplo-procNFe.xml");
+            string candidate = Path.Combine(current, "samples", "nota-exemplo.xml");
             if (File.Exists(candidate))
             {
                 return candidate;

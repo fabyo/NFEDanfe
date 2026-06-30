@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Biblioteca focada na geração de DANFE (Documento Auxiliar da Nota Fiscal Eletrônica) modelo 55 em PDF vetorial.</Description>
     <PackageIcon>logo.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>

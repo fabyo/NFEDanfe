@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <nfeProc versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
   <NFe>
     <infNFe Id="NFe35260806990590000123550010000105001230000000" versao="4.00">
@@ -76,16 +76,16 @@
         <prod>
           <cProd>PROD-001</cProd>
           <cEAN>SEM GTIN</cEAN>
-          <xProd>PRODUTO EXEMPLO PARA DANFE</xProd>
+          <xProd>xprod tubo cola.</xProd>
           <NCM>87089990</NCM>
           <CFOP>5102</CFOP>
           <uCom>UN</uCom>
-          <qCom>2.0000</qCom>
+          <qCom>1.0000</qCom>
           <vUnCom>100.0000</vUnCom>
-          <vProd>200.00</vProd>
+          <vProd>100.00</vProd>
           <cEANTrib>SEM GTIN</cEANTrib>
           <uTrib>UN</uTrib>
-          <qTrib>2.0000</qTrib>
+          <qTrib>1.0000</qTrib>
           <vUnTrib>100.0000</vUnTrib>
           <indTot>1</indTot>
         </prod>
@@ -95,24 +95,144 @@
               <orig>0</orig>
               <CST>00</CST>
               <modBC>3</modBC>
-              <vBC>200.00</vBC>
+              <vBC>100.00</vBC>
               <pICMS>18.00</pICMS>
-              <vICMS>36.00</vICMS>
+              <vICMS>18.00</vICMS>
+            </ICMS00>
+          </ICMS>
+        </imposto>
+      </det>
+      <det nItem="2">
+        <prod>
+          <cProd>PROD-002</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>PRODUTO EXEMPLO PARA DANFE B</xProd>
+          <NCM>87089990</NCM>
+          <CFOP>5102</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>100.0000</vUnCom>
+          <vProd>100.00</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>100.0000</vUnTrib>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <ICMS>
+            <ICMS00>
+              <orig>0</orig>
+              <CST>00</CST>
+              <modBC>3</modBC>
+              <vBC>100.00</vBC>
+              <pICMS>18.00</pICMS>
+              <vICMS>18.00</vICMS>
+            </ICMS00>
+          </ICMS>
+        </imposto>
+      </det>
+      <det nItem="3">
+        <prod>
+          <cProd>PROD-003</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>PRODUTO EXEMPLO PARA DANFE C</xProd>
+          <NCM>87089990</NCM>
+          <CFOP>5102</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>100.0000</vUnCom>
+          <vProd>100.00</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>100.0000</vUnTrib>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <ICMS>
+            <ICMS00>
+              <orig>0</orig>
+              <CST>00</CST>
+              <modBC>3</modBC>
+              <vBC>100.00</vBC>
+              <pICMS>18.00</pICMS>
+              <vICMS>18.00</vICMS>
+            </ICMS00>
+          </ICMS>
+        </imposto>
+      </det>
+      <det nItem="4">
+        <prod>
+          <cProd>PROD-004</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>PRODUTO EXEMPLO PARA DANFE D</xProd>
+          <NCM>87089990</NCM>
+          <CFOP>5102</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>100.0000</vUnCom>
+          <vProd>100.00</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>100.0000</vUnTrib>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <ICMS>
+            <ICMS00>
+              <orig>0</orig>
+              <CST>00</CST>
+              <modBC>3</modBC>
+              <vBC>100.00</vBC>
+              <pICMS>18.00</pICMS>
+              <vICMS>18.00</vICMS>
+            </ICMS00>
+          </ICMS>
+        </imposto>
+      </det>
+      <det nItem="5">
+        <prod>
+          <cProd>PROD-005</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>PRODUTO EXEMPLO PARA DANFE E</xProd>
+          <NCM>87089990</NCM>
+          <CFOP>5102</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>100.0000</vUnCom>
+          <vProd>100.00</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>100.0000</vUnTrib>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <ICMS>
+            <ICMS00>
+              <orig>0</orig>
+              <CST>00</CST>
+              <modBC>3</modBC>
+              <vBC>100.00</vBC>
+              <pICMS>18.00</pICMS>
+              <vICMS>18.00</vICMS>
             </ICMS00>
           </ICMS>
         </imposto>
       </det>
       <total>
         <ICMSTot>
-          <vBC>200.00</vBC>
-          <vICMS>36.00</vICMS>
+          <vBC>500.00</vBC>
+          <vICMS>90.00</vICMS>
           <vICMSDeson>0.00</vICMSDeson>
           <vFCP>0.00</vFCP>
           <vBCST>0.00</vBCST>
           <vST>0.00</vST>
           <vFCPST>0.00</vFCPST>
           <vFCPSTRet>0.00</vFCPSTRet>
-          <vProd>200.00</vProd>
+          <vProd>500.00</vProd>
           <vFrete>0.00</vFrete>
           <vSeg>0.00</vSeg>
           <vDesc>0.00</vDesc>
@@ -122,7 +242,7 @@
           <vPIS>0.00</vPIS>
           <vCOFINS>0.00</vCOFINS>
           <vOutro>0.00</vOutro>
-          <vNF>200.00</vNF>
+          <vNF>500.00</vNF>
         </ICMSTot>
       </total>
       <transp>
@@ -145,6 +265,9 @@
       <infAdic>
         <infCpl>XML publico sanitizado para exemplo de uso do NFEDanfe.</infCpl>
       </infAdic>
+      <compra>
+        <xPed>181712</xPed>
+      </compra>
     </infNFe>
   </NFe>
   <protNFe versao="4.00">

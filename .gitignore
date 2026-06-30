@@ -20,3 +20,9 @@ danfe_*.pdf
 
 # XMLs reais de NF-e (nunca commitar dados fiscais reais)
 samples/*.xml
+
+# Exemplos públicos e sanitizados usados pela documentação e pelos testes
+!samples/nota-cancelada.xml
+!samples/nota-exemplo.xml
+!samples/nota-homologacao.xml
+!samples/nota-paisagem.xml

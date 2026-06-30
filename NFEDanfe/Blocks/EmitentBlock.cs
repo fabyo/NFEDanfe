@@ -245,11 +245,9 @@ internal sealed class EmitentBlock
         // Chave de acesso formatada
         double valY = labelY + (isLandscape ? 4.0 : 8.0);
         string formattedChave = FormatChave(_model.DadosDanfe.ChaveAcesso);
-        var valFont = new XFont(DanfeFontResolver.FamilyName, isLandscape ? 5.5 : 7.0, XFontStyleEx.Bold);
+        var valFont = new XFont(DanfeFontResolver.FamilyName, isLandscape ? 5.5 : 7.0, XFontStyleEx.Regular);
         gfx.DrawString(formattedChave, valFont, styles.TextBrush,
             new XRect(chaveX + 4, valY, colChaveW - 8, 10), centerFormat);
-        gfx.DrawString(formattedChave, valFont, styles.TextBrush,
-            new XRect(chaveX + 4.35, valY, colChaveW - 8, 10), centerFormat);
 
         // Separador horizontal fino
         double lineY = valY + (isLandscape ? 7.0 : 12.0);

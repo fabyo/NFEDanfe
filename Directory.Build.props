@@ -1,6 +1,13 @@
 <Project>
   <PropertyGroup>
-    <Version>2.2.1</Version> <!-- x-release-please-version -->
+    <Version>2.2.4</Version> <!-- x-release-please-version -->
+    <Authors>Fabyo Guimarães Oliveira</Authors>
+    <Company>FHK Sistemas</Company>
+    <Copyright>Copyright © FHK Sistemas</Copyright>
+    <PackageProjectUrl>https://github.com/fabyo/NFEDanfe</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fabyo/NFEDanfe</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>

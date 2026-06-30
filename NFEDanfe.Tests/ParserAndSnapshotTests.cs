@@ -28,11 +28,11 @@ public sealed class ParserAndSnapshotTests
 
         Assert.Equal("EMPRESA EXEMPLO LTDA", model.Emitente.RazaoSocial);
         Assert.Equal("EXEMPLO INDUSTRIAL", model.Emitente.NomeFantasia);
-        Assert.StartsWith("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO", model.Destinatario.RazaoSocial);
+        Assert.Equal("CLIENTE EXEMPLO LTDA", model.Destinatario.RazaoSocial);
         Assert.NotNull(model.Produtos);
-        Assert.Single(model.Produtos);
-        Assert.Equal("PRODUTO EXEMPLO PARA DANFE", model.Produtos[0].Descricao);
-        Assert.Equal(200.00m, model.ValorTotal);
+        Assert.Equal(5, model.Produtos.Count);
+        Assert.Equal("TUBO ACO INOX ASTM A312 TP316L Ø42,20MM X 2,77MM ESP X 6000MM", model.Produtos[0].Descricao);
+        Assert.Equal(13857.00m, model.ValorTotal);
         Assert.Equal(1, model.DadosDanfe.TipoImpressao);
     }
 

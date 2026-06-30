@@ -5,6 +5,8 @@ namespace NFEDanfe.Options;
 /// <summary>Configuração global do documento DANFE.</summary>
 public sealed record DanfeOptions
 {
+    private DanfeFont _font = DanfeFont.Arial;
+
     /// <summary>Configuração padrão do DANFE.</summary>
     public static DanfeOptions Default { get; } = new();
 
@@ -38,8 +40,18 @@ public sealed record DanfeOptions
     /// <summary>Emitir rodapé da página.</summary>
     public bool EmitFooter { get; set; } = true;
 
-    /// <summary>Fonte padrão a ser utilizada.</summary>
-    public DanfeFont Font { get; set; } = DanfeFont.Arial;
+    /// <summary>Fonte distribuída com o pacote a ser utilizada.</summary>
+    public DanfeFont Font
+    {
+        get => _font;
+        set
+        {
+            _font = value;
+            FontConfig = value == DanfeFont.Arial
+                ? new DanfeFontConfig()
+                : DanfeFontConfig.FromBundledFont(value);
+        }
+    }
 
     /// <summary>Nome de fonte customizada.</summary>
     public string? CustomFontName { get; set; }
