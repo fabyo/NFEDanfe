@@ -95,7 +95,8 @@ internal sealed class DanfeItemGrid
         double x, double y, double rowHeight)
     {
         double currentX = x;
-        var headerFont = new XFont(DanfeFontResolver.FamilyName, 4.2, XFontStyleEx.Bold);
+        var headerFont = new XFont(DanfeFontResolver.FamilyName, 4.2, XFontStyleEx.Regular);
+        var taxRateHeaderFont = new XFont(DanfeFontResolver.FamilyName, 3.8, XFontStyleEx.Regular);
 
         var tf = new XTextFormatter(gfx)
         {
@@ -109,6 +110,22 @@ internal sealed class DanfeItemGrid
             
             // Desenhar célula sólida para o cabeçalho
             gfx.DrawRectangle(solidPen, rect);
+
+            if (columns[i].Header is "ALÍQ. ICMS" or "ALÍQ. IPI")
+            {
+                string taxName = columns[i].Header[6..];
+                var centered = new XStringFormat
+                {
+                    Alignment = XStringAlignment.Center,
+                    LineAlignment = XLineAlignment.Center
+                };
+                gfx.DrawString("ALÍQ.", taxRateHeaderFont, styles.TextBrush,
+                    new XRect(currentX, y + 0.5, colWidth, rowHeight / 2), centered);
+                gfx.DrawString(taxName, taxRateHeaderFont, styles.TextBrush,
+                    new XRect(currentX, y + rowHeight / 2 - 0.5, colWidth, rowHeight / 2), centered);
+                currentX += colWidth;
+                continue;
+            }
             
             double padding = 1.0;
             double measuredWidth = gfx.MeasureString(columns[i].Header, headerFont).Width;

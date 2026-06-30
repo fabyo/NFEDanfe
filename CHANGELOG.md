@@ -1,10 +1,20 @@
 # Histórico de alterações
 
+## 2.2.3 (2026-06-30)
+
+### Fontes e layout
+
+- Adicionados os arquivos Bold de IBM Plex Sans, Inter e Roboto, com seleção automática do par Regular/Bold.
+- Mantida Arial como fonte padrão, com fallback para Roboto quando indisponível no sistema.
+- Removida JetBrains Mono por incompatibilidade de largura com as colunas fixas da DANFE.
+- Corrigidos os cabeçalhos `ALÍQ. ICMS` e `ALÍQ. IPI` para exibição integral e sem negrito.
+- Removido o negrito da chave de acesso e dos cabeçalhos da grade de produtos.
+- Atualizados e renomeados os PDFs de exemplo; removidos XMLs de exemplo obsoletos.
+
 ## 2.2.2 (2026-06-30)
 
 ### Empacotamento
 
-- Adicionadas as fontes JetBrains Mono Regular e Bold ao pacote NuGet.
 - Adicionados metadados de autoria, empresa, licença e repositório aos pacotes.
 
 ## 2.2.1 (2026-06-29)

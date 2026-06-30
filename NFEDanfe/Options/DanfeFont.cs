@@ -10,7 +10,5 @@ public enum DanfeFont
     /// <summary>Roboto.</summary>
     Roboto,
     /// <summary>IBM Plex Sans.</summary>
-    IbmPlexSans,
-    /// <summary>JetBrains Mono.</summary>
-    JetBrainsMono
+    IbmPlexSans
 }

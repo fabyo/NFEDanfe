@@ -25,8 +25,9 @@ internal static class Program
             var options = CliOptions.Parse(args);
 
             // Configure fonts
-            string regFont = options.FontRegPath ?? GetFallbackFont(bold: false);
-            string boldFont = options.FontBoldPath ?? GetFallbackFont(bold: true);
+            var defaultFontConfig = new DanfeFontConfig();
+            string regFont = options.FontRegPath ?? defaultFontConfig.BaseFontPath;
+            string boldFont = options.FontBoldPath ?? defaultFontConfig.BaseFontBoldPath;
 
             if (!File.Exists(regFont))
             {
@@ -109,22 +110,6 @@ internal static class Program
         Console.WriteLine();
         Console.WriteLine("Exemplo:");
         Console.WriteLine("  nfedanfe nfe.xml --logo-path logo.png --output ./pdfs");
-    }
-
-    private static string GetFallbackFont(bool bold)
-    {
-        // Try local IBM Plex Sans first
-        string localPath = bold ? "fonts/IBMPlexSans-Bold.ttf" : "fonts/IBMPlexSans-Regular.ttf";
-        if (File.Exists(localPath)) return localPath;
-
-        // Try standard OS paths (Windows)
-        if (OperatingSystem.IsWindows())
-        {
-            string winPath = bold ? @"C:\Windows\Fonts\arialbd.ttf" : @"C:\Windows\Fonts\arial.ttf";
-            if (File.Exists(winPath)) return winPath;
-        }
-
-        return localPath; // fallback to local relative path even if not exists, validation will report
     }
 
     private sealed class CliOptions
