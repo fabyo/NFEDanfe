@@ -150,6 +150,14 @@ public sealed class ParserAndSnapshotTests
     }
 
     [Fact]
+    public void JetBrainsMono_FontName_IsMappedCorrectly()
+    {
+        var options = new DanfeOptions { Font = DanfeFont.JetBrainsMono };
+
+        Assert.Equal("JetBrains Mono", options.FontName);
+    }
+
+    [Fact]
     public void Generate_from_xml_to_stream_produces_pdf_bytes()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();

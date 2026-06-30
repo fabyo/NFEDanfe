@@ -54,6 +54,7 @@ public sealed record DanfeOptions
         DanfeFont.Inter => "Inter",
         DanfeFont.Roboto => "Roboto",
         DanfeFont.IbmPlexSans => "IBM Plex Sans",
+        DanfeFont.JetBrainsMono => "JetBrains Mono",
         _ => "Arial"
     };
 }

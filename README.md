@@ -142,7 +142,7 @@ Configurações opcionais para a geração do documento.
 | `ValidateBeforeGenerate` | `bool` | Se `true`, valida as regras de negócio e integridade da nota antes de gerar. | `true` |
 | `EmitFooter` | `bool` | Se `true`, exibe a informação de rodapé "NFEDanfe - impresso em...". | `true` |
 | `TipoImpressaoOverride` | `int?` | Sobrescreve a orientação definida no XML (`1` = Retrato, `2` = Paisagem). Se `null`, respeita o XML. | `null` |
-| `Font` | `DanfeFont` | Enum para escolher uma das fontes pré-configuradas (`Arial`, `Inter`, `Roboto`, `IbmPlexSans`). | `DanfeFont.Arial` |
+| `Font` | `DanfeFont` | Enum para escolher uma das fontes pré-configuradas (`Arial`, `Inter`, `Roboto`, `IbmPlexSans`, `JetBrainsMono`). | `DanfeFont.Arial` |
 | `CustomFontName` | `string?` | Sobrescreve o enum para utilizar o nome de qualquer fonte do sistema ou registrada sob demanda. | `null` |
 | `CustomXmlEncoding` | `System.Text.Encoding?` | Força a leitura do XML com um Encoding específico (ex: `Encoding.UTF8`), ignorando o cabeçalho original. Apenas para métodos que recebem `Stream` ou path. | `null` |
 
@@ -153,7 +153,7 @@ Você pode escolher a fonte tipográfica utilizada para a renderização do DANF
 ```csharp
 var options = new DanfeOptions
 {
-    Font = DanfeFont.Inter // Opções: Arial, Inter, Roboto, IbmPlexSans
+    Font = DanfeFont.JetBrainsMono // Opções: Arial, Inter, Roboto, IbmPlexSans, JetBrainsMono
 };
 ```
 
@@ -170,7 +170,7 @@ var options = new DanfeOptions
 > **Recomendação Legal (MOC/SEFAZ)**:
 > O Manual de Orientação do Contribuinte (MOC) da Nota Fiscal Eletrônica (NF-e) estabelece que a fonte padrão recomendada para a impressão do DANFE é a **Arial** (ou Courier/Times New Roman em caso de impressão de caracteres).
 >
-> Manter a fonte padrão **Arial** (que é o padrão `DanfeFont.Arial` configurado por omissão) garante total conformidade legal e visual com o layout padrão homologado junto à SEFAZ, evitando riscos de descaracterização em auditorias ou quebras de texto indesejadas. Utilize fontes alternativas como `Inter`, `Roboto` ou `IBM Plex Sans` sob sua própria responsabilidade ou para fins não-fiscais.
+> Manter a fonte padrão **Arial** (que é o padrão `DanfeFont.Arial` configurado por omissão) garante total conformidade legal e visual com o layout padrão homologado junto à SEFAZ, evitando riscos de descaracterização em auditorias ou quebras de texto indesejadas. Utilize fontes alternativas como `Inter`, `Roboto`, `IBM Plex Sans` ou `JetBrains Mono` sob sua própria responsabilidade ou para fins não-fiscais.
 
 
 
@@ -195,7 +195,7 @@ Depois de instalada:
 nfedanfe .\samples\nota-exemplo-procNFe.xml --output .\out
 ```
 
-Gerar com fonte específica (Arial, Inter, Roboto, IbmPlexSans ou fonte do sistema):
+Gerar com fonte específica (Arial, Inter, Roboto, IbmPlexSans, JetBrainsMono ou fonte do sistema):
 
 ```powershell
 nfedanfe .\samples\nota-exemplo-procNFe.xml --font inter --output .\out

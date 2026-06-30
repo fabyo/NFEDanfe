@@ -1,5 +1,12 @@
 # Histórico de alterações
 
+## 2.2.2 (2026-06-30)
+
+### Empacotamento
+
+- Adicionadas as fontes JetBrains Mono Regular e Bold ao pacote NuGet.
+- Adicionados metadados de autoria, empresa, licença e repositório aos pacotes.
+
 ## 2.2.1 (2026-06-29)
 
 ### Correções
