@@ -22,7 +22,6 @@
   <ItemGroup>
     <None Include="logo.png" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\fonts\**\*" Pack="true" PackagePath="contentFiles\any\any\fonts\" PackageCopyToOutput="true" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\fonts\**\*" Pack="true" PackagePath="content\fonts\" />
+    <None Include="..\fonts\**\*" Pack="true" PackagePath="contentFiles\any\any\fonts\" PackageCopyToOutput="true" CopyToOutputDirectory="PreserveNewest" PackageBuildAction="None" />
   </ItemGroup>
 </Project>
