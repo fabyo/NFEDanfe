@@ -26,3 +26,5 @@ samples/*.xml
 !samples/nota-exemplo.xml
 !samples/nota-homologacao.xml
 !samples/nota-paisagem.xml
+!samples/exemplo-infAdFisco-infCpl-grandes.xml
+!samples/danfe_exemplo-infAdFisco-infCpl-grandes.pdf

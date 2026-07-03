@@ -1,5 +1,18 @@
 # Histórico de alterações
 
+## [2.3.1](https://github.com/fabyo/NFEDanfe/compare/v2.3.0...v2.3.1) (2026-07-02)
+
+### Correções
+
+- Ajustado automaticamente o tamanho da fonte de `infCpl` e `infAdFisco`, de 6 pt até o limite mínimo de 3 pt, conforme o espaço disponível em cada coluna de Dados Adicionais.
+- A medição agora considera a largura e a altura efetivamente ocupadas antes da impressão, evitando o corte de informações complementares e fiscais extensas.
+- Corrigida a quebra de URLs, chaves de acesso e outros conteúdos contínuos sem espaços para que não ultrapassem os limites das colunas.
+- Preservada a formatação em negrito de e-mails, documentos, chaves e pedidos em `infCpl` durante o redimensionamento.
+
+### Exemplos
+
+- Adicionados XML e PDF sanitizados com conteúdos extensos em `infCpl` e `infAdFisco` para validação visual do ajuste automático.
+
 ## [2.3.0](https://github.com/fabyo/NFEDanfe/compare/v2.2.4...v2.3.0) (2026-06-30)
 
 
