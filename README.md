@@ -1,13 +1,15 @@
 ![Logo](https://raw.githubusercontent.com/fabyo/NFEDanfe/main/logo-200.png)
 
+[![CI](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/fabyo/NFEDanfe/actions/workflows/codeql.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabyo/NFEDanfe/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabyo/NFEDanfe)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13399/badge)](https://www.bestpractices.dev/projects/13399)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-brightgreen?logo=dependabot)](https://github.com/fabyo/NFEDanfe/security/dependabot)
 [![NuGet](https://img.shields.io/nuget/v/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![Downloads](https://img.shields.io/nuget/dt/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
-[![Build](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/ci.yml)
-[![Publish](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/publish.yml)
-[![Scorecard](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml/badge.svg)](https://github.com/fabyo/NFEDanfe/actions/workflows/scorecard.yml)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13399/badge)](https://www.bestpractices.dev/projects/13399)
-[![GitHub stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
-[![License](https://img.shields.io/github/license/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
+[![License](https://img.shields.io/github/license/fabyo/NFEDanfe.svg)](https://github.com/fabyo/NFEDanfe/blob/main/LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![GitHub Stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 
 Biblioteca .NET para gerar DANFE em PDF a partir de XML de NF-e autorizada.
 
