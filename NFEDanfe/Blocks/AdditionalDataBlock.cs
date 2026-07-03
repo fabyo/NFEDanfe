@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using PdfSharp.Drawing;
-using PdfSharp.Drawing.Layout;
 using NFEDanfe.Domain.Models;
 
 namespace NFEDanfe.Blocks;
@@ -11,6 +10,9 @@ namespace NFEDanfe.Blocks;
 /// <summary>Bloco de dados adicionais e reservado ao fisco.</summary>
 internal sealed class AdditionalDataBlock
 {
+    private const double DefaultAdditionalInfoFontSize = 6.0;
+    private const double MinimumAdditionalInfoFontSize = 3.0;
+    private const double FontSizeStep = 0.25;
     private static double Mm(double mm) => mm * 2.834645;
 
     private readonly DanfeModel _model;
@@ -138,7 +140,7 @@ internal sealed class AdditionalDataBlock
                 }
             }
 
-            DrawRichText(gfx, styles, textRect, runs, 6.0);
+            DrawRichTextFitted(gfx, styles, textRect, runs);
         }
 
         // --- LADO DIREITO: RESERVADO AO FISCO ---
@@ -153,12 +155,73 @@ internal sealed class AdditionalDataBlock
 
         if (!string.IsNullOrEmpty(infFiscoFormatted))
         {
-            var tf = new XTextFormatter(gfx);
             var textRect = new XRect(x + leftWidth + 4, y + 14, rightWidth - 8, contentMinH - 18);
-            tf.DrawString(infFiscoFormatted, new XFont(DanfeFontResolver.FamilyName, 6.0, XFontStyleEx.Regular), styles.TextBrush, textRect);
+            DrawRichTextFitted(gfx, styles, textRect,
+                [new TextRun(infFiscoFormatted, false)]);
         }
 
         return height;
+    }
+
+    private static void DrawRichTextFitted(XGraphics gfx, DanfeStyleCatalog styles, XRect rect, List<TextRun> runs)
+    {
+        double fontSize = DefaultAdditionalInfoFontSize;
+        while (fontSize > MinimumAdditionalInfoFontSize && !TextFits(gfx, rect, runs, fontSize))
+        {
+            fontSize -= FontSizeStep;
+        }
+
+        DrawRichText(gfx, styles, rect, runs, fontSize);
+    }
+
+    private static bool TextFits(XGraphics gfx, XRect rect, List<TextRun> runs, double fontSize)
+    {
+        var regularFont = new XFont(DanfeFontResolver.FamilyName, fontSize, XFontStyleEx.Regular);
+        var boldFont = new XFont(DanfeFontResolver.FamilyName, fontSize, XFontStyleEx.Bold);
+        double currentWidth = 0;
+        int lineCount = 1;
+
+        foreach (var run in runs)
+        {
+            var font = run.IsBold ? boldFont : regularFont;
+            foreach (var token in Regex.Split(run.Text, "(\\n| +)").Where(t => t.Length > 0))
+            {
+                if (token == "\n")
+                {
+                    currentWidth = 0;
+                    lineCount++;
+                    continue;
+                }
+
+                double tokenWidth = gfx.MeasureString(token, font).Width;
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    if (currentWidth > 0)
+                        currentWidth += tokenWidth;
+                    continue;
+                }
+
+                if (currentWidth > 0 && currentWidth + tokenWidth > rect.Width)
+                {
+                    currentWidth = 0;
+                    lineCount++;
+                }
+
+                // Palavras/URLs sem espaços também precisam ser quebradas para não sair da coluna.
+                if (tokenWidth > rect.Width)
+                {
+                    int extraLines = (int)Math.Ceiling(tokenWidth / rect.Width) - 1;
+                    lineCount += extraLines;
+                    currentWidth = tokenWidth - extraLines * rect.Width;
+                }
+                else
+                {
+                    currentWidth += tokenWidth;
+                }
+            }
+        }
+
+        return lineCount * (fontSize + 1.2) <= rect.Height;
     }
 
     private static void DrawRichText(XGraphics gfx, DanfeStyleCatalog styles, XRect rect, List<TextRun> runs, double fontSize)
@@ -175,30 +238,29 @@ internal sealed class AdditionalDataBlock
         foreach (var run in runs)
         {
             var font = run.IsBold ? boldFont : regularFont;
-            string text = run.Text;
-            
-            if (text == "\n")
+            foreach (string text in Regex.Split(run.Text, "(\\n)").Where(t => t.Length > 0))
             {
-                formattedWords.Add(("\n", font, false, true));
-                continue;
-            }
-
-            int idx = 0;
-            while (idx < text.Length)
-            {
-                if (text[idx] == ' ')
+                if (text == "\n")
                 {
-                    formattedWords.Add((" ", font, true, false));
-                    idx++;
+                    formattedWords.Add(("\n", font, false, true));
+                    continue;
                 }
-                else
+
+                int idx = 0;
+                while (idx < text.Length)
                 {
-                    int start = idx;
-                    while (idx < text.Length && text[idx] != ' ')
+                    if (text[idx] == ' ')
                     {
+                        formattedWords.Add((" ", font, true, false));
                         idx++;
                     }
-                    formattedWords.Add((text[start..idx], font, false, false));
+                    else
+                    {
+                        int start = idx;
+                        while (idx < text.Length && text[idx] != ' ')
+                            idx++;
+                        formattedWords.Add((text[start..idx], font, false, false));
+                    }
                 }
             }
         }
@@ -220,24 +282,33 @@ internal sealed class AdditionalDataBlock
             }
             else
             {
-                double wordWidth = gfx.MeasureString(item.text, item.font).Width;
+                string remaining = item.text;
+                while (remaining.Length > 0)
+                {
+                    int charsToDraw = remaining.Length;
+                    while (charsToDraw > 1 && gfx.MeasureString(remaining[..charsToDraw], item.font).Width > rect.Width)
+                        charsToDraw--;
 
-                if (currentX + wordWidth > rect.Right && currentX > rect.X)
-                {
-                    currentX = rect.X;
-                    currentY += lineSpacing;
-                }
+                    string part = remaining[..charsToDraw];
+                    double wordWidth = gfx.MeasureString(part, item.font).Width;
 
-                if (item.font.Style == XFontStyleEx.Bold)
-                {
-                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX, currentY);
-                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX + 0.35, currentY);
+                    if (currentX + wordWidth > rect.Right && currentX > rect.X)
+                    {
+                        currentX = rect.X;
+                        currentY += lineSpacing;
+                    }
+
+                    gfx.DrawString(part, item.font, styles.TextBrush, currentX, currentY);
+                    if (item.font.Style == XFontStyleEx.Bold)
+                        gfx.DrawString(part, item.font, styles.TextBrush, currentX + 0.35, currentY);
+                    currentX += wordWidth;
+                    remaining = remaining[charsToDraw..];
+                    if (remaining.Length > 0)
+                    {
+                        currentX = rect.X;
+                        currentY += lineSpacing;
+                    }
                 }
-                else
-                {
-                    gfx.DrawString(item.text, item.font, styles.TextBrush, currentX, currentY);
-                }
-                currentX += wordWidth;
             }
         }
     }
