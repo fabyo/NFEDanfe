@@ -78,14 +78,16 @@ Use `!` ou um rodapé `BREAKING CHANGE:` quando houver incompatibilidade de API.
 
 ## Processo de release
 
-O Release Please mantém automaticamente um PR de release com a nova versão e o `CHANGELOG.md`. Ao mesclar esse PR no `main`, o workflow:
+A versão é definida explicitamente em `Directory.Build.props` e `version.txt`, e a alteração deve ser revisada por Pull Request junto com o `CHANGELOG.md`.
 
-1. cria a tag `vX.Y.Z` e o GitHub Release;
+Quando o PR é mesclado em `main`, o workflow de publicação é executado automaticamente e:
+
+1. valida se `Directory.Build.props` e `version.txt` possuem a mesma versão;
 2. restaura dependências com lockfiles, compila e executa os testes;
 3. gera e valida os pacotes `NFEDanfe` e `NFEDanfe.Cli`;
-4. publica os pacotes no NuGet e os anexa ao GitHub Release.
+4. publica os pacotes no NuGet.
 
-Não crie tags de release manualmente. A versão é centralizada em `Directory.Build.props` e atualizada pelo Release Please.
+O workflow não calcula, incrementa ou altera versões e não cria Pull Requests. Quando a versão já existir no NuGet, `--skip-duplicate` evita falha e mantém o pacote existente. O acionamento manual fica disponível apenas para recuperação.
 
 ---
 
