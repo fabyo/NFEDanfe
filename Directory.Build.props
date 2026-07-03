@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Version>2.3.1</Version> <!-- x-release-please-version -->
+    <Version>2.4.0</Version> <!-- x-release-please-version -->
     <Authors>Fabyo Guimarães Oliveira</Authors>
     <Company>FHK Sistemas</Company>
     <Copyright>Copyright © FHK Sistemas</Copyright>

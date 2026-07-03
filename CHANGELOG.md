@@ -1,5 +1,35 @@
 # Histórico de alterações
 
+## [2.4.0](https://github.com/fabyo/NFEDanfe/compare/v2.3.1...v2.4.0) (2026-07-03)
+
+
+### Features
+
+* Add CustomXmlEncoding to DanfeOptions to override XML encoding declaration ([2d07bf1](https://github.com/fabyo/NFEDanfe/commit/2d07bf1cee0c7227b9143ac2c4c40a9bc6172e03))
+* add support for local de entrega (&lt;entrega&gt;) XML parsing and layout rendering with page size optimizations ([27f76e4](https://github.com/fabyo/NFEDanfe/commit/27f76e43235531b9a83276d6ae3323c8cdaae9a5))
+* Add watermark for canceled NFe and bump version to v0.1.11 ([a94220c](https://github.com/fabyo/NFEDanfe/commit/a94220c535653e66e402fe17beb01054a80194fb))
+* adicionar marca d'agua para homologacao ([eca3c86](https://github.com/fabyo/NFEDanfe/commit/eca3c8611f32295ec874c426de29d5af4d2d09a8))
+* automate releases and harden package validation ([#17](https://github.com/fabyo/NFEDanfe/issues/17)) ([7553520](https://github.com/fabyo/NFEDanfe/commit/7553520b7d02614965d1b313ab2739f4d4152eec))
+* configure NuGet properties, fix and expand tests, and setup GitHub Actions CI/CD ([595d2c1](https://github.com/fabyo/NFEDanfe/commit/595d2c16e94a541e5978e54d9b9ea949ed69369c))
+* expor opcao --font e limitar CLI a gerar apenas um PDF por padrao ([499f09a](https://github.com/fabyo/NFEDanfe/commit/499f09a3241d4884eb80ef02f3afbddc8b0d52b6))
+* extend products table to fill remaining page height and push footer to bottom ([d03f87e](https://github.com/fabyo/NFEDanfe/commit/d03f87e523b7bc542dcee2f0aac139a8b16808ad))
+* first release ([efa0e94](https://github.com/fabyo/NFEDanfe/commit/efa0e9419c9399bef8a528b07a92b41e5e426a38))
+* first release ([bd82338](https://github.com/fabyo/NFEDanfe/commit/bd823383ac1c6784e3d25422ac2c634c0756d515))
+* highlight email addresses in bold in INFORMAÇÕES COMPLEMENTARES ([7dcf381](https://github.com/fabyo/NFEDanfe/commit/7dcf3815a40585d7541eb624e78b474b1c23547b))
+* split semicolons as line breaks in RESERVADO AO FISCO block ([d99ad72](https://github.com/fabyo/NFEDanfe/commit/d99ad72c26d0faf376d0a978e3e506d8b327ddc2))
+* v0.1.10 - vertical lines only on items, compact table, remove gap above products header ([3401c77](https://github.com/fabyo/NFEDanfe/commit/3401c7790a5288602d152754bec29d087125d380))
+
+
+### Bug Fixes
+
+* add .NET 10.0 SDK to NuGet publish workflow ([17c935d](https://github.com/fabyo/NFEDanfe/commit/17c935dc8858eb558e60c5246884f1419d60fd59))
+* ajustar fonte de informações adicionais ([#30](https://github.com/fabyo/NFEDanfe/issues/30)) ([a953c8f](https://github.com/fabyo/NFEDanfe/commit/a953c8fb5817980a14a1d274f47918f9a45861ee))
+* **packaging:** set PackageBuildAction=None for fonts and remove obsolete content/ path ([#29](https://github.com/fabyo/NFEDanfe/issues/29)) ([7949436](https://github.com/fabyo/NFEDanfe/commit/7949436bc4a2d48b2ac74486ed2fa55a93a861e5))
+* replace deleted real NF-e XMLs with anonymous test fixtures in testdata/ ([083cbd8](https://github.com/fabyo/NFEDanfe/commit/083cbd8d6b6f04d6429ec6fd00b83978e78224a6))
+* run required checks on automated release PRs ([#19](https://github.com/fabyo/NFEDanfe/issues/19)) ([0d7db96](https://github.com/fabyo/NFEDanfe/commit/0d7db9690306b97a9d91afec5f386f1a3f0e63d0))
+* set repository for release workflow dispatch ([#20](https://github.com/fabyo/NFEDanfe/issues/20)) ([90f3b41](https://github.com/fabyo/NFEDanfe/commit/90f3b413c2e8b7be5879c68c550b6fa4a95bc9ec))
+* use release-please PR output for checks ([#26](https://github.com/fabyo/NFEDanfe/issues/26)) ([9666775](https://github.com/fabyo/NFEDanfe/commit/96667757a2cb98e7d4411483655cc746e718437b))
+
 ## [2.3.1](https://github.com/fabyo/NFEDanfe/compare/v2.3.0...v2.3.1) (2026-07-02)
 
 ### Correções
