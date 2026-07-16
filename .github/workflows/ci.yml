@@ -27,6 +27,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore NFEDanfe.slnx --locked-mode
 
+    - name: Verify formatting
+      run: dotnet format NFEDanfe.slnx --verify-no-changes --no-restore
+
     - name: Validate centralized version
       shell: pwsh
       run: |

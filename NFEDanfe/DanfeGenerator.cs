@@ -63,7 +63,7 @@ public static class DanfeGenerator
 
         DanfeOptions effectiveOptions = options ?? DanfeOptions.Default;
         DanfeModel preparedModel = PrepareModel(model, effectiveOptions);
-        
+
         var builder = new DanfeLayoutBuilder();
         builder.Build(preparedModel, effectiveOptions, output);
     }

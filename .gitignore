@@ -3,6 +3,7 @@ obj/
 out/
 xml_testes/
 artifacts/
+**/TestResults/
 
 *.user
 *.suo

@@ -25,7 +25,7 @@ internal sealed class DanfeItemGrid
     {
         double currentY = y;
         double[] colWidths = GetColumnWidths(availableWidth, columns);
-        
+
         var solidPen = new XPen(XColors.Black, 0.4); // Borda externa e cabeçalhos sólidos
         var dashedPen = new XPen(XColors.Black, 0.4)
         {
@@ -107,7 +107,7 @@ internal sealed class DanfeItemGrid
         {
             double colWidth = colWidths[i];
             var rect = new XRect(currentX, y, colWidth, rowHeight);
-            
+
             // Desenhar célula sólida para o cabeçalho
             gfx.DrawRectangle(solidPen, rect);
 
@@ -126,7 +126,7 @@ internal sealed class DanfeItemGrid
                 currentX += colWidth;
                 continue;
             }
-            
+
             double padding = 1.0;
             double measuredWidth = gfx.MeasureString(columns[i].Header, headerFont).Width;
             double textMaxWidth = colWidth - (padding * 2);
@@ -139,7 +139,7 @@ internal sealed class DanfeItemGrid
 
             var textRect = new XRect(currentX + padding, targetY, textMaxWidth, rowHeight);
             tf.DrawString(columns[i].Header, headerFont, styles.TextBrush, textRect);
-            
+
             currentX += colWidth;
         }
     }

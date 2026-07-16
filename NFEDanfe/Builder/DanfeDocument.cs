@@ -147,7 +147,7 @@ internal sealed class DanfePageBuilder : IDanfePage
         // Calcular alturas dinâmicas das linhas usando o método GetLinesCount
         var valueFont = new XFont(DanfeFontResolver.FamilyName, 5.0, XFontStyleEx.Regular);
         double descColumnWidth = options.Mode == DanfePageMode.Landscape ? 140.0 : 151.0;
-        
+
         var tempDoc = new PdfSharp.Pdf.PdfDocument();
         var tempPage = tempDoc.AddPage();
         var rowHeights = new List<double>();
@@ -257,10 +257,10 @@ internal sealed class DanfePageBuilder : IDanfePage
     private static int GetLinesCount(XGraphics gfx, string text, XFont font, double maxWidth)
     {
         if (string.IsNullOrEmpty(text)) return 1;
-        
+
         string[] rawLines = text.Split('\n');
         int totalLines = 0;
-        
+
         foreach (var rawLine in rawLines)
         {
             string[] words = rawLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -272,7 +272,7 @@ internal sealed class DanfePageBuilder : IDanfePage
 
             int lines = 1;
             string currentLine = "";
-            
+
             foreach (string word in words)
             {
                 string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
@@ -289,7 +289,7 @@ internal sealed class DanfePageBuilder : IDanfePage
             }
             totalLines += lines;
         }
-        
+
         return totalLines;
     }
 }

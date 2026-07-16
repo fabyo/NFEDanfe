@@ -53,7 +53,7 @@ internal sealed class RecipientBlock
 
         new DanfeField("DATA DA EMISSÃO", _model.DadosDanfe.DataEmissao.ToString("dd/MM/yyyy"), 16.67)
             .Draw(gfx, styles, currentX, y, wDataEmi, fieldH, valueFontOverride: valueFontOverride);
-        
+
         y += fieldH;
 
         // 3. Linha 2: Endereço (6/12), Bairro (2/12), CEP (2/12), Data Entrada/Saída (2/12)
