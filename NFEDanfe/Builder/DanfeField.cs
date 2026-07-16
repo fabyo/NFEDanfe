@@ -36,7 +36,16 @@ public sealed class DanfeField
         return 25.0; // Altura ideal para suportar label de 2 linhas + valor sem nenhuma sobreposição
     }
 
-    internal void Draw(XGraphics gfx, DanfeStyleCatalog styles, double x, double y, double width, double height, XFont? labelFontOverride = null, XFont? valueFontOverride = null)
+    internal void Draw(
+        XGraphics gfx,
+        DanfeStyleCatalog styles,
+        double x,
+        double y,
+        double width,
+        double height,
+        XFont? labelFontOverride = null,
+        XFont? valueFontOverride = null,
+        double? minimumValueFontSize = null)
     {
         gfx.DrawRectangle(styles.BorderPen, x, y, width, height);
 
@@ -51,6 +60,11 @@ public sealed class DanfeField
 
         // Desenhar valor posicionado e alinhado na base do campo
         var valFont = valueFontOverride ?? styles.ValueFont;
+        if (minimumValueFontSize.HasValue)
+        {
+            valFont = FitValueFont(gfx, Value, valFont, availableWidth, minimumValueFontSize.Value);
+        }
+
         double valueH = valFont.Size + 1.0;
         double valueY = y + height - valueH - PaddingTop - 0.5;
         var valueFormat = new XStringFormat
@@ -62,6 +76,35 @@ public sealed class DanfeField
 
         var valueRect = new XRect(x + PaddingLeft, valueY, availableWidth, valueH);
         gfx.DrawString(truncatedValue, valFont, styles.TextBrush, valueRect, valueFormat);
+    }
+
+    private static XFont FitValueFont(
+        XGraphics gfx,
+        string text,
+        XFont font,
+        double maxWidth,
+        double minimumFontSize)
+    {
+        if (string.IsNullOrEmpty(text) || gfx.MeasureString(text, font).Width <= maxWidth)
+        {
+            return font;
+        }
+
+        double minimum = Math.Clamp(minimumFontSize, 1.0, font.Size);
+        double size = font.Size;
+        XFont candidate = font;
+
+        while (size - 0.25 >= minimum)
+        {
+            size -= 0.25;
+            candidate = new XFont(DanfeFontResolver.FamilyName, size, font.Style);
+            if (gfx.MeasureString(text, candidate).Width <= maxWidth)
+            {
+                return candidate;
+            }
+        }
+
+        return candidate;
     }
 
     /// <summary>Trunca texto com reticências se exceder a largura disponível.</summary>
