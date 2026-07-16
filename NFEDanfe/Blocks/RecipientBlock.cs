@@ -56,23 +56,39 @@ internal sealed class RecipientBlock
 
         y += fieldH;
 
-        // 3. Linha 2: Endereço (6/12), Bairro (2/12), CEP (2/12), Data Entrada/Saída (2/12)
-        double wAddr = width * 6.0 / 12.0;
-        double wBairro = width * 2.0 / 12.0;
-        double wCep = width * 2.0 / 12.0;
+        // 3. Linha 2: Endereço (5,5/12), Bairro (3/12), CEP (1,5/12), Data Entrada/Saída (2/12)
+        double wAddr = width * 5.5 / 12.0;
+        double wBairro = width * 3.0 / 12.0;
+        double wCep = width * 1.5 / 12.0;
         double wDataEnt = width * 2.0 / 12.0;
 
         currentX = x;
         string enderecoVal = DocumentFormatter.Address(_model.Destinatario.Endereco).ToUpper();
-        new DanfeField("ENDEREÇO", enderecoVal, 50.0)
-            .Draw(gfx, styles, currentX, y, wAddr, fieldH, valueFontOverride: valueFontOverride);
+        new DanfeField("ENDEREÇO", enderecoVal, 45.83)
+            .Draw(
+                gfx,
+                styles,
+                currentX,
+                y,
+                wAddr,
+                fieldH,
+                valueFontOverride: valueFontOverride,
+                minimumValueFontSize: 7.0);
         currentX += wAddr;
 
-        new DanfeField("BAIRRO / DISTRITO", _model.Destinatario.Endereco.Bairro.ToUpper(), 16.67)
-            .Draw(gfx, styles, currentX, y, wBairro, fieldH, valueFontOverride: valueFontOverride);
+        new DanfeField("BAIRRO / DISTRITO", _model.Destinatario.Endereco.Bairro.ToUpper(), 25.0)
+            .Draw(
+                gfx,
+                styles,
+                currentX,
+                y,
+                wBairro,
+                fieldH,
+                valueFontOverride: valueFontOverride,
+                minimumValueFontSize: 7.0);
         currentX += wBairro;
 
-        new DanfeField("CEP", DocumentFormatter.Cep(_model.Destinatario.Endereco.Cep), 16.67)
+        new DanfeField("CEP", DocumentFormatter.Cep(_model.Destinatario.Endereco.Cep), 12.5)
             .Draw(gfx, styles, currentX, y, wCep, fieldH, valueFontOverride: valueFontOverride);
         currentX += wCep;
 

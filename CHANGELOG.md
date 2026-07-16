@@ -1,5 +1,14 @@
 # Histórico de alterações
 
+## [2.3.4](https://github.com/fabyo/NFEDanfe/compare/v2.3.3...v2.3.4) (2026-07-16)
+
+### Correções
+
+- Ampliado o campo `BAIRRO / DISTRITO` no bloco Destinatário / Remetente, aproveitando o espaço excedente do CEP sem comprometer sua leitura.
+- Adicionado ajuste progressivo de fonte nos campos de endereço e bairro antes da aplicação de reticências, preservando a legibilidade com limite mínimo de 7 pt.
+- Validado o layout com logradouros de até 56 caracteres e bairros de até 45 caracteres, incluindo o número do imóvel.
+- Adicionados testes de regressão que verificam o conteúdo efetivamente gravado no PDF e impedem novos cortes nesses campos.
+
 ## [2.3.3](https://github.com/fabyo/NFEDanfe/compare/v2.3.2...v2.3.3) (2026-07-16)
 
 ### Qualidade e confiabilidade

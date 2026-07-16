@@ -8,6 +8,86 @@ namespace NFEDanfe.Tests;
 public sealed class PdfContentVerificationTests
 {
     [Fact]
+    public void Recipient_neighborhood_has_enough_width_for_common_long_names()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        XDocument document = XDocument.Load(xmlPath);
+        XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        XElement recipientAddress = document.Descendants(ns + "enderDest").Single();
+
+        recipientAddress.Element(ns + "xBairro")!.Value = "PARQUE SENHOR DO BONFIM";
+        recipientAddress.Element(ns + "CEP")!.Value = "12040001";
+
+        using var output = new MemoryStream();
+        DanfeGenerator.GenerateFromXmlContent(
+            document.ToString(SaveOptions.DisableFormatting),
+            output,
+            new DanfeOptions { UseDefaultLogo = false });
+
+        using PdfDocument pdf = PdfDocument.Open(output.ToArray());
+        string extractedText = string.Join('\n', pdf.GetPages().Select(page => page.Text));
+        string compactText = RemoveWhitespace(extractedText);
+
+        Assert.Contains("PARQUESENHORDOBONFIM", compactText);
+        Assert.Contains("12040-001", compactText);
+    }
+
+    [Fact]
+    public void Recipient_neighborhood_reduces_font_before_truncating_long_names()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        XDocument document = XDocument.Load(xmlPath);
+        XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        XElement recipientAddress = document.Descendants(ns + "enderDest").Single();
+
+        recipientAddress.Element(ns + "xBairro")!.Value = "LOTEAMENTO PARQUE SENHOR DO BONFIM";
+
+        using var output = new MemoryStream();
+        DanfeGenerator.GenerateFromXmlContent(
+            document.ToString(SaveOptions.DisableFormatting),
+            output,
+            new DanfeOptions { UseDefaultLogo = false });
+
+        using PdfDocument pdf = PdfDocument.Open(output.ToArray());
+        string extractedText = string.Join('\n', pdf.GetPages().Select(page => page.Text));
+        string compactText = RemoveWhitespace(extractedText);
+
+        Assert.Contains("LOTEAMENTOPARQUESENHORDOBONFIM", compactText);
+    }
+
+    [Fact]
+    public void Recipient_address_supports_real_world_street_and_neighborhood_limits()
+    {
+        const string street = "AVENIDA PROFESSOR DOUTOR JOAO BATISTA ALMEIDA JUNIOR SUL";
+        const string neighborhood = "LOTEAMENTO PARQUE SENHOR DO BONFIM DAS FLORES";
+        Assert.Equal(56, street.Length);
+        Assert.Equal(45, neighborhood.Length);
+
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        XDocument document = XDocument.Load(xmlPath);
+        XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        XElement recipientAddress = document.Descendants(ns + "enderDest").Single();
+
+        recipientAddress.Element(ns + "xLgr")!.Value = street;
+        recipientAddress.Element(ns + "nro")!.Value = "1000";
+        recipientAddress.Element(ns + "xCpl")?.Remove();
+        recipientAddress.Element(ns + "xBairro")!.Value = neighborhood;
+
+        using var output = new MemoryStream();
+        DanfeGenerator.GenerateFromXmlContent(
+            document.ToString(SaveOptions.DisableFormatting),
+            output,
+            new DanfeOptions { UseDefaultLogo = false });
+
+        using PdfDocument pdf = PdfDocument.Open(output.ToArray());
+        string extractedText = string.Join('\n', pdf.GetPages().Select(page => page.Text));
+        string compactText = RemoveWhitespace(extractedText);
+
+        Assert.Contains("AVENIDAPROFESSORDOUTORJOAOBATISTAALMEIDAJUNIORSUL,1000", compactText);
+        Assert.Contains("LOTEAMENTOPARQUESENHORDOBONFIMDASFLORES", compactText);
+    }
+
+    [Fact]
     public void Generated_pdf_text_is_audited_without_external_pdftotext()
     {
         string xmlPath = IntegrationTestHelpers.FindSampleXml();
