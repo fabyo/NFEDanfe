@@ -13,11 +13,14 @@ public sealed record DanfeOptions
     /// <summary>Ambiente de emissão.</summary>
     public DanfeAmbiente Ambiente { get; set; } = DanfeAmbiente.Producao;
 
-    /// <summary>Caminho do logotipo do emitente (null para omitir).</summary>
+    /// <summary>Caminho do logotipo do emitente. Quando ausente ou inválido, usa o logotipo padrão.</summary>
     public string? LogoPath { get; set; }
 
-    /// <summary>Bytes do logotipo do emitente (null para omitir).</summary>
+    /// <summary>Bytes do logotipo do emitente. Quando ausentes ou inválidos, usa o logotipo padrão.</summary>
     public byte[]? LogoBytes { get; set; }
+
+    /// <summary>Usa o logotipo padrão incorporado quando nenhum logotipo válido for encontrado.</summary>
+    public bool UseDefaultLogo { get; set; } = true;
 
     /// <summary>Modo de impressão (Portrait ou Landscape).</summary>
     public DanfePageMode PageMode { get; set; } = DanfePageMode.Portrait;

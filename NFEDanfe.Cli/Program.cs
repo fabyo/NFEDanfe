@@ -47,7 +47,6 @@ internal static class Program
             var danfeOpts = new DanfeOptions
             {
                 LogoPath = options.LogoPath,
-                LogoBytes = string.IsNullOrEmpty(options.LogoPath) ? null : File.ReadAllBytes(options.LogoPath),
                 TipoImpressaoOverride = options.Landscape ? 2 : null,
                 CanceledOverride = options.Cancelado ? true : null,
                 EmitFooter = true,
@@ -101,7 +100,7 @@ internal static class Program
         Console.WriteLine("  nfedanfe [arquivos.xml...] [opções]");
         Console.WriteLine();
         Console.WriteLine("Opções:");
-        Console.WriteLine("  --logo-path <caminho>   Caminho para o arquivo de logotipo (PNG/JPG).");
+        Console.WriteLine("  --logo-path <caminho>   Caminho do logotipo (usa o padrão se for inválido).");
         Console.WriteLine("  --landscape, -p         Gera o PDF no modo Paisagem.");
         Console.WriteLine("  --cancelado, -c         Gera com marca d'água de cancelado.");
         Console.WriteLine("  --output, -o <pasta>    Diretório de saída para os PDFs gerados (padrão: ./out).");

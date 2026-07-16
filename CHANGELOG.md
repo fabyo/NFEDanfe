@@ -1,5 +1,28 @@
 # Histórico de alterações
 
+## [2.3.2](https://github.com/fabyo/NFEDanfe/compare/v2.3.1...v2.3.2) (2026-07-16)
+
+### Correções
+
+- Removidas tags HTML de `infCpl` e `infAdFisco` antes da composição do DANFE, impedindo que marcações sejam impressas em Informações Complementares ou Reservado ao Fisco.
+- Convertidas tags `<br>`, `<br/>` e `<br />` em quebras de linha, inclusive quando codificadas ou duplamente codificadas como entidades HTML.
+- Tratada a codificação defeituosa `elt;br /egt;`, encontrada em XMLs reais, como quebra de linha em vez de texto visível.
+- Mantida a conversão de ponto e vírgula em quebra de linha nos dois campos de dados adicionais.
+- Valores monetários identificados pelo marcador `R$` agora são impressos em negrito; números sem esse marcador mantêm a formatação normal.
+- Quando nenhum logotipo válido é informado, o DANFE volta a usar automaticamente a `logo.png` padrão incorporada ao pacote; caminhos inexistentes e imagens inválidas também acionam esse fallback.
+- A CLI deixou de tentar abrir o logotipo antes da biblioteca, evitando falha quando `--logo-path` aponta para um arquivo inexistente.
+
+### Robustez e segurança
+
+- A normalização passou a ocorrer tanto na leitura do XML quanto na renderização, protegendo também DANFEs gerados diretamente a partir do modelo público.
+- O parser público legado passou a aplicar a mesma normalização e limites explícitos de tamanho, mantendo DTD e resolução externa desabilitadas.
+- Conteúdos de tags `script` e `style`, caracteres de controle não imprimíveis, espaços irregulares e quebras repetidas agora são removidos ou normalizados.
+- Adicionado recorte gráfico e limite vertical de segurança para impedir que textos extremos ultrapassem as caixas de dados adicionais mesmo após atingir a fonte mínima.
+- Adicionados testes de regressão para HTML comum, entidades codificadas, separadores, valores em reais, rejeição de DTD e a variante malformada observada no XML real.
+- Atualizado `Microsoft.NET.Test.Sdk` de 18.7.0 para 18.8.1.
+- Adicionado teste para garantir a presença do logotipo padrão quando nenhum caminho é informado ou o arquivo configurado não existe.
+- Corrigida a documentação da CLI, removendo opções antigas inexistentes e alinhando exemplos, frameworks e mecanismo de renderização ao código atual.
+
 ## [2.3.1](https://github.com/fabyo/NFEDanfe/compare/v2.3.0...v2.3.1) (2026-07-02)
 
 ### Correções
