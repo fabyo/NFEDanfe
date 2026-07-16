@@ -1,4 +1,5 @@
 using NFEDanfe;
+using NFEDanfe.Blocks;
 using NFEDanfe.Domain.Parser;
 using NFEDanfe.Options;
 using PdfSharp.Pdf.IO;
@@ -52,6 +53,98 @@ public sealed class ParserAndSnapshotTests
 
         Assert.NotNull(model.DadosAdicionais);
         Assert.Contains("181712", model.DadosAdicionais.PedidosCompra!);
+    }
+
+    [Fact]
+    public void Additional_data_removes_html_and_preserves_breaks()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        var infAdic = doc.Descendants(ns + "infAdic").Single();
+
+        infAdic.Element(ns + "infCpl")!.Value =
+            "Linha 1<br />Linha 2;<strong>Linha 3</strong>;elt;br /egt;Linha 4";
+        infAdic.Element(ns + "infAdFisco")!.Value =
+            "Fisco 1&lt;br&gt;Fisco 2;<script>não exibir</script><em>Fisco 3</em>";
+
+        var model = DanfeXmlParser.ParseDocument(doc);
+        var dadosAdicionais = Assert.IsType<NFEDanfe.Domain.Models.DadosAdicionaisModel>(model.DadosAdicionais);
+
+        Assert.Equal("Linha 1\nLinha 2\nLinha 3\nLinha 4", dadosAdicionais.InformacoesComplementares);
+        Assert.Equal("Fisco 1\nFisco 2\nFisco 3", dadosAdicionais.InformacoesFisco);
+    }
+
+    [Fact]
+    public void Missing_additional_data_fields_remain_null()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        var infAdic = doc.Descendants(ns + "infAdic").Single();
+
+        infAdic.Element(ns + "infCpl")?.Remove();
+        infAdic.Element(ns + "infAdFisco")?.Remove();
+
+        var model = DanfeXmlParser.ParseDocument(doc);
+        var dadosAdicionais = Assert.IsType<NFEDanfe.Domain.Models.DadosAdicionaisModel>(model.DadosAdicionais);
+
+        Assert.Null(dadosAdicionais.InformacoesComplementares);
+        Assert.Null(dadosAdicionais.InformacoesFisco);
+    }
+
+    [Fact]
+    public void Currency_values_are_bold_only_when_prefixed_by_brazilian_real_marker()
+    {
+        var words = AdditionalDataBlock.BuildTextRuns(
+                "Com marcador R$ 511,10 sem marcador 511,10 e junto R$1.000,00")
+            .Where(run => !string.IsNullOrWhiteSpace(run.Text))
+            .ToList();
+
+        Assert.True(words.Single(run => run.Text == "R$").IsBold);
+        Assert.True(words.First(run => run.Text == "511,10").IsBold);
+        Assert.False(words.Last(run => run.Text == "511,10").IsBold);
+        Assert.True(words.Single(run => run.Text == "R$1.000,00").IsBold);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("logo-inexistente.png")]
+    public void Default_logo_is_rendered_when_custom_logo_is_not_available(string? logoPath)
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        using var output = new MemoryStream();
+
+        DanfeGenerator.GenerateFromXml(xmlPath, output, new DanfeOptions { LogoPath = logoPath });
+
+        output.Position = 0;
+        using var document = PdfReader.Open(output, PdfDocumentOpenMode.Import);
+        var resources = document.Pages[0].Elements.GetDictionary("/Resources");
+        var imageObjects = resources?.Elements.GetDictionary("/XObject");
+        Assert.NotNull(imageObjects);
+        Assert.True(imageObjects.Elements.Count > 0);
+    }
+
+    [Fact]
+    public void Legacy_parser_sanitizes_additional_data()
+    {
+        string xmlPath = IntegrationTestHelpers.FindSampleXml();
+        System.Xml.Linq.XDocument doc = System.Xml.Linq.XDocument.Load(xmlPath);
+        System.Xml.Linq.XNamespace ns = "http://www.portalfiscal.inf.br/nfe";
+        var infCpl = doc.Descendants(ns + "infCpl").Single();
+        infCpl.Value = "Linha 1<br>Linha 2;<strong>Linha 3</strong>";
+
+        var data = NFEDanfe.Xml.NFeXmlParser.Parse(doc.ToString());
+
+        Assert.Equal("Linha 1\nLinha 2\nLinha 3", data.InformacoesComplementares);
+    }
+
+    [Fact]
+    public void Legacy_parser_rejects_dtd()
+    {
+        const string xml = "<!DOCTYPE nfeProc [<!ENTITY xxe SYSTEM 'file:///etc/passwd'>]><nfeProc>&xxe;</nfeProc>";
+
+        Assert.Throws<System.Xml.XmlException>(() => NFEDanfe.Xml.NFeXmlParser.Parse(xml));
     }
 
     [Fact]

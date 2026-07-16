@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using PdfSharp.Drawing;
+using NFEDanfe.Domain.Formatting;
 using NFEDanfe.Domain.Models;
 
 namespace NFEDanfe.Blocks;
@@ -13,6 +14,10 @@ internal sealed class AdditionalDataBlock
     private const double DefaultAdditionalInfoFontSize = 6.0;
     private const double MinimumAdditionalInfoFontSize = 3.0;
     private const double FontSizeStep = 0.25;
+    private static readonly Regex BrazilianCurrencyValueRegex = new(
+        @"^[+-]?\d+(?:\.\d{3})*,\d{2}$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant,
+        TimeSpan.FromMilliseconds(100));
     private static double Mm(double mm) => mm * 2.834645;
 
     private readonly DanfeModel _model;
@@ -22,7 +27,7 @@ internal sealed class AdditionalDataBlock
         _model = model;
     }
 
-    private sealed class TextRun
+    internal sealed class TextRun
     {
         public string Text { get; }
         public bool IsBold { get; }
@@ -66,9 +71,9 @@ internal sealed class AdditionalDataBlock
         gfx.DrawString("INFORMAÇÕES COMPLEMENTARES", labelFont, styles.TextBrush,
             new XRect(x + 4, y + 4, leftWidth - 8, 8), labelNear);
 
-        // Processamento do texto (separado por ';' e adicionando Pedido)
-        var infComplRaw = _model.DadosAdicionais?.InformacoesComplementares ?? string.Empty;
-        var infComplLines = infComplRaw.Split(';', StringSplitOptions.RemoveEmptyEntries)
+        // Normaliza quebras e marcações antes de adicionar o pedido de compra.
+        var infComplRaw = AdditionalDataText.Normalize(_model.DadosAdicionais?.InformacoesComplementares);
+        var infComplLines = infComplRaw.Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(l => l.Trim())
             .Where(l => !string.IsNullOrEmpty(l))
             .ToList();
@@ -87,68 +92,15 @@ internal sealed class AdditionalDataBlock
         if (!string.IsNullOrEmpty(pedestrianText))
         {
             var textRect = new XRect(x + 4, y + 14, leftWidth - 8, contentMinH - 18);
-            
-            // Construir runs formatados para e-mail e pedido em negrito
-            var runs = new List<TextRun>();
-            var lines = pedestrianText.Split('\n');
-            
-            for (int l = 0; l < lines.Length; l++)
-            {
-                var line = lines[l];
-                string[] words = line.Split(' ');
-                bool boldNext = false;
-                
-                for (int i = 0; i < words.Length; i++)
-                {
-                    string word = words[i];
-                    bool isBold = false;
-                    
-                    string cleanDigits = new string(word.Where(char.IsDigit).ToArray());
-
-                    if (word.Contains("@") && word.Contains("."))
-                    {
-                        isBold = true;
-                    }
-                    else if (cleanDigits.Length == 44)
-                    {
-                        isBold = true;
-                    }
-                    else if (Regex.IsMatch(word, @"\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"))
-                    {
-                        isBold = true;
-                    }
-                    else if (boldNext)
-                    {
-                        isBold = true;
-                    }
-                    else if (string.Equals(word, "Pedido:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        isBold = true;
-                        boldNext = true;
-                    }
-                    
-                    runs.Add(new TextRun(word, isBold));
-                    if (i < words.Length - 1)
-                    {
-                        runs.Add(new TextRun(" ", false));
-                    }
-                }
-                
-                if (l < lines.Length - 1)
-                {
-                    runs.Add(new TextRun("\n", false));
-                }
-            }
-
-            DrawRichTextFitted(gfx, styles, textRect, runs);
+            DrawRichTextFitted(gfx, styles, textRect, BuildTextRuns(pedestrianText));
         }
 
         // --- LADO DIREITO: RESERVADO AO FISCO ---
         gfx.DrawString("RESERVADO AO FISCO", labelFont, styles.TextBrush,
             new XRect(x + leftWidth + 4, y + 4, rightWidth - 8, 8), labelNear);
 
-        var infFiscoRaw = _model.DadosAdicionais?.InformacoesFisco ?? string.Empty;
-        var infFiscoLines = infFiscoRaw.Split(';', StringSplitOptions.RemoveEmptyEntries)
+        var infFiscoRaw = AdditionalDataText.Normalize(_model.DadosAdicionais?.InformacoesFisco);
+        var infFiscoLines = infFiscoRaw.Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(l => l.Trim())
             .Where(l => !string.IsNullOrEmpty(l));
         string infFiscoFormatted = string.Join("\n", infFiscoLines);
@@ -156,11 +108,65 @@ internal sealed class AdditionalDataBlock
         if (!string.IsNullOrEmpty(infFiscoFormatted))
         {
             var textRect = new XRect(x + leftWidth + 4, y + 14, rightWidth - 8, contentMinH - 18);
-            DrawRichTextFitted(gfx, styles, textRect,
-                [new TextRun(infFiscoFormatted, false)]);
+            DrawRichTextFitted(gfx, styles, textRect, BuildTextRuns(infFiscoFormatted));
         }
 
         return height;
+    }
+
+    internal static List<TextRun> BuildTextRuns(string text)
+    {
+        var runs = new List<TextRun>();
+        var lines = text.Split('\n');
+
+        for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+        {
+            string[] words = lines[lineIndex].Split(' ');
+            bool boldRestOfLine = false;
+            bool expectCurrencyValue = false;
+
+            for (int wordIndex = 0; wordIndex < words.Length; wordIndex++)
+            {
+                string word = words[wordIndex];
+                string cleanDigits = new(word.Where(char.IsDigit).ToArray());
+                bool isPedidoLabel = string.Equals(word, "Pedido:", StringComparison.OrdinalIgnoreCase);
+                bool isCurrencyMarker = string.Equals(word, "R$", StringComparison.OrdinalIgnoreCase);
+                bool isCurrencyValue = expectCurrencyValue && IsBrazilianCurrencyValue(word);
+                bool isInlineCurrencyValue = word.StartsWith("R$", StringComparison.OrdinalIgnoreCase)
+                    && IsBrazilianCurrencyValue(word[2..]);
+
+                bool isBold = boldRestOfLine
+                    || isPedidoLabel
+                    || isCurrencyMarker
+                    || isCurrencyValue
+                    || isInlineCurrencyValue
+                    || (word.Contains('@') && word.Contains('.'))
+                    || cleanDigits.Length == 44
+                    || Regex.IsMatch(word, @"\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}");
+
+                runs.Add(new TextRun(word, isBold));
+                if (wordIndex < words.Length - 1)
+                {
+                    runs.Add(new TextRun(" ", false));
+                }
+
+                boldRestOfLine |= isPedidoLabel;
+                expectCurrencyValue = isCurrencyMarker;
+            }
+
+            if (lineIndex < lines.Length - 1)
+            {
+                runs.Add(new TextRun("\n", false));
+            }
+        }
+
+        return runs;
+    }
+
+    private static bool IsBrazilianCurrencyValue(string value)
+    {
+        string candidate = value.TrimEnd('.', ';', ':', ')', ']', '!');
+        return BrazilianCurrencyValueRegex.IsMatch(candidate);
     }
 
     private static void DrawRichTextFitted(XGraphics gfx, DanfeStyleCatalog styles, XRect rect, List<TextRun> runs)
@@ -171,7 +177,16 @@ internal sealed class AdditionalDataBlock
             fontSize -= FontSizeStep;
         }
 
-        DrawRichText(gfx, styles, rect, runs, fontSize);
+        var state = gfx.Save();
+        try
+        {
+            gfx.IntersectClip(rect);
+            DrawRichText(gfx, styles, rect, runs, fontSize);
+        }
+        finally
+        {
+            gfx.Restore(state);
+        }
     }
 
     private static bool TextFits(XGraphics gfx, XRect rect, List<TextRun> runs, double fontSize)
@@ -228,7 +243,7 @@ internal sealed class AdditionalDataBlock
     {
         var regularFont = new XFont(DanfeFontResolver.FamilyName, fontSize, XFontStyleEx.Regular);
         var boldFont = new XFont(DanfeFontResolver.FamilyName, fontSize, XFontStyleEx.Bold);
-        
+
         double lineSpacing = fontSize + 1.2;
         double currentX = rect.X;
         double currentY = rect.Y + fontSize;
@@ -267,6 +282,11 @@ internal sealed class AdditionalDataBlock
 
         foreach (var item in formattedWords)
         {
+            if (currentY > rect.Bottom)
+            {
+                return;
+            }
+
             if (item.isNewline)
             {
                 currentX = rect.X;
@@ -285,6 +305,11 @@ internal sealed class AdditionalDataBlock
                 string remaining = item.text;
                 while (remaining.Length > 0)
                 {
+                    if (currentY > rect.Bottom)
+                    {
+                        return;
+                    }
+
                     int charsToDraw = remaining.Length;
                     while (charsToDraw > 1 && gfx.MeasureString(remaining[..charsToDraw], item.font).Width > rect.Width)
                         charsToDraw--;

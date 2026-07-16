@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using NFEDanfe.Domain.Models;
 using NFEDanfe.Domain.Formatting;
+using NFEDanfe.Domain.Models;
 using NFEDanfe.Options;
 
 namespace NFEDanfe.Domain.Parser;
@@ -382,8 +382,8 @@ public static class DanfeXmlParser
             .ToList();
 
         return new DadosAdicionaisModel(
-            InformacoesComplementares: infAdic?.Element(NfeNamespace + "infCpl")?.Value,
-            InformacoesFisco: infAdic?.Element(NfeNamespace + "infAdFisco")?.Value,
+            InformacoesComplementares: AdditionalDataText.NormalizeNullable(infAdic?.Element(NfeNamespace + "infCpl")?.Value),
+            InformacoesFisco: AdditionalDataText.NormalizeNullable(infAdic?.Element(NfeNamespace + "infAdFisco")?.Value),
             PedidosCompra: pedidosCompra);
     }
 

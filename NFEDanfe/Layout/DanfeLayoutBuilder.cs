@@ -60,7 +60,7 @@ public sealed class DanfeLayoutBuilder
     private void RenderAll(DanfeEngine engine, DanfeModel model, DanfeOptions options)
     {
         var canhoto = new CanhotoBlock(model);
-        var emitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, 1, 1);
+        var emitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, options.UseDefaultLogo, 1, 1);
         var recipientBlock = new RecipientBlock(model);
         var invoiceBlock = new InvoiceBlock(model);
         var transportBlock = new TransportBlock(model);
@@ -172,13 +172,13 @@ public sealed class DanfeLayoutBuilder
                 }
 
                 // 2. EmitenteBox / DanfeBox / ChaveAcessoBox
-                var pEmitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, 1, plan.TotalPages);
+                var pEmitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, options.UseDefaultLogo, 1, plan.TotalPages);
                 currentY += pEmitente.Draw(gfx, engine.Styles, contentX, currentY, contentW, isLandscape);
 
                 // 3. Natureza da Operação / Protocolo
                 new DanfeField("NATUREZA DA OPERAÇÃO", model.DadosDanfe.NaturezaOperacao, 66.67)
                     .Draw(gfx, engine.Styles, contentX, currentY, contentW * 0.6667, row3H, valueFontOverride: valueFontOverride);
-                
+
                 string protStr = string.IsNullOrEmpty(model.DadosDanfe.ProtocoloAutorizacao)
                     ? ""
                     : $"{model.DadosDanfe.ProtocoloAutorizacao} - {model.DadosDanfe.DataProtocolo:dd/MM/yyyy HH:mm:ss}";
@@ -225,13 +225,13 @@ public sealed class DanfeLayoutBuilder
             {
                 // PAGES 2+
                 // 1. Emitente / Danfe / Chave reduzidos
-                var pEmitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, p + 1, plan.TotalPages);
+                var pEmitente = new EmitentBlock(model, options.LogoPath, options.LogoBytes, options.UseDefaultLogo, p + 1, plan.TotalPages);
                 currentY += pEmitente.Draw(gfx, engine.Styles, contentX, currentY, contentW, isLandscape);
 
                 // 2. Natureza da Operação / Protocolo
                 new DanfeField("NATUREZA DA OPERAÇÃO", model.DadosDanfe.NaturezaOperacao, 66.67)
                     .Draw(gfx, engine.Styles, contentX, currentY, contentW * 0.6667, row3H, valueFontOverride: valueFontOverride);
-                
+
                 string protStr = string.IsNullOrEmpty(model.DadosDanfe.ProtocoloAutorizacao)
                     ? ""
                     : $"{model.DadosDanfe.ProtocoloAutorizacao} - {model.DadosDanfe.DataProtocolo:dd/MM/yyyy HH:mm:ss}";
@@ -488,10 +488,10 @@ public sealed class DanfeLayoutBuilder
     private static int GetLinesCount(XGraphics gfx, string text, XFont font, double maxWidth)
     {
         if (string.IsNullOrEmpty(text)) return 1;
-        
+
         string[] rawLines = text.Split('\n');
         int totalLines = 0;
-        
+
         foreach (var rawLine in rawLines)
         {
             string[] words = rawLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -503,7 +503,7 @@ public sealed class DanfeLayoutBuilder
 
             int lines = 1;
             string currentLine = "";
-            
+
             foreach (string word in words)
             {
                 string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
@@ -520,7 +520,7 @@ public sealed class DanfeLayoutBuilder
             }
             totalLines += lines;
         }
-        
+
         return totalLines;
     }
 }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
+using NFEDanfe.Domain.Formatting;
 using NFEDanfe.Grid;
 using NFEDanfe.Options;
 
@@ -11,15 +13,15 @@ namespace NFEDanfe.Xml;
 /// <summary>Parser de XML de NF-e autorizado para DanfeData (modelo com string).</summary>
 public static class NFeXmlParser
 {
+    private const long MaximumXmlCharacters = 10_000_000;
     private static readonly XNamespace Ns = "http://www.portalfiscal.inf.br/nfe";
 
     /// <summary>Parseia XML a partir de um Stream UTF-8.</summary>
     public static DanfeData Parse(Stream xmlStream)
     {
         ArgumentNullException.ThrowIfNull(xmlStream);
-        var settings = new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit, XmlResolver = null };
-        using var reader = System.Xml.XmlReader.Create(xmlStream, settings);
-        var doc = XDocument.Load(reader);
+        using var reader = XmlReader.Create(xmlStream, CreateSecureReaderSettings());
+        var doc = XDocument.Load(reader, LoadOptions.None);
         return ParseDocument(doc);
     }
 
@@ -27,11 +29,21 @@ public static class NFeXmlParser
     public static DanfeData Parse(string xmlContent)
     {
         ArgumentNullException.ThrowIfNull(xmlContent);
-        var settings = new System.Xml.XmlReaderSettings { DtdProcessing = System.Xml.DtdProcessing.Prohibit, XmlResolver = null };
         using var stringReader = new StringReader(xmlContent);
-        using var reader = System.Xml.XmlReader.Create(stringReader, settings);
-        var doc = XDocument.Load(reader);
+        using var reader = XmlReader.Create(stringReader, CreateSecureReaderSettings());
+        var doc = XDocument.Load(reader, LoadOptions.None);
         return ParseDocument(doc);
+    }
+
+    private static XmlReaderSettings CreateSecureReaderSettings()
+    {
+        return new XmlReaderSettings
+        {
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
+            MaxCharactersFromEntities = 0,
+            MaxCharactersInDocument = MaximumXmlCharacters
+        };
     }
 
     private static DanfeData ParseDocument(XDocument doc)
@@ -213,7 +225,7 @@ public static class NFeXmlParser
         }
 
         // INFADIC
-        data.InformacoesComplementares = infAdic?.ElementValue("infCpl") ?? "";
+        data.InformacoesComplementares = AdditionalDataText.Normalize(infAdic?.ElementValue("infCpl"));
 
         // PROTOCOLO
         if (protNFe is not null)

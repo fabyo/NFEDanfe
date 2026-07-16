@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using NFEDanfe.Assets;
 using PdfSharp.Drawing;
 using NFEDanfe.Domain.Models;
 using NFEDanfe.Domain.Formatting;
@@ -15,14 +16,22 @@ internal sealed class EmitentBlock
     private readonly DanfeModel _model;
     private readonly string? _logoPath;
     private readonly byte[]? _logoBytes;
+    private readonly bool _useDefaultLogo;
     private readonly int _currentPage;
     private readonly int _totalPages;
 
-    internal EmitentBlock(DanfeModel model, string? logoPath, byte[]? logoBytes, int currentPage, int totalPages)
+    internal EmitentBlock(
+        DanfeModel model,
+        string? logoPath,
+        byte[]? logoBytes,
+        bool useDefaultLogo,
+        int currentPage,
+        int totalPages)
     {
         _model = model;
         _logoPath = logoPath;
         _logoBytes = logoBytes;
+        _useDefaultLogo = useDefaultLogo;
         _currentPage = currentPage;
         _totalPages = totalPages;
     }
@@ -48,43 +57,21 @@ internal sealed class EmitentBlock
         double emitenteContentW = colEmitenteW - 8;
         double logoSpace = isLandscape ? 60.0 : 70.0;
 
-        // Se houver logotipo, desenha reservando espaço correspondente
-        if (_logoBytes != null && _logoBytes.Length > 0)
+        bool logoDrawn = TryDrawLogoBytes(gfx, _logoBytes, emitenteContentX, y, height, isLandscape)
+            || TryDrawLogoPath(gfx, _logoPath, emitenteContentX, y, height, isLandscape)
+            || TryDrawLogoBytes(gfx, _model.Emitente.LogoBytes, emitenteContentX, y, height, isLandscape)
+            || (_useDefaultLogo && TryDrawLogoBytes(
+                gfx,
+                DefaultLogoProvider.GetBytes(),
+                emitenteContentX,
+                y,
+                height,
+                isLandscape));
+
+        if (logoDrawn)
         {
-            try
-            {
-                using var ms = new MemoryStream();
-                ms.Write(_logoBytes, 0, _logoBytes.Length);
-                ms.Position = 0;
-                using var image = XImage.FromStream(ms);
-                double imgW = isLandscape ? 55.0 : 65.0;
-                double imgH = isLandscape ? 34.0 : 55.0;
-                double scale = Math.Min(imgW / image.PixelWidth, imgH / image.PixelHeight);
-                double finalW = image.PixelWidth * scale;
-                double finalH = image.PixelHeight * scale;
-                gfx.DrawImage(image, emitenteContentX, y + (height - finalH) / 2, finalW, finalH);
-                
-                emitenteContentX += logoSpace;
-                emitenteContentW -= logoSpace;
-            }
-            catch { }
-        }
-        else if (!string.IsNullOrEmpty(_logoPath) && File.Exists(_logoPath))
-        {
-            try
-            {
-                using var image = XImage.FromFile(_logoPath);
-                double imgW = isLandscape ? 55.0 : 65.0;
-                double imgH = isLandscape ? 34.0 : 55.0;
-                double scale = Math.Min(imgW / image.PixelWidth, imgH / image.PixelHeight);
-                double finalW = image.PixelWidth * scale;
-                double finalH = image.PixelHeight * scale;
-                gfx.DrawImage(image, emitenteContentX, y + (height - finalH) / 2, finalW, finalH);
-                
-                emitenteContentX += logoSpace;
-                emitenteContentW -= logoSpace;
-            }
-            catch { }
+            emitenteContentX += logoSpace;
+            emitenteContentW -= logoSpace;
         }
 
         // Razão Social do Emitente (Destaque)
@@ -97,7 +84,7 @@ internal sealed class EmitentBlock
         emitY += consumedH + 2.0;
 
         // Nome Fantasia (Itálico se existir e for diferente)
-        if (!string.IsNullOrEmpty(_model.Emitente.NomeFantasia) && 
+        if (!string.IsNullOrEmpty(_model.Emitente.NomeFantasia) &&
             !_model.Emitente.NomeFantasia.Equals(_model.Emitente.RazaoSocial, StringComparison.OrdinalIgnoreCase))
         {
             var fantFont = new XFont(DanfeFontResolver.FamilyName, isLandscape ? 6.0 : 8.0, XFontStyleEx.Italic);
@@ -166,7 +153,7 @@ internal sealed class EmitentBlock
         double boxX = checkX + checkW - boxSize - 2;
         double boxY = danfeY + (checkRowH - boxSize) / 2;
         gfx.DrawRectangle(styles.BorderPen, boxX, boxY, boxSize, boxSize);
-        
+
         var checkFont = new XFont(DanfeFontResolver.FamilyName, isLandscape ? 7.0 : 9.0, XFontStyleEx.Bold);
         gfx.DrawString(_model.DadosDanfe.TipoOperacao.ToString(), checkFont, styles.TextBrush,
             new XRect(boxX, boxY, boxSize, boxSize), centerFormat);
@@ -261,6 +248,73 @@ internal sealed class EmitentBlock
         gfx.DrawString("www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", infoFont, styles.TextBrush,
             new XRect(chaveX + 4, textY + (isLandscape ? 4.5 : 7.0), colChaveW - 8, 8), centerFormat);
         return height;
+    }
+
+    private static bool TryDrawLogoBytes(
+        XGraphics gfx,
+        byte[]? logoBytes,
+        double x,
+        double y,
+        double height,
+        bool isLandscape)
+    {
+        if (logoBytes is not { Length: > 0 })
+        {
+            return false;
+        }
+
+        try
+        {
+            using var stream = new MemoryStream(logoBytes, writable: false);
+            using var image = XImage.FromStream(stream);
+            DrawLogo(gfx, image, x, y, height, isLandscape);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryDrawLogoPath(
+        XGraphics gfx,
+        string? logoPath,
+        double x,
+        double y,
+        double height,
+        bool isLandscape)
+    {
+        if (string.IsNullOrWhiteSpace(logoPath) || !File.Exists(logoPath))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var image = XImage.FromFile(logoPath);
+            DrawLogo(gfx, image, x, y, height, isLandscape);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static void DrawLogo(
+        XGraphics gfx,
+        XImage image,
+        double x,
+        double y,
+        double height,
+        bool isLandscape)
+    {
+        double maximumWidth = isLandscape ? 55.0 : 65.0;
+        double maximumHeight = isLandscape ? 34.0 : 55.0;
+        double scale = Math.Min(maximumWidth / image.PixelWidth, maximumHeight / image.PixelHeight);
+        double finalWidth = image.PixelWidth * scale;
+        double finalHeight = image.PixelHeight * scale;
+        gfx.DrawImage(image, x, y + (height - finalHeight) / 2, finalWidth, finalHeight);
     }
 
     private static string FormatChave(string chave)

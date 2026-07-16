@@ -16,11 +16,15 @@
     <PackageReference Include="Barcoder" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="NFEDanfe.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="NFEDanfe.Cli\**" />
     <None Include="NFEDanfe.Cli\**" />
   </ItemGroup>
   <ItemGroup>
     <None Include="logo.png" Pack="true" PackagePath="\" />
+    <EmbeddedResource Include="logo.png" LogicalName="NFEDanfe.logo.png" />
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\fonts\**\*" Pack="true" PackagePath="contentFiles\any\any\fonts\" PackageCopyToOutput="true" CopyToOutputDirectory="PreserveNewest" PackageBuildAction="None" />
   </ItemGroup>

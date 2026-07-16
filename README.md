@@ -8,7 +8,7 @@
 [![NuGet](https://img.shields.io/nuget/v/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![Downloads](https://img.shields.io/nuget/dt/NFEDanfe.svg)](https://www.nuget.org/packages/NFEDanfe)
 [![License](https://img.shields.io/github/license/fabyo/NFEDanfe.svg)](https://github.com/fabyo/NFEDanfe/blob/main/LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![GitHub Stars](https://img.shields.io/github/stars/fabyo/NFEDanfe)](https://github.com/fabyo/NFEDanfe)
 
 Biblioteca .NET para gerar DANFE em PDF a partir de XML de NF-e autorizada.
@@ -53,7 +53,9 @@ await using FileStream output = File.Create("danfe.pdf");
 DanfeGenerator.GenerateFromXml("nota-procNFe.xml", output);
 ```
 
-Com logo:
+Sem configuração adicional, o DANFE usa a `logo.png` padrão incorporada ao pacote.
+
+Com logo personalizado:
 
 ```csharp
 using NFEDanfe;
@@ -140,7 +142,9 @@ Configurações opcionais para a geração do documento.
 
 | Propriedade | Tipo | Descrição | Valor Padrão |
 | --- | --- | --- | --- |
-| `LogoBytes` | `byte[]?` | Vetor de bytes contendo o logotipo da empresa emitente (PNG ou JPEG). | `null` |
+| `LogoPath` | `string?` | Caminho de um logotipo personalizado (PNG ou JPEG). Se for inválido, usa o logotipo padrão. | `null` |
+| `LogoBytes` | `byte[]?` | Bytes de um logotipo personalizado (PNG ou JPEG). Se forem inválidos, usa o logotipo padrão. | `null` |
+| `UseDefaultLogo` | `bool` | Usa a `logo.png` incorporada quando nenhum logotipo personalizado válido estiver disponível. | `true` |
 | `ValidateBeforeGenerate` | `bool` | Se `true`, valida as regras de negócio e integridade da nota antes de gerar. | `true` |
 | `EmitFooter` | `bool` | Se `true`, exibe a informação de rodapé "NFEDanfe - impresso em...". | `true` |
 | `TipoImpressaoOverride` | `int?` | Sobrescreve a orientação definida no XML (`1` = Retrato, `2` = Paisagem). Se `null`, respeita o XML. | `null` |
@@ -181,7 +185,7 @@ var options = new DanfeOptions
 Durante desenvolvimento:
 
 ```powershell
-dotnet run --project .\NFEDanfe.Cli\NFEDanfe.Cli.csproj -- .\samples\nota-exemplo-procNFe.xml
+dotnet run --project .\NFEDanfe.Cli\NFEDanfe.Cli.csproj --framework net10.0 -- .\samples\nota-exemplo.xml
 ```
 
 Como ferramenta local a partir do pacote gerado:
@@ -197,10 +201,10 @@ Depois de instalada:
 nfedanfe .\samples\nota-exemplo-procNFe.xml --output .\out
 ```
 
-Gerar com fonte específica (Arial, Inter, Roboto, IbmPlexSans ou fonte do sistema):
+Gerar com arquivos de fonte específicos:
 
 ```powershell
-nfedanfe .\samples\nota-exemplo-procNFe.xml --font inter --output .\out
+nfedanfe .\samples\nota-exemplo.xml --font-reg .\fonts\Regular.ttf --font-bold .\fonts\Bold.ttf --output .\out
 ```
 
 Gerar com logo por caminho explícito:
@@ -209,45 +213,19 @@ Gerar com logo por caminho explícito:
 nfedanfe .\nota-procNFe.xml --logo-path .\minha-logo.png --output .\out
 ```
 
-Gerar com busca automática por `logo.png`:
-
-```powershell
-nfedanfe .\nota-procNFe.xml --logo
-```
-
-Gerar snapshot textual junto com o PDF:
-
-```powershell
-nfedanfe .\nota-procNFe.xml --snapshot
-```
-
-Gerar DANFE mock de demonstração:
-
-```powershell
-nfedanfe --mock
-```
-
 ## Logo Na CLI
 
-A opção recomendada é `--logo-path`, porque é explícita:
+Sem `--logo-path`, a CLI usa automaticamente o logotipo padrão incorporado ao pacote. Para personalizar, informe um caminho explícito:
 
 ```powershell
 nfedanfe .\nota-procNFe.xml --logo-path .\assets\logo.png
 ```
 
-A opção `--logo` também existe e procura automaticamente um arquivo chamado `logo.png`.
-
-Locais verificados pela CLI:
-
-- Diretório onde o comando foi executado.
-- Diretório do binário da ferramenta.
-- Diretórios pais desses caminhos, subindo alguns níveis.
-
-Se o arquivo não for encontrado, o DANFE é gerado sem logo.
+Se o arquivo não existir ou não for uma imagem válida, a geração continua usando o logotipo padrão.
 
 ## Linux e Docker
 
-O projeto é compatível com Linux porque usa .NET, QuestPDF e Barcoder sem `System.Drawing`.
+O projeto é compatível com Linux porque usa .NET, PDFsharp e Barcoder sem `System.Drawing`.
 
 Exemplo Linux:
 
