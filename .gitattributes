@@ -1,4 +1,4 @@
-* text=auto
+* text=auto eol=lf
 
 *.cs text working-tree-encoding=UTF-8
 *.csproj text working-tree-encoding=UTF-8

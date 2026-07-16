@@ -118,7 +118,7 @@ internal sealed class CanhotoBlock
     {
         var regularFont = styles.LabelFont;
         var boldFont = new XFont(DanfeFontResolver.FamilyName, regularFont.Size, XFontStyleEx.Bold);
-        
+
         double lineSpacing = regularFont.Size + 1.2; // Espaçamento entre linhas confortável
         double currentX = rect.X;
         double currentY = rect.Y + regularFont.Size;

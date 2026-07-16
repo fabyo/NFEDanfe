@@ -30,7 +30,10 @@ Antes de abrir uma Issue, verifique se já não existe uma parecida aberta ou re
 3. Realize suas modificações no código.
 4. Garanta que o projeto esteja compilando perfeitamente:
    ```bash
-   dotnet build
+   dotnet restore NFEDanfe.slnx --locked-mode
+   dotnet format NFEDanfe.slnx --verify-no-changes --no-restore
+   dotnet build NFEDanfe.slnx --configuration Release --no-restore
+   dotnet test NFEDanfe.Tests/NFEDanfe.Tests.csproj --configuration Release --no-build --no-restore
    ```
 5. Comite e envie as alterações para o seu fork:
    ```bash
@@ -59,6 +62,8 @@ O projeto está dividido de forma simples e modularizada para facilitar a manute
 * **Nomes em Português / Termos Fiscais**: Mantemos os nomes fiscais em conformidade com o Manual de Orientação do Contribuinte (MOC) da SEFAZ (ex: *emitente*, *destinatário*, *duplicata*, *canhoto*).
 * **Ausência de dependências proprietárias**: Mantemos a biblioteca livre de dependências que exijam licenças comerciais restritivas ou faturamento. Toda a renderização gráfica deve ser feita via primitivas nativas do PDFsharp.
 * **Layout Responsivo**: O layout do DANFE (Retrato ou Paisagem) deve se ajustar perfeitamente às margens e larguras úteis dinâmicas calculadas pelo `DanfeEngine`. Evite fixar dimensões absolutas de largura sem usar percentuais ou cálculo relativo.
+* **Validação de PDF**: A suíte usa PdfPig para extrair e auditar o texto dos PDFs em memória. Não instale nem dependa de executáveis nativos como `pdftotext` para validar conteúdo.
+* **Testes**: A suíte usa xUnit v3 e desabilita paralelismo entre coleções porque o registro de fontes do PDFsharp é compartilhado durante o processo.
 
 ---
 

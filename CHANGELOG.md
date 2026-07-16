@@ -1,5 +1,18 @@
 # Histórico de alterações
 
+## [2.3.3](https://github.com/fabyo/NFEDanfe/compare/v2.3.2...v2.3.3) (2026-07-16)
+
+### Qualidade e confiabilidade
+
+- Migrada a suíte de testes de xUnit 2.9.3 para xUnit v3.2.2, mantendo compatibilidade com `dotnet test`, Visual Studio e execução autônoma.
+- Desabilitada a execução paralela entre coleções de testes para proteger o registro global de fontes usado durante a composição dos PDFs.
+- Adicionada auditoria textual de PDFs em memória com PdfPig 0.1.15, eliminando a dependência de executáveis externos como `pdftotext`.
+- A validação confirma no PDF final a presença dos dados adicionais normalizados e a ausência de tags ou conteúdo proibido.
+- Padronizados os arquivos de texto em LF e corrigidos os espaços em branco divergentes do formatador oficial do .NET.
+- Adicionada verificação obrigatória de `dotnet format` aos workflows de CI e publicação.
+- Atualizados os lockfiles e confirmada a ausência de pacotes vulneráveis, depreciados ou com atualização estável pendente.
+- Atualizado o guia de contribuição com o fluxo completo de restauração, formatação, build, testes e validação de PDF.
+
 ## [2.3.2](https://github.com/fabyo/NFEDanfe/compare/v2.3.1...v2.3.2) (2026-07-16)
 
 ### Correções

@@ -87,10 +87,10 @@ internal sealed class TaxBlock
     private static void DrawMoneyCell(XGraphics gfx, DanfeStyleCatalog styles, string label, decimal value, double cx, double cy, double cw, double ch, XFont? valueFontOverride = null)
     {
         string valStr = DocumentFormatter.Money(value);
-        
+
         // Criar uma fonte menor de 4.3 pt para os labels do cálculo do imposto não cortarem
         var labelFont = new XFont(DanfeFontResolver.FamilyName, 4.3, XFontStyleEx.Regular);
-        
+
         // Renderizar a célula usando DanfeField (com alinhamento à direita (Far) dos valores)
         var field = new DanfeField(label, valStr, 0, XStringAlignment.Far);
         field.Draw(gfx, styles, cx, cy, cw, ch, labelFont, valueFontOverride);

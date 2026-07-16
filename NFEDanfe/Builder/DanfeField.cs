@@ -59,7 +59,7 @@ public sealed class DanfeField
             LineAlignment = XLineAlignment.Center
         };
         string truncatedValue = TruncateText(gfx, Value, valFont, availableWidth);
-        
+
         var valueRect = new XRect(x + PaddingLeft, valueY, availableWidth, valueH);
         gfx.DrawString(truncatedValue, valFont, styles.TextBrush, valueRect, valueFormat);
     }

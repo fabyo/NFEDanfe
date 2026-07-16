@@ -50,6 +50,9 @@ jobs:
       - name: Restore
         run: dotnet restore NFEDanfe.slnx --locked-mode
 
+      - name: Verify formatting
+        run: dotnet format NFEDanfe.slnx --verify-no-changes --no-restore
+
       - name: Build
         run: dotnet build NFEDanfe.slnx --configuration Release --no-restore
 
