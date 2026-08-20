@@ -168,7 +168,26 @@ internal sealed class DanfeItemGrid
 
             var textRect = new XRect(currentX + padding, y, colWidth - (padding * 2), rowHeight);
 
-            if (c == 1) // DESCRIÇÃO DO PRODUTO/SERVIÇO
+            if (c == 0) // CÓDIGO DO PRODUTO
+            {
+                var (lines, fontSize) = FormatProductCode(values[c], textMaxWidth);
+                var codeFont = new XFont(DanfeFontResolver.FamilyName, fontSize, XFontStyleEx.Regular);
+
+                if (lines.Length == 1)
+                {
+                    gfx.DrawString(lines[0], codeFont, styles.TextBrush, textRect, textFormat);
+                }
+                else
+                {
+                    double halfHeight = rowHeight / 2.0;
+                    var rect1 = new XRect(currentX + padding, y, colWidth - (padding * 2), halfHeight);
+                    var rect2 = new XRect(currentX + padding, y + halfHeight, colWidth - (padding * 2), halfHeight);
+
+                    gfx.DrawString(lines[0], codeFont, styles.TextBrush, rect1, textFormat);
+                    gfx.DrawString(lines[1], codeFont, styles.TextBrush, rect2, textFormat);
+                }
+            }
+            else if (c == 1) // DESCRIÇÃO DO PRODUTO/SERVIÇO
             {
                 var tf = new XTextFormatter(gfx);
                 // Pequeno padding vertical de 1.0 pt para o texto não ficar colado nas linhas horizontais
@@ -181,6 +200,37 @@ internal sealed class DanfeItemGrid
             }
 
             currentX += colWidth;
+        }
+    }
+
+    private static (string[] Lines, double FontSize) FormatProductCode(string code, double availableWidth)
+    {
+        if (string.IsNullOrEmpty(code))
+        {
+            return (Array.Empty<string>(), 5.0);
+        }
+
+        if (code.Length <= 20)
+        {
+            return (new[] { code }, 5.0);
+        }
+        else if (code.Length <= 40)
+        {
+            int mid = (code.Length + 1) / 2;
+            string part1 = code.Substring(0, mid);
+            string part2 = code.Substring(mid);
+            return (new[] { part1, part2 }, 5.0);
+        }
+        else
+        {
+            int mid = (code.Length + 1) / 2;
+            string part1 = code.Substring(0, mid);
+            string part2 = code.Substring(mid);
+            int maxLineLen = Math.Max(part1.Length, part2.Length);
+            // Estimate char width as 0.55 of font size
+            double calculatedSize = availableWidth / (maxLineLen * 0.55);
+            double fontSize = Math.Clamp(calculatedSize, 2.5, 4.2);
+            return (new[] { part1, part2 }, fontSize);
         }
     }
 

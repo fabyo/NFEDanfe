@@ -137,6 +137,10 @@ public sealed class DanfeLayoutBuilder
                 // Subtrai os 2.0 pt de padding da coluna de descrição para medição 100% fiel
                 int lines = GetLinesCount(measureGfx, item.Descricao, valueFont, descColumnWidth - 2.0);
                 double h = Math.Max(11.0, lines * 6.5 + 4.5);
+                if (!string.IsNullOrEmpty(item.CodigoProduto) && item.CodigoProduto.Length > 20)
+                {
+                    h = Math.Max(h, 14.0);
+                }
                 rowHeights.Add(h);
             }
         }

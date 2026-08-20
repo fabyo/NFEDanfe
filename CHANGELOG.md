@@ -1,5 +1,16 @@
 # Histórico de alterações
 
+## [2.3.5](https://github.com/fabyo/NFEDanfe/compare/v2.3.4...v2.3.5) (2026-08-20)
+
+### Correções e Melhorias
+
+- Adicionado suporte a quebra automática de linha no campo `CÓDIGO PRODUTO` na grade de produtos/serviços:
+  - Códigos maiores que 20 caracteres são quebrados em 2 linhas (até 40 caracteres).
+  - Códigos maiores que 40 caracteres têm a linha quebrada e a fonte reduzida dinamicamente para caber na coluna sem estourar.
+  - Ajuste dinâmico da altura mínima da linha na grade quando o código possui quebra (garantindo pelo menos 14 pt de altura vertical).
+- Atualizadas dependências de infraestrutura de teste (`xunit.v3` para `4.0.0`, `xunit.runner.visualstudio` para `4.0.0` e `Microsoft.NET.Test.Sdk` para `18.9.0`).
+- Configurado o uso nativo do Microsoft Testing Platform sob .NET 10 via `global.json` e ativada a extensão `Microsoft.Testing.Extensions.TrxReport` para manter a geração de relatórios TRX em CI de forma compatível.
+
 ## [2.3.4](https://github.com/fabyo/NFEDanfe/compare/v2.3.3...v2.3.4) (2026-07-16)
 
 ### Correções
