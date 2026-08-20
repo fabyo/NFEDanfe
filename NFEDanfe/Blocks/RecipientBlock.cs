@@ -64,6 +64,15 @@ internal sealed class RecipientBlock
 
         currentX = x;
         string enderecoVal = DocumentFormatter.Address(_model.Destinatario.Endereco).ToUpper();
+        XFont? addrFontOverride = valueFontOverride;
+        double minFontSize = 7.0;
+        if (enderecoVal.Length > 54)
+        {
+            double baseSize = valueFontOverride?.Size ?? styles.ValueFont.Size;
+            addrFontOverride = new XFont(DanfeFontResolver.FamilyName, baseSize - 1.5, XFontStyleEx.Regular);
+            minFontSize = 5.5;
+        }
+
         new DanfeField("ENDEREÇO", enderecoVal, 45.83)
             .Draw(
                 gfx,
@@ -72,8 +81,8 @@ internal sealed class RecipientBlock
                 y,
                 wAddr,
                 fieldH,
-                valueFontOverride: valueFontOverride,
-                minimumValueFontSize: 7.0);
+                valueFontOverride: addrFontOverride,
+                minimumValueFontSize: minFontSize);
         currentX += wAddr;
 
         new DanfeField("BAIRRO / DISTRITO", _model.Destinatario.Endereco.Bairro.ToUpper(), 25.0)

@@ -108,11 +108,17 @@ internal sealed class EmitentBlock
 
         var detailFont = new XFont(DanfeFontResolver.FamilyName, isLandscape ? 5.2 : 6.0, XFontStyleEx.Regular);
         double addressLineH = isLandscape ? 5.5 : 8.0;
-        gfx.DrawString(address1, detailFont, styles.TextBrush, new XRect(emitenteContentX, emitY, emitenteContentW, addressLineH), formatEmit);
-        emitY += addressLineH;
-        gfx.DrawString(address2, detailFont, styles.TextBrush, new XRect(emitenteContentX, emitY, emitenteContentW, addressLineH), formatEmit);
-        emitY += addressLineH;
-        gfx.DrawString(address3, detailFont, styles.TextBrush, new XRect(emitenteContentX, emitY, emitenteContentW, addressLineH), formatEmit);
+
+        var addressLines = new System.Collections.Generic.List<string>();
+        addressLines.AddRange(WrapText(address1, 56));
+        addressLines.AddRange(WrapText(address2, 56));
+        addressLines.AddRange(WrapText(address3, 56));
+
+        foreach (var line in addressLines)
+        {
+            gfx.DrawString(line, detailFont, styles.TextBrush, new XRect(emitenteContentX, emitY, emitenteContentW, addressLineH), formatEmit);
+            emitY += addressLineH;
+        }
 
 
         // ==========================================
@@ -328,6 +334,60 @@ internal sealed class EmitentBlock
         }
         return string.Join(" ", parts);
     }
+
+    private static System.Collections.Generic.List<string> WrapText(string text, int maxChars)
+    {
+        var lines = new System.Collections.Generic.List<string>();
+        if (string.IsNullOrEmpty(text))
+        {
+            return lines;
+        }
+
+        string[] words = text.Split(' ');
+        var currentLine = new System.Collections.Generic.List<string>();
+        int currentLength = 0;
+
+        foreach (var word in words)
+        {
+            if (string.IsNullOrEmpty(word))
+            {
+                continue;
+            }
+
+            int lengthWithWord = currentLength + (currentLength > 0 ? 1 : 0) + word.Length;
+
+            if (lengthWithWord > maxChars)
+            {
+                if (currentLine.Count > 0)
+                {
+                    lines.Add(string.Join(" ", currentLine));
+                    currentLine.Clear();
+                    currentLine.Add(word);
+                    currentLength = word.Length;
+                }
+                else
+                {
+                    currentLine.Add(word);
+                    lines.Add(string.Join(" ", currentLine));
+                    currentLine.Clear();
+                    currentLength = 0;
+                }
+            }
+            else
+            {
+                currentLine.Add(word);
+                currentLength = lengthWithWord;
+            }
+        }
+
+        if (currentLine.Count > 0)
+        {
+            lines.Add(string.Join(" ", currentLine));
+        }
+
+        return lines;
+    }
+
 
     private static double DrawWrappedString(XGraphics gfx, string text, XFont font, XSolidBrush brush, XRect rect, double lineSpacing, bool isBold = false)
     {

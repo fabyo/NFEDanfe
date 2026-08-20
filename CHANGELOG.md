@@ -1,5 +1,14 @@
 # Histórico de alterações
 
+## [2.3.6](https://github.com/fabyo/NFEDanfe/compare/v2.3.5...v2.3.6) (2026-08-20)
+
+### Correções e Melhorias
+
+- Adicionado suporte a quebra automática de linha (word wrap) sem truncamento para o endereço do emitente:
+  - Textos acima de 56 caracteres pulam de linha automaticamente.
+  - O cálculo garante que palavras inteiras não sejam divididas, pulando para a linha seguinte por inteiro.
+- Implementada redução dinâmica do tamanho da fonte no campo de endereço do destinatário caso a string de endereço exceda 54 caracteres, evitando estouros e mantendo a legibilidade.
+
 ## [2.3.5](https://github.com/fabyo/NFEDanfe/compare/v2.3.4...v2.3.5) (2026-08-20)
 
 ### Correções e Melhorias
