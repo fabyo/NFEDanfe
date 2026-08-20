@@ -48,8 +48,10 @@ jobs:
           --configuration Release \
           --no-build \
           --verbosity detailed \
-          --logger "console;verbosity=detailed" \
-          --logger "trx;LogFileName=test-results.trx"
+          --results-directory NFEDanfe.Tests/TestResults \
+          -- \
+          --report-trx \
+          --report-trx-filename test-results.trx
 
     - name: Pack
       run: dotnet pack NFEDanfe.slnx --configuration Release --no-build --output artifacts
