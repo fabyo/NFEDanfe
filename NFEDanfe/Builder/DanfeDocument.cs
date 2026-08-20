@@ -157,6 +157,10 @@ internal sealed class DanfePageBuilder : IDanfePage
             {
                 int lines = GetLinesCount(measureGfx, item.Descricao, valueFont, descColumnWidth);
                 double h = Math.Max(11.0, lines * 6.5 + 4.5);
+                if (!string.IsNullOrEmpty(item.CodigoProduto) && item.CodigoProduto.Length > 20)
+                {
+                    h = Math.Max(h, 14.0);
+                }
                 rowHeights.Add(h);
             }
         }
